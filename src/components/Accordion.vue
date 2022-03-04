@@ -8,11 +8,11 @@ import List from './List/List.vue'
 // * Components
 
 let accordion: Ref<HTMLDivElement | null> = ref(null)
-let DOMAccordion: UIkit.UIkitDropdownElement
+let DOMAccordion: UIkit.UIkitAccordionElement
 
 onMounted(() => {
   if (accordion.value) {
-    DOMAccordion = UIkit.dropdown(accordion.value, {})
+    DOMAccordion = UIkit.accordion(accordion.value, {})
   } else {
     console.warn('Dropdown not found!')
   }
@@ -26,7 +26,7 @@ onBeforeUnmount(() => {
 
 <template>
   <div class="Accordion">
-    <ul uk-accordion>
+    <ul ref="accordion">
       <li class="Box Accordion__item">
         <a class="uk-accordion-title Accordion__title Font Font__title Font__bold" href="#">
           <slot name="title">Accordion</slot> 
@@ -35,9 +35,7 @@ onBeforeUnmount(() => {
         <div class="uk-accordion-content">
 
           <slot name="content">
-
             <List />
-
           </slot>
 
         </div>
