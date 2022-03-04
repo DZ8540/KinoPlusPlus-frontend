@@ -1,4 +1,4 @@
-import Home from '../views/Home.vue'
+import { HOME_ROUTE_NAME } from '@/config/router'
 import { createRouter, createWebHistory } from 'vue-router'
 
 const router = createRouter({
@@ -6,9 +6,8 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      name: 'home',
-      component: () => import('../views/Home.vue')
-    },
+      redirect: { name: HOME_ROUTE_NAME },
+    }
   ]
 })
 

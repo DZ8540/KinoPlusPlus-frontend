@@ -1,0 +1,133 @@
+@import 'variables'
+  
+::-webkit-scrollbar
+  width: 10px
+  height: 10px
+  background: transparent
+
+::-webkit-scrollbar-thumb
+  border-radius: 20px
+  background-color: $yellow
+
+*
+  outline: none !important
+  -webkit-font-smoothing: antialiased
+  -moz-osx-font-smoothing: grayscale
+  font-smoothing: antialiased
+  &::before, &::after
+    outline: none
+    -webkit-font-smoothing: antialiased
+    -moz-osx-font-smoothing: grayscale
+    font-smoothing: antialiased
+
+body, html
+  overflow-x: hidden !important
+  scrollbar-width: thin
+  scrollbar-color: $yellow transparent 
+
+h1, h2, h3, ul, p, body
+  padding: 0 !important
+  margin: 0 !important
+
+button
+  border: none
+  background-color: transparent
+  cursor: pointer
+
+a
+  text-decoration: none !important
+
+ul
+  list-style: none
+
+img
+  -moz-user-select: none
+  user-select: none
+  pointer-events: none 
+
+// Animations
+.transition
+  transition: .2s
+// Animations
+
+// Content
+.absolute
+  position: absolute
+
+.relative
+  position: relative
+
+.mb
+  margin-bottom: 30px
+  &__lite
+    margin-bottom: 20px
+  &__important
+    margin-bottom: 30px !important
+
+.fullPageBox
+  width: 100%
+  min-height: 100vh
+  overflow: hidden
+  position: relative
+
+.hide
+  display: none
+
+.show
+  display: block
+
+.box
+  box-sizing: border-box
+
+.content
+  margin: 100px 0 !important
+  position: relative
+  z-index: 5
+
+.Box
+  padding: $boxPadding
+  box-sizing: border-box
+  border-radius: 30px
+  overflow: hidden
+  &__lite
+    padding: 0 !important
+  &__avatar
+    width: 100%
+    height: 450px
+  &__bg
+    width: 100%
+    height: 100%
+    object-fit: cover
+  &__overflow
+    overflow: visible
+  @media (prefers-color-scheme: light)
+    background-color: $white
+    box-shadow: $whiteShadow
+  @media (prefers-color-scheme: dark)
+    background-color: $black
+    box-shadow: $blackShadow
+// Content
+
+// Text
+.break
+  word-break: break-all
+  hyphens: auto
+
+.ellipsis
+  white-space: nowrap
+  overflow: hidden
+  text-overflow: ellipsis
+
+.moreLineEllipsis
+  overflow: hidden
+  text-overflow: ellipsis
+  overflow: hidden
+  line-height: 2rem
+  max-height: 8rem
+  -webkit-box-orient: vertical
+  display: block
+  display: -webkit-box
+  overflow: hidden !important
+  text-overflow: ellipsis
+  -webkit-line-clamp: 4
+// Text

@@ -1,0 +1,60 @@
+@import './variables'
+  
+@font-face
+  font-family: 'Regular'
+  src: url('@/assets/fonts/Regular/regular.eot')
+  src: local("Proxima Nova Regular"), local("ProximaNova-Regular"), url('@/assets/fonts/Regular/regular.eot?#iefix') format("embedded-opentype"), url('@/assets/fonts/Regular/regular.woff2') format("woff2"), url('@/assets/fonts/Regular/regular.woff') format("woff"), url('@/assets/fonts/Regular/regular.ttf') format("truetype")
+  font-weight: normal
+  font-style: normal
+
+@font-face
+  font-family: 'Bold'
+  src: url('@/assets/fonts/Bold/bold.eot')
+  src: local("Proxima Nova Bold"), local("ProximaNova-Bold"), url('@/assets/fonts/Bold/bold.eot?#iefix') format("embedded-opentype"), url('@/assets/fonts/Bold/bold.woff2') format("woff2"), url('@/assets/fonts/Bold/bold.woff') format("woff"), url('@/assets/fonts/Bold/bold.ttf') format("truetype")
+  font-weight: bold
+  font-style: normal
+
+@font-face
+  font-family: 'icons'
+  src: url('@/assets/fonts/Icons/icons.eot?4ziyr0')
+  src: url('@/assets/fonts/Icons/icons.eot?4ziyr0#iefix') format('embedded-opentype'), url('@/assets/fonts/Icons/icons.ttf?4ziyr0') format('truetype'), url('@/assets/fonts/Icons/icons.woff?4ziyr0') format('woff'), url('@/assets/fonts/Icons/icons.svg?4ziyr0#icons') format('svg')
+  font-weight: normal
+  font-style: normal
+  font-display: block
+
+.Font
+  &__regular
+    font-family: $regular
+  &__bold
+    font-family: $bold
+  &__text
+    font-size: $textSize
+  &__title
+    font-size: $titleSize
+  &__mini
+    font-size: $miniSize
+  &__error
+    color: $red !important
+  &__success
+    color: $green !important
+  &__icon
+    display: flex
+    align-items: center
+    .Icon
+      margin-right: 10px
+  
+  @media (max-width: 1100px)
+    &__title
+      font-size: $ipadTitleSize
+
+  @media (max-width: 500px)
+    &__title
+      font-size: $mobileTitleSize
+
+  @media (max-width: 400px)
+    &__text
+      font-size: $mobileTextSize
+
+  @media (max-width: 350px)
+    &__text
+      font-size: $textSize350
