@@ -1,4 +1,6 @@
+// * Types
 import type { Genre } from '@/contracts/genre'
+// * Types
 
 export const DEFAULT_GENRE: Genre = {
   id: 0,

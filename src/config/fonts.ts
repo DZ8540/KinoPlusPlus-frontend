@@ -12,5 +12,5 @@ export const ICONS = [
   'equals', 'clock--solid', 'heart--solid',
 ] as const
 
-export let castFontClass = (val: string): string => `Font__${val}`
-export let castIconClass = (val: string): string => `Icon__${val}`
+export const castFontClass = (val: string): string => `Font__${val}`
+export const castIconClass = (val: string): string => `Icon__${val}`

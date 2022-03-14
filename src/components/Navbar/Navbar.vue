@@ -1,7 +1,11 @@
 <script lang="ts" setup>
+// * Types
+import type { Ref, PropType } from 'vue'
+// * Types
+
 import UIkit from 'uikit'
 import State from './index'
-import { onMounted, ref, type PropType, type Ref } from 'vue'
+import { onMounted, ref } from 'vue'
 
 // * Components
 import Select from '../Select.vue'
@@ -28,7 +32,7 @@ const props = defineProps({
   }
 })
 
-let navbar: Ref<HTMLDivElement | null> = ref(null)
+const navbar: Ref<HTMLDivElement | null> = ref(null)
 
 state.setOptions(props.options)
 state.setLangs(props.langs)

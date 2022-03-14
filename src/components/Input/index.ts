@@ -1,4 +1,8 @@
-import { ref, type Ref } from 'vue'
+// * Types
+import type { Ref } from 'vue'
+// * Types
+
+import { ref } from 'vue'
 
 export default class {
   public isNotCorrect: Ref<boolean> = ref(false)

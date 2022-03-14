@@ -1,9 +1,13 @@
+// * Types
+import type { UnparsedVideo } from '@/contracts/video'
+// * Types
+
 import type UIkit from 'uikit'
 import { reactive } from 'vue'
-import type { UnparsedVideo } from '@/contracts/video'
 
 export default class {
   public options: UIkit.UIkitSliderOptions = {}
+  
   public items: UnparsedVideo[] = reactive([])
 
   public setOptions(options: UIkit.UIkitSliderOptions): void {

@@ -1,5 +1,7 @@
+// * Types
 import type { Genre } from '@/contracts/genre'
 import type { Video } from '@/contracts/video'
+// * Types
 
 export const ROUTES = {
   video: {
@@ -12,7 +14,7 @@ export const ROUTES = {
     all: '/genres',
     showOnMainPage: '/genres/showOnMainPage',
     item: (slug: Genre['slug']) => `/genres/${slug}`
-  }
+  },
 } as const
 
 export const URL: string = import.meta.env.VITE_API_URL

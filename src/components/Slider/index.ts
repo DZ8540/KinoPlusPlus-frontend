@@ -1,7 +1,11 @@
+// * Types
 import type UIkit from 'uikit'
-import { reactive, ref, type Ref } from 'vue'
+import type { Ref } from 'vue'
 import type { Actor } from '@/contracts/actor'
 import type { UnparsedVideo } from '@/contracts/video'
+// * Types
+
+import { reactive, ref } from 'vue'
 
 export default class {
   public isWithShowMore: Ref<boolean> = ref(true)
@@ -23,9 +27,9 @@ export default class {
   }
 
   public setItemsCount(defaultCount: number, smallView: number, mobile: number): void {
-    let defaultClass: string = `uk-child-width-1-${defaultCount}@m`
-    let smallViewClass: string = `uk-child-width-1-${smallView}@s`
-    let mobileClass: string = `uk-child-width-1-${mobile}`
+    const defaultClass: string = `uk-child-width-1-${defaultCount}@m`
+    const smallViewClass: string = `uk-child-width-1-${smallView}@s`
+    const mobileClass: string = `uk-child-width-1-${mobile}`
 
 
     this.itemsCountClasses.push(defaultClass, smallViewClass, mobileClass)

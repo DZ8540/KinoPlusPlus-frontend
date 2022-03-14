@@ -1,10 +1,15 @@
+// * Types
 import type UIkit from 'uikit'
-import { reactive, ref, type Ref } from 'vue'
+import type { Ref } from 'vue'
+// * Types
+
+import { reactive, ref } from 'vue'
 
 export default class {
+  public options: UIkit.UIkitDropdownOptions = {}
+  
   private isArrowActive: Ref<boolean> = ref(false)
 
-  public options: UIkit.UIkitDropdownOptions = {}
   public arrowClassNames: any[] = reactive(['Dropdown__arrow', { 'Dropdown__arrow--active': this.isArrowActive }])
 
   public setArrowToActive(): void {

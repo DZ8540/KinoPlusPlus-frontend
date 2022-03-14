@@ -1,8 +1,11 @@
 <script lang="ts" setup>
-import State from './index'
+// * Types
 import type { PropType } from 'vue'
 import type { RouteLocationRaw } from 'vue-router'
 import type { UnparsedVideo } from '@/contracts/video'
+// * Types
+
+import State from './index'
 
 // * Components
 import Icon from '../Icon/Icon.vue'

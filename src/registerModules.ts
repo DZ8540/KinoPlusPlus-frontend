@@ -1,4 +1,6 @@
+// * Types
 import type { Module } from './contracts/modules'
+// * Types
 
 import router from './router'
 
@@ -7,10 +9,10 @@ import Video from './modules/Video'
 import Genre from './modules/Genre'
 // * Modules
 
-let modules: Module[] = [Video, Genre]
+const modules: Module[] = [Video, Genre]
 
-for (let item of modules) {
-  for (let route of item.router) {
+for (const item of modules) {
+  for (const route of item.router) {
     router.addRoute(route)
   }
 }

@@ -1,7 +1,11 @@
 <script lang="ts" setup>
+// * Types
+import type { Ref, PropType } from 'vue'
+// * Types
+
 import UIkit from 'uikit'
 import State from './index'
-import { onBeforeUnmount, onMounted, ref, type PropType, type Ref } from 'vue'
+import { onBeforeUnmount, onMounted, ref } from 'vue'
 
 // * Components
 import Icon from '../Icon/Icon.vue'
@@ -15,12 +19,12 @@ const props = defineProps({
     default() {
       return {}
     },
-  }
+  },
 })
 
-let dropdown: Ref<HTMLDivElement | null> = ref(null)
-let arrow: Ref<HTMLElement | null> = ref(null)
 let DOMDropdown: UIkit.UIkitDropdownElement
+const dropdown: Ref<HTMLDivElement | null> = ref(null)
+const arrow: Ref<HTMLElement | null> = ref(null)
 
 state.setOptions(props.options)
 

@@ -1,7 +1,11 @@
-import { Duration } from 'luxon'
-import { reactive, ref, type Ref } from 'vue'
-import { DEFAULT_VIDEO } from '@/config/video'
+// * Types
+import type { Ref } from 'vue'
 import type { Video, UnparsedVideo } from '@/contracts/video'
+// * Types
+
+import { Duration } from 'luxon'
+import { reactive, ref } from 'vue'
+import { DEFAULT_VIDEO } from '@/config/video'
 
 export default class {
   public isInWishList: Ref<boolean> = ref(false)
@@ -26,9 +30,9 @@ export default class {
    */
 
   private parseItem(item: UnparsedVideo): Video {
-    let duration: string = Duration.fromISOTime(item.duration).toFormat("mm 'minutes'")
-    let rating: string = item.rating.replace('.', ',')
-    let ageLimit: string = `+${item.ageLimit}`
+    const duration: string = Duration.fromISOTime(item.duration).toFormat("mm 'minutes'")
+    const rating: string = item.rating.replace('.', ',')
+    const ageLimit: string = `+${item.ageLimit}`
 
     return {
       ...item,

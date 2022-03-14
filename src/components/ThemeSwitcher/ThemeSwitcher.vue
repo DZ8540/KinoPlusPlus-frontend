@@ -1,6 +1,10 @@
 <script lang="ts" setup>
+// * Types
+import type { Ref } from 'vue'
+// * Types
+
 import State from './index'
-import { onMounted, ref, type Ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { ThemeSwitcher } from '@dz8540/custom-themeswitcher'
 
 // * Components
@@ -15,7 +19,7 @@ const props = defineProps({
   }
 })
 
-let switcher: Ref<HTMLDivElement | null> = ref(null)
+const switcher: Ref<HTMLDivElement | null> = ref(null)
 
 onMounted(() => {
   new ThemeSwitcher(switcher.value!, state.options)

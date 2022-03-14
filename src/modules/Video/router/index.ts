@@ -1,4 +1,7 @@
+// * Types
 import type { RouteRecordRaw } from 'vue-router'
+// * Types
+
 import { HOME_ROUTE_NAME } from '@/config/router'
 
 export default [

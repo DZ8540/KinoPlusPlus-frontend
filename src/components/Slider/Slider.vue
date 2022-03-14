@@ -1,7 +1,11 @@
 <script lang="ts" setup>
+// * Types
+import type { Ref, PropType } from 'vue'
+// * Types
+
 import UIkit from 'uikit'
 import State from './index'
-import { onBeforeUnmount, onMounted, ref, type PropType, type Ref } from 'vue'
+import { onBeforeUnmount, onMounted, ref } from 'vue'
 
 // * Components
 import Button from '../Button.vue'
@@ -35,7 +39,7 @@ const props = defineProps({
 })
 
 let DOMSlider: UIkit.UIkitSliderElement
-let slider: Ref<HTMLDivElement | null> = ref(null)
+const slider: Ref<HTMLDivElement | null> = ref(null)
 
 state.setOptions(props.options)
 state.setItemsCount(props.itemsCountView, props.itemsCountSmallView, props.itemsCountMobileView)

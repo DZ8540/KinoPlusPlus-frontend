@@ -1,9 +1,12 @@
-import instance from './instance'
-import { ROUTES } from '@/config/api'
+// * Types
 import type { AxiosResponse } from 'axios'
 import type { Paginate } from '@/contracts/api'
 import type { Response } from '@/contracts/response'
 import type { ApiSearchData, UnparsedVideo, Video } from '@/contracts/video'
+// * Types
+
+import instance from './instance'
+import { ROUTES } from '@/config/api'
 
 export async function getVideo(slug: Video['slug']): Promise<AxiosResponse<Response<UnparsedVideo>>> {
   return await instance.post<Response<UnparsedVideo>>(ROUTES.video.item(slug))

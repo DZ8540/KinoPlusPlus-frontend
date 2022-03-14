@@ -1,6 +1,10 @@
 <script lang="ts" setup>
+// * Types
+import type { Ref, PropType } from 'vue'
 import type { Value } from '@/contracts/select'
-import { onMounted, ref, type PropType, type Ref } from 'vue'
+// * Types
+
+import { onMounted, ref } from 'vue'
 import { Select } from '@/assets/vendor/Select'
 
 const props = defineProps({
@@ -14,7 +18,8 @@ const props = defineProps({
   },
 })
 
-let select: Ref<HTMLDivElement | null> = ref(null)
+const select: Ref<HTMLDivElement | null> = ref(null)
+
 onMounted(() => {
   new Select(select.value!)
 })

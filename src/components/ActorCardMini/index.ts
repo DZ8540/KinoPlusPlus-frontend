@@ -1,5 +1,8 @@
-import { reactive } from 'vue'
+// * Types
 import type { Actor } from '@/contracts/actor'
+// * Types
+
+import { reactive } from 'vue'
 import { DEFAULT_ACTOR } from '@/config/actor'
 
 export default class {

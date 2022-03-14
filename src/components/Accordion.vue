@@ -1,14 +1,18 @@
 <script lang="ts" setup>
+// * Types
+import type { Ref } from 'vue'
+// * Types
+
 import UIkit from 'uikit'
-import { onBeforeUnmount, onMounted, ref, type Ref } from 'vue'
+import { onBeforeUnmount, onMounted, ref } from 'vue'
 
 // * Components
 import Icon from './Icon/Icon.vue'
 import List from './List/List.vue'
 // * Components
 
-let accordion: Ref<HTMLDivElement | null> = ref(null)
 let DOMAccordion: UIkit.UIkitAccordionElement
+const accordion: Ref<HTMLDivElement | null> = ref(null)
 
 onMounted(() => {
   if (accordion.value) {

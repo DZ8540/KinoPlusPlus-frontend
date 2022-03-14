@@ -1,4 +1,7 @@
+// * Types
 import type UIkit from 'uikit'
+// * Types
+
 import { reactive } from 'vue'
 
 export default class {

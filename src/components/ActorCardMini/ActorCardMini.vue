@@ -1,8 +1,11 @@
 <script lang="ts" setup>
-import State from './index'
+// * Types
 import type { PropType } from 'vue'
 import type { Actor } from '@/contracts/actor'
 import type { RouteLocationRaw } from 'vue-router'
+// * Types
+
+import State from './index'
 
 const state = new State()
 const props = defineProps({

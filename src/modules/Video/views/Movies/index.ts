@@ -1,13 +1,17 @@
-import Logger from '@/assets/vendor/Logger'
+// * Types
 import type UIkit from 'uikit'
+import type { Ref } from 'vue'
 import type { AxiosResponse } from 'axios'
 import type { Genre } from '@/contracts/genre'
 import type { Paginate } from '@/contracts/api'
 import type { Response } from '@/contracts/response'
 import type { UnparsedVideo } from '@/contracts/video'
+// * Types
+
+import Logger from '@/assets/vendor/Logger'
 import { checkQuery } from '@/helpers'
 import { showOnMainPage } from '@/api/genre'
-import { reactive, ref, type Ref } from 'vue'
+import { reactive, ref } from 'vue'
 import { newest, popular, searchVideo } from '@/api/video'
 
 type LoadObjects = 'newest' | 'popular' | 'genres'

@@ -1,4 +1,6 @@
+// * Types
 import type { Options } from '@/contracts/themeSwitcher'
+// * Types
 
 export default class {
   public options: Options = {

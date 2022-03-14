@@ -1,6 +1,9 @@
 <script lang="ts" setup>
-import State from './index'
+// * Types
 import type { Video } from '@/contracts/video'
+// * Types
+
+import State from './index'
 import { onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { DEFAULT_ACTOR } from '@/config/actor'
@@ -20,7 +23,7 @@ import ActorCardMini from '@/components/ActorCardMini/ActorCardMini.vue'
 const state = new State()
 const route = useRoute()
 
-let slug: Video['slug'] = route.params.slug as string
+const slug: Video['slug'] = route.params.slug as string
 
 onMounted(async () => {
   state.getItem(slug)

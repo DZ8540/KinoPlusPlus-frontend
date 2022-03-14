@@ -1,6 +1,8 @@
+// * Types
 import type { AxiosResponse } from 'axios'
 import type { Response } from '@/contracts/response'
 import type { AggregateGenre, Genre } from '@/contracts/genre'
+// * Types
 
 import instance from './instance'
 import { ROUTES } from '@/config/api'

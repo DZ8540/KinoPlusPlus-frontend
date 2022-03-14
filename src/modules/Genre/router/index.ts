@@ -1,4 +1,6 @@
+// * Types
 import type { RouteRecordRaw } from 'vue-router'
+// * Types
 
 export default [
   {

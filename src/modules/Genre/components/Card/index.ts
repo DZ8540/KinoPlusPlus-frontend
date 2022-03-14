@@ -1,4 +1,6 @@
+// * Types
 import type { AggregateGenre } from '@/contracts/genre'
+// * Types
 
 import { reactive } from 'vue'
 import { DEFAULT_GENRE } from '@/config/genre'

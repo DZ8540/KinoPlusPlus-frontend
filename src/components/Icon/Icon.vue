@@ -1,7 +1,10 @@
 <script lang="ts" setup>
-import State from './index'
+// * Types
 import type { PropType } from 'vue'
 import type { IconsTypes } from '../../contracts/fonts'
+// * Types
+
+import State from './index'
 
 const state = new State()
 const props = defineProps({

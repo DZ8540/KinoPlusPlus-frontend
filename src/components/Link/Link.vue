@@ -1,7 +1,10 @@
 <script lang="ts" setup>
-import State from './index'
+// * Types
 import type { PropType } from 'vue'
 import type { RouteLocationRaw } from 'vue-router'
+// * Types
+
+import State from './index'
 import { FONT_SIZES, FONT_WEIGHTS } from '@/config/fonts'
 import { FontSizeTypes, FontWeightTypes } from '@/contracts/fonts'
 

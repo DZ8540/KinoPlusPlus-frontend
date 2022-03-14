@@ -1,7 +1,9 @@
 <script lang="ts" setup>
+// * Types
 import type { PropType } from 'vue'
 import type { RouteLocationRaw } from 'vue-router'
 import type { AggregateGenre } from '@/contracts/genre'
+// * Types
 
 import State from './index'
 

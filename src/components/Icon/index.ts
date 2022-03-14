@@ -6,7 +6,7 @@ export default class {
   public defaultClassNames: string[] = reactive(['Icon', 'transition', 'Font__text'])
 
   public addNewClassNames(...iconsTypesKeys: (keyof typeof IconsTypes)[]): void {
-    for (let item of iconsTypesKeys) {
+    for (const item of iconsTypesKeys) {
       switch (item) {
         case 'ARROW_BOTTOM':
         case 'ARROW_TOP':

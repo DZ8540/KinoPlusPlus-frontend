@@ -1,8 +1,12 @@
 <script lang="ts" setup>
+// * Types
+import type { Ref, PropType } from 'vue'
+import type { UnparsedVideo } from '@/contracts/video'
+// * Types
+
 import UIkit from 'uikit'
 import State from './index'
-import type { UnparsedVideo } from '@/contracts/video'
-import { onBeforeUnmount, onMounted, ref, type PropType, type Ref } from 'vue'
+import { onBeforeUnmount, onMounted, ref } from 'vue'
 
 // * Components
 import Button from '@/components/Button.vue'
@@ -23,7 +27,7 @@ const props = defineProps({
 })
 
 let DOMSlider: UIkit.UIkitSliderElement
-let slider: Ref<HTMLDivElement | null> = ref(null)
+const slider: Ref<HTMLDivElement | null> = ref(null)
 
 state.setOptions(props.options)
 state.setItems(props.items)

@@ -1,4 +1,8 @@
+// * Types
 import type { Video } from '@/contracts/video'
+// * Types
+
+import { DEFAULT_GENRE } from './genre'
 
 export const DEFAULT_VIDEO: Video = {
   id: 1,
@@ -16,4 +20,11 @@ export const DEFAULT_VIDEO: Video = {
   slug: 'test',
   thirdImageForUser: 'test',
   viewsCount: 0,
+  genres: [
+    { 
+      id: DEFAULT_GENRE.id,
+      name: DEFAULT_GENRE.name,
+      slug: DEFAULT_GENRE.slug,
+    }
+  ]
 }

@@ -1,7 +1,9 @@
 <script lang="ts" setup>
+// * Types
 import type { PropType } from 'vue'
 import type { Type } from '@/contracts/button'
 import type { RouteLocationRaw } from 'vue-router'
+// * Types
 
 const props = defineProps({
   type: {

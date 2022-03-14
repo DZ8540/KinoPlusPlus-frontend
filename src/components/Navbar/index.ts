@@ -1,6 +1,10 @@
+// * Types
 import type UIkit from 'uikit'
-import { reactive, ref, type Ref } from 'vue'
+import type { Ref } from 'vue'
 import type { Value } from '@/contracts/select'
+// * Types
+
+import { reactive, ref } from 'vue'
 
 export default class {
   public options: UIkit.UIkitNavbarOptions = {}
@@ -14,7 +18,7 @@ export default class {
   }
 
   public setLangs(langs: string[]): void {
-    for (let key in langs) {
+    for (const key in langs) {
       this.langs.push({ value: key, text: langs[key] })
     }
   }

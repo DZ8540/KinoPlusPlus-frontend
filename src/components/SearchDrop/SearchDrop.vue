@@ -1,7 +1,11 @@
 <script lang="ts" setup>
+// * Types
+import type { Ref, PropType } from 'vue'
+// * Types
+
 import UIkit from 'uikit'
 import State from './index'
-import { onBeforeUnmount, onMounted, ref, type PropType, type Ref } from 'vue'
+import { onBeforeUnmount, onMounted, ref } from 'vue'
 
 // * Components
 import Input from '../Input/Input.vue'
@@ -19,7 +23,7 @@ const props = defineProps({
 })
 
 let DOMDrop: UIkit.UIkitDropElement
-let drop: Ref<HTMLDivElement | null> = ref(null)
+const drop: Ref<HTMLDivElement | null> = ref(null)
 
 state.setOptions(props.options)
 

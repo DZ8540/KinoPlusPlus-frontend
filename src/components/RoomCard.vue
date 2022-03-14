@@ -1,6 +1,8 @@
 <script lang="ts" setup>
+// * Types
 import type { PropType } from 'vue'
 import type { Video } from '@/contracts/video'
+// * Types
 
 // * Components
 import Button from './Button.vue'

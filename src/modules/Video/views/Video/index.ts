@@ -1,12 +1,16 @@
-import Logger from '@/assets/vendor/Logger'
+// * Types
+import type { Ref } from 'vue'
 import type { AxiosResponse } from 'axios'
 import type { Actor } from '@/contracts/actor'
 import type { Response } from '@/contracts/response'
 import type { UnparsedVideo, Video } from '@/contracts/video'
+// * Types
+
+import Logger from '@/assets/vendor/Logger'
 import { Duration } from 'luxon'
+import { reactive, ref } from 'vue'
 import { getVideo } from '@/api/video'
 import { checkQuery } from '@/helpers'
-import { reactive, ref, type Ref } from 'vue'
 import { DEFAULT_VIDEO } from '@/config/video'
 
 export default class {
@@ -26,7 +30,7 @@ export default class {
 
   public async getItem(slug: Video['slug']): Promise<void> {
     try {
-      let query: AxiosResponse<Response<UnparsedVideo>> = await getVideo(slug)
+      const query: AxiosResponse<Response<UnparsedVideo>> = await getVideo(slug)
       checkQuery(query)
 
       this.item = this.parseItem(query.data.body!)
@@ -41,20 +45,20 @@ export default class {
    */
 
   private parseItem(item: UnparsedVideo): Video {
-    let duration: string = Duration.fromISOTime(item.duration).toFormat("h 'hour' mm 'minutes'")
-    let rating: string = item.rating.replace('.', ',')
-    let ageLimit: string = `+${item.ageLimit}`
+    const duration: string = Duration.fromISOTime(item.duration).toFormat("h 'hour' mm 'minutes'")
+    const rating: string = item.rating.replace('.', ',')
+    const ageLimit: string = `+${item.ageLimit}`
 
     for (let i = 0; i < item.genres.length; i++) {
-      const genre: Video['genres'][number] = item.genres[i]
+      const currentGenre: Video['genres'][number] = item.genres[i]
       const indexForConditionArrLength: number = i + 1
 
       if (indexForConditionArrLength < item.genres.length) {
-        const displayName: string = `${genre.name}, `
-        genre.name = displayName
+        const displayName: string = `${currentGenre.name}, `
+        currentGenre.name = displayName
       }
 
-      this.displayGenres.push(genre)
+      this.displayGenres.push(currentGenre)
     }
 
     return {

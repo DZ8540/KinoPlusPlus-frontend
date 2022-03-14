@@ -1,13 +1,14 @@
 // * Types
+import type { Ref } from 'vue'
 import type { AxiosResponse } from 'axios'
 import type { Response } from '@/contracts/response'
 import type { AggregateGenre } from '@/contracts/genre'
 // * Types
 
 import Logger from '@/assets/vendor/Logger'
+import { reactive, ref } from 'vue'
 import { checkQuery } from '@/helpers'
 import { allGenres } from '@/api/genre'
-import { reactive, ref, type Ref } from 'vue'
 
 export default class {
   public isLoadedGenres: Ref<boolean> = ref(false)
