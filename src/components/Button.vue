@@ -11,17 +11,17 @@ const props = defineProps({
   to: {
     type: [Object, String] as PropType<RouteLocationRaw>,
     default: '#',
-  }
+  },
 })
 </script>
 
 <template>
   <button class="Button Font Font__bold Font__text transition" v-if="props.type == 'button'">
-    <slot name="button">Button</slot>
+    <slot>Button</slot>
   </button>
 
   <router-link :to="props.to" class="Button Font Font__bold Font__text transition Link__forButton" v-else>
-    <slot name="anchor">Button</slot>
+    <slot>Button</slot>
   </router-link>
 </template>
 

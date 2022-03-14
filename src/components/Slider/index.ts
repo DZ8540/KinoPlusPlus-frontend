@@ -4,10 +4,11 @@ import type { Actor } from '@/contracts/actor'
 import type { UnparsedVideo } from '@/contracts/video'
 
 export default class {
+  public isWithShowMore: Ref<boolean> = ref(true)
+  
   public items: UnparsedVideo[] | Actor[] = reactive([])
   public options: UIkit.UIkitSliderOptions = reactive({})
   public itemsCountClasses: string[] = reactive(['uk-slider-items'])
-  public isWithShowMore: Ref<boolean> = ref(true)
 
   public setOptions(options: UIkit.UIkitSliderOptions): void {
     this.options = options

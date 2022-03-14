@@ -3,6 +3,10 @@ import { reactive } from 'vue'
 export default class {
   public classNames: string[] = reactive(['List__li'])
 
+  /**
+   * * Private properties
+   */
+
   private withDotsClassName: string = 'List__li__withoutDot'
 
   public withoutDots(val: boolean): void {

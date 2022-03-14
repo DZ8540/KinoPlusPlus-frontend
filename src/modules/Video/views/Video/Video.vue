@@ -1,14 +1,15 @@
 <script lang="ts" setup>
 import State from './index'
+import type { Video } from '@/contracts/video'
 import { onMounted } from 'vue'
 import { useRoute } from 'vue-router'
-import type { Video } from '@/contracts/video'
 import { DEFAULT_ACTOR } from '@/config/actor'
 
 // * Components
 import Button from '@/components/Button.vue'
 import List from '@/components/List/List.vue'
 import Icon from '@/components/Icon/Icon.vue'
+import Link from '@/components/Link/Link.vue'
 import RoomCard from '@/components/RoomCard.vue'
 import Accordion from '@/components/Accordion.vue'
 import Preloader from '@/components/Preloader.vue'
@@ -76,7 +77,10 @@ onMounted(async () => {
               </li>
               
               <li :class="classNames">
-                <span class="List__text Font Font__text Font__regular">Genres: Action, Adventures, Romance, Fight</span>
+                <span class="List__text Font Font__text Font__regular">
+                  Genres:
+                  <Link v-for="genre in state.displayGenres" :to="{ name: 'genre', params: { slug: genre.slug } }">{{ genre.name }}</Link>
+                </span>
               </li>
               
               <li :class="classNames">
@@ -105,9 +109,7 @@ onMounted(async () => {
             </div>
 
             <div class="achievementBtns">
-              <Button type="anchor">
-                <template #anchor>Create room</template>
-              </Button>
+              <Button type="anchor">Create room</Button>
             </div>
           </div>
 

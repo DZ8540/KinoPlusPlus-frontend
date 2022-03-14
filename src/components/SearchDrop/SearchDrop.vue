@@ -18,8 +18,8 @@ const props = defineProps({
   },
 })
 
-let drop: Ref<HTMLDivElement | null> = ref(null)
 let DOMDrop: UIkit.UIkitDropElement
+let drop: Ref<HTMLDivElement | null> = ref(null)
 
 state.setOptions(props.options)
 
@@ -39,9 +39,7 @@ onBeforeUnmount(() => {
     <div class="Box SearchDrop__box">
       <Input />
 
-      <Button type="button">
-        <template #button>Search</template>
-      </Button>
+      <Button type="button">Search</Button>
     </div>
   </div>
 </template>

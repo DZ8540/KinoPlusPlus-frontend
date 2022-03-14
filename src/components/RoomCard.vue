@@ -12,7 +12,7 @@ const props = defineProps({
   video: {
     type: Object as PropType<Video>,
     required: true,
-  }
+  },
 })
 </script>
 
@@ -46,9 +46,7 @@ const props = defineProps({
       </List>
     </div>
 
-    <Button type="anchor" class="RoomCard__join">
-      <template #anchor>Join</template>
-    </Button>
+    <Button type="anchor" class="RoomCard__join">Join</Button>
 
   </div>
 </template>

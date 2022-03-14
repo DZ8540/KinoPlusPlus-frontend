@@ -34,8 +34,8 @@ const props = defineProps({
   },
 })
 
-let slider: Ref<HTMLDivElement | null> = ref(null)
 let DOMSlider: UIkit.UIkitSliderElement
+let slider: Ref<HTMLDivElement | null> = ref(null)
 
 state.setOptions(props.options)
 state.setItemsCount(props.itemsCountView, props.itemsCountSmallView, props.itemsCountMobileView)
@@ -72,21 +72,15 @@ onBeforeUnmount(() => {
         <div class="Slider__nav">
           <div class="franchiseActorsNav">
             <Button type="anchor" to="#" uk-slider-item="previous">
-              <template #anchor>
-                <Icon type="ARROW" />
-              </template>
+              <Icon type="ARROW" />
             </Button>
 
             <Button type="anchor" to="#" uk-slider-item="next">
-              <template #anchor>
-                <Icon type="ARROW_RIGHT" />
-              </template>
+              <Icon type="ARROW_RIGHT" />
             </Button>
           </div>
 
-          <Button v-if="state.isWithShowMore.value" type="button" to="#">
-            <template #button>Show more</template>
-          </Button>
+          <Button v-if="state.isWithShowMore.value" type="button" to="#">Show more</Button>
         </div>
       </div>
 

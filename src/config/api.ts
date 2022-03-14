@@ -1,10 +1,17 @@
-import type { Video } from "@/contracts/video"
+import type { Genre } from '@/contracts/genre'
+import type { Video } from '@/contracts/video'
 
 export const ROUTES = {
   video: {
-    item: (slug: Video['slug']) => `/videos/${slug}`,
     newest: '/videos/newest',
-    popular: '/videos/popular'
+    popular: '/videos/popular',
+    search: '/videos/search',
+    item: (slug: Video['slug']) => `/videos/${slug}`,
+  },
+  genre: {
+    all: '/genres',
+    showOnMainPage: '/genres/showOnMainPage',
+    item: (slug: Genre['slug']) => `/genres/${slug}`
   }
 } as const
 

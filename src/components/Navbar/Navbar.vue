@@ -256,6 +256,14 @@ onMounted(() => {
         </li>
 
         <li class="Navbar__navLi">
+          <Link :to="{ name: 'genres' }">All genres</Link>
+        </li>
+
+        <li class="Navbar__navLi">
+          <Link to="#">All actors</Link>
+        </li>
+
+        <li class="Navbar__navLi">
           <Link to="#">Rooms</Link>
         </li>
 

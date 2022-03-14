@@ -19,11 +19,11 @@ const props = defineProps({
   items: {
     type: Object as PropType<UnparsedVideo[]>,
     required: true,
-  }
+  },
 })
 
-let slider: Ref<HTMLDivElement | null> = ref(null)
 let DOMSlider: UIkit.UIkitSliderElement
+let slider: Ref<HTMLDivElement | null> = ref(null)
 
 state.setOptions(props.options)
 state.setItems(props.items)
@@ -56,9 +56,7 @@ onBeforeUnmount(() => {
           <div class="Slideshow__onIndexPageContent transition" uk-slideshow-parallax="x: 500, -500">
             <p class="Font Font__text Font__regular Slideshow__onIndexPageText moreLineEllipsis">{{ item.description }}</p>
 
-            <Button :to="{ name: 'video', params: { slug: item.slug } }" class="Link__forButton" type="anchor">
-              <template #anchor>Show detail</template>
-            </Button>
+            <Button :to="{ name: 'video', params: { slug: item.slug } }" class="Link__forButton" type="anchor">Show detail</Button>
           </div>
         </li>
       </ul>

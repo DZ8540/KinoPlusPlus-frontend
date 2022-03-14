@@ -1,11 +1,6 @@
 <script lang="ts" setup>
 import State from './index'
-import type { PropType } from 'vue'
-import type { Nav } from '@/contracts/tabs'
-
-// * Components
-import Tab from '../Tab/Tab.vue'
-// * Components
+import { watch } from 'vue'
 
 const state = new State()
 const props = defineProps({
@@ -13,13 +8,11 @@ const props = defineProps({
     type: Number,
     default: 0,
   },
-  navs: {
-    type: Object as PropType<Nav[]>,
-    required: true,
-  },
 })
 
-state.setTotalResults(props.totalResult)
+watch(props, (mutateProps) => {
+  state.setTotalResults(mutateProps.totalResult)
+})
 </script>
 
 <template>
@@ -27,19 +20,17 @@ state.setTotalResults(props.totalResult)
     <div class="Tabs__menu mb">
       <ul class="Tabs__list">
 
-        <li class="Tabs__li" v-for="item in props.navs">
-          <Tab :type="item.tabType" :to="item.to">
-            <template #[item.tabType]>{{ item.text }}</template>
-          </Tab>
+        <li class="Tabs__li">
+          <button class="Tab Tab--active Font Font__regular Font__text transition">Movies</button>
         </li>
 
       </ul>
 
-      <span class="Tabs__count Font Font__text Font__regular">Results shown: {{ state.totalResults }}</span>
+      <span class="Tabs__count Font Font__text Font__regular">Results shown: {{ state.totalResults.value }}</span>
     </div>
 
     <div class="Tabs__elements">
-      <slot></slot>
+      <slot>Tabs content</slot>
     </div>
   </div>
 </template>
@@ -79,4 +70,13 @@ state.setTotalResults(props.totalResult)
     &__count
       padding-bottom: 0
       margin-top: 10px
+
+.Tab
+  display: flex
+  align-items: center
+  height: 50px
+  padding: 0 30px
+  border-radius: 10px
+  &--active, &:hover
+    color: $yellow !important
 </style>

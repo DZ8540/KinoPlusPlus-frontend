@@ -3,9 +3,11 @@ import { reactive, ref, type Ref } from 'vue'
 import type { Value } from '@/contracts/select'
 
 export default class {
-  public langs: Value[] = reactive([])
   public options: UIkit.UIkitNavbarOptions = {}
+  
   public searchDropBoundaryClassName: Ref<string> = ref('SearchDropBoundaryBind')
+  
+  public langs: Value[] = reactive([])
 
   public setOptions(options: UIkit.UIkitNavbarOptions): void {
     this.options = options

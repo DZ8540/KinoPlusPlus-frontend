@@ -4,11 +4,10 @@ import { DEFAULT_VIDEO } from '@/config/video'
 import type { Video, UnparsedVideo } from '@/contracts/video'
 
 export default class {
-  public item: Video = reactive({
-    ...DEFAULT_VIDEO
-  })
-  public isInLaterList: Ref<boolean> = ref(false)
   public isInWishList: Ref<boolean> = ref(false)
+  public isInLaterList: Ref<boolean> = ref(false)
+  
+  public item: Video = reactive({ ...DEFAULT_VIDEO })
 
   public setLaterList(val: boolean): void {
     this.isInLaterList.value = val
@@ -21,6 +20,10 @@ export default class {
   public setItem(item: UnparsedVideo): void {
     this.item = this.parseItem(item)
   }
+
+  /**
+   * * Private methods
+   */
 
   private parseItem(item: UnparsedVideo): Video {
     let duration: string = Duration.fromISOTime(item.duration).toFormat("mm 'minutes'")
