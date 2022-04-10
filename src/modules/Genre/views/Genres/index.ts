@@ -5,10 +5,10 @@ import type { Response } from '@/contracts/response'
 import type { AggregateGenre } from '@/contracts/genre'
 // * Types
 
-import Logger from '@/assets/vendor/Logger'
 import { reactive, ref } from 'vue'
-import { checkQuery } from '@/helpers'
 import { allGenres } from '@/api/genre'
+// import { checkQuery } from '@/helpers'
+import Logger from '@/assets/vendor/Logger'
 
 export default class {
   public isLoadedGenres: Ref<boolean> = ref(false)
@@ -18,7 +18,7 @@ export default class {
   public async getAllGenres(): Promise<void> {
     try {
       const query: AxiosResponse<Response<AggregateGenre[]>> = await allGenres()
-      checkQuery(query)
+      // checkQuery(query)
 
       this.genres = query.data.body!
       this.setLoaded(true)

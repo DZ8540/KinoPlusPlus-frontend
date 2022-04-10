@@ -15,6 +15,12 @@ export const ROUTES = {
     showOnMainPage: '/genres/showOnMainPage',
     item: (slug: Genre['slug']) => `/genres/${slug}`
   },
+  auth: {
+    register: '/auth/register',
+    login: '/auth/login',
+    logout: '/auth/logout', 
+    activateUser: (token: string) => `/auth/emailVerify/${token}`
+  }
 } as const
 
 export const URL: string = import.meta.env.VITE_API_URL

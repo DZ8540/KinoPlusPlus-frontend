@@ -8,10 +8,10 @@ import type { UnparsedVideo } from '@/contracts/video'
 // * Types
 
 import Logger from '@/assets/vendor/Logger'
-import { getGenre } from '@/api/genre'
-import { checkQuery } from '@/helpers'
-import { searchVideo } from '@/api/video'
 import { reactive, ref } from 'vue'
+import { getGenre } from '@/api/genre'
+// import { checkQuery } from '@/helpers'
+import { searchVideo } from '@/api/video'
 import { DEFAULT_GENRE } from '@/config/genre'
 
 export default class {
@@ -44,7 +44,7 @@ export default class {
   public async getItem(slug: Genre['slug']): Promise<void> {
     try {
       const query: AxiosResponse<Response<Genre>> = await getGenre(slug)
-      checkQuery(query)
+      // checkQuery(query)
 
       this.item = query.data.body!
       this.setLoaded(true)
@@ -66,7 +66,7 @@ export default class {
   private async getMovies(): Promise<void> {
     try {
       const query: AxiosResponse<Response<Paginate<UnparsedVideo>>> = await searchVideo({ page: this.page.value, genres: [ this.item.id ] })
-      checkQuery(query)
+      // checkQuery(query)
 
       this.lastPage = query.data.body!.meta.last_page
       this.totalResults.value = query.data.body!.meta.total

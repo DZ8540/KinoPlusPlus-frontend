@@ -2,25 +2,14 @@
 import State from './index'
 
 const state = new State()
-const props = defineProps({
-  placeholder: {
-    type: String,
-    default: 'Input',
-  },
-  isNotCorrect: {
-    type: Boolean,
-    default: false,
-  },
-})
-
-state.setNotCorrectValue(props.isNotCorrect)
 </script>
 
 <template>
   <div class="Input">
-    <input :placeholder="props.placeholder" type="email" class="Input__input Font Font__bold Font__text transition">
-    <span v-if="state.isNotCorrect" class="Input__error Font Font__regular Font__text">
-      <slot></slot>
+    <slot :input-class-names="state.inputClassNames"></slot>
+    
+    <span class="Input__error Font Font__regular Font__text">
+      <slot name="error"></slot>
     </span>
   </div>
 </template>

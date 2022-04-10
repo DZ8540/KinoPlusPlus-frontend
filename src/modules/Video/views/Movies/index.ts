@@ -9,9 +9,9 @@ import type { UnparsedVideo } from '@/contracts/video'
 // * Types
 
 import Logger from '@/assets/vendor/Logger'
-import { checkQuery } from '@/helpers'
-import { showOnMainPage } from '@/api/genre'
+// import { checkQuery } from '@/helpers'
 import { reactive, ref } from 'vue'
+import { showOnMainPage } from '@/api/genre'
 import { newest, popular, searchVideo } from '@/api/video'
 
 type LoadObjects = 'newest' | 'popular' | 'genres'
@@ -34,7 +34,7 @@ export default class {
   public async getNewest(): Promise<void> {
     try {
       const query: AxiosResponse<Response<UnparsedVideo[]>> = await newest()
-      checkQuery(query)
+      // checkQuery(query)
 
       this.newest = query.data.body!
       this.setLoaded('newest', true)
@@ -46,7 +46,7 @@ export default class {
   public async getPopular(): Promise<void> {
     try {
       const query: AxiosResponse<Response<UnparsedVideo[]>> = await popular()
-      checkQuery(query)
+      // checkQuery(query)
       
       this.popular = query.data.body!
       this.setLoaded('popular', true)
@@ -60,7 +60,7 @@ export default class {
 
     try {
       query = await showOnMainPage()
-      checkQuery(query)
+      // checkQuery(query)
     } catch (err: any) {
       return Logger.error(err)
     }
@@ -73,7 +73,7 @@ export default class {
         }
 
         const videosQuery: AxiosResponse<Response<Paginate<UnparsedVideo>>> = await searchVideo({ genres: [ genre.id ], page: 1 })
-        checkQuery(videosQuery)
+        // checkQuery(videosQuery)
 
         genreData.videos = videosQuery.data.body!.data
         this.genres.push(genreData)

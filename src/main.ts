@@ -1,6 +1,7 @@
 // * Don't change index this imports
 import './registerDependencies'
 import './registerModules'
+// * Don't change index this imports
 
 import App from './App.vue'
 import router from './router'

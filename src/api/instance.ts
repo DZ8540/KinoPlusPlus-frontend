@@ -5,7 +5,14 @@ import { TIMEOUT, URL } from '@/config/api'
 const instance = axios.create({
   baseURL: URL,
   timeout: ms(TIMEOUT),
-  headers: {}
+  withCredentials: true,
+  headers: {
+    'User-Fingerprint': 'test',
+    'Content-Type': 'application/json',
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Credentials': true,
+    'Authorization': `Bearer `,
+  },
 })
 
 export default instance

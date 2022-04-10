@@ -41,7 +41,9 @@ onBeforeUnmount(() => {
 <template>
   <div class="SearchDrop" ref="drop">
     <div class="Box SearchDrop__box">
-      <Input />
+      <Input v-slot="{ inputClassNames }">
+        <input :class="inputClassNames" v-model="state.formData.email" type="email" placeholder="Email">
+      </Input>
 
       <Button type="button">Search</Button>
     </div>

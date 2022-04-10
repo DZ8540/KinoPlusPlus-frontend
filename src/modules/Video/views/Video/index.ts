@@ -10,7 +10,7 @@ import Logger from '@/assets/vendor/Logger'
 import { Duration } from 'luxon'
 import { reactive, ref } from 'vue'
 import { getVideo } from '@/api/video'
-import { checkQuery } from '@/helpers'
+// import { checkQuery } from '@/helpers'
 import { DEFAULT_VIDEO } from '@/config/video'
 
 export default class {
@@ -31,7 +31,7 @@ export default class {
   public async getItem(slug: Video['slug']): Promise<void> {
     try {
       const query: AxiosResponse<Response<UnparsedVideo>> = await getVideo(slug)
-      checkQuery(query)
+      // checkQuery(query)
 
       this.item = this.parseItem(query.data.body!)
       this.setLoaded(false)
