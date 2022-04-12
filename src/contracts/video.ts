@@ -13,7 +13,7 @@ export type UnparsedVideo = {
   duration: string,
   viewsCount: number,
   releasedForUser: string,
-  posterForUser: string,
+  poster: string,
   firstImageForUser: string,
   secondImageForUser: string,
   thirdImageForUser: string,

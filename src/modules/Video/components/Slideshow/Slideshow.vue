@@ -55,7 +55,7 @@ onBeforeUnmount(() => {
 
       <ul class="uk-slider-items Slideshow__onIndexPageList">
         <li v-for="item in state.items">
-          <img :src="item.posterForUser" class="Slideshow__onIndexPageImage transition" alt="">
+          <img :src="item.poster" class="Slideshow__onIndexPageImage transition" alt="">
 
           <div class="Slideshow__onIndexPageContent transition" uk-slideshow-parallax="x: 500, -500">
             <p class="Font Font__text Font__regular Slideshow__onIndexPageText moreLineEllipsis">{{ item.description }}</p>

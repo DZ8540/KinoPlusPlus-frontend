@@ -41,7 +41,7 @@ state.setWishList(props.isInWishList)
     <div class="Card__header">
 
       <router-link class="Card__imgLink" :to="props.to">
-        <img :src="state.item.posterForUser" class="Card__img transition" alt="">
+        <img :src="state.item.poster" class="Card__img transition" alt="">
       </router-link>
 
       <label class="Card__later transition">

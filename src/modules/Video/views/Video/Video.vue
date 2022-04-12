@@ -49,7 +49,7 @@ onMounted(async () => {
         <div class="uk-width-1-3@s">
 
           <div class="Box Box__lite Box__avatar mb">
-            <img class="Box__bg" :src="state.item.posterForUser" alt="">
+            <img class="Box__bg" :src="state.item.poster" alt="">
           </div>
 
           <div class="Box">
