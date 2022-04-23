@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import State from './index'
 import { useRouter } from 'vue-router'
-import { HOME_ROUTE_NAME } from '@/config/router'
 
 // * Components
 import Title from '@/components/Title.vue'
@@ -17,7 +16,7 @@ async function submitHandler(): Promise<void> {
   try {
     await state.submitHandler.apply(state)
     
-    router.push({ name: HOME_ROUTE_NAME })
+    router.push({ name: 'profile' })
   } catch (err: any) {}
 }
 </script>

@@ -31,7 +31,6 @@ export default class {
   public async getItem(slug: Video['slug']): Promise<void> {
     try {
       const query: AxiosResponse<Response<UnparsedVideo>> = await getVideo(slug)
-      console.log(query)
       // checkQuery(query)
 
       this.item = this.parseItem(query.data.body!)

@@ -8,6 +8,7 @@ import removeCurrentUser from '@/middleware/removeCurrentUser'
 export default [
   {
     path: '/auth/register',
+    alias: '/register',
     name: 'register',
     component: () => import('../views/Register/Register.vue'),
   },
@@ -18,11 +19,13 @@ export default [
   },
   {
     path: '/auth/login',
+    alias: '/login',
     name: 'login',
     component: () => import('../views/Login/Login.vue')
   },
   {
     path: '/auth/logout',
+    alias: '/logout',
     name: 'logout',
     beforeEnter: removeCurrentUser,
   },

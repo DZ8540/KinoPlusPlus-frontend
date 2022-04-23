@@ -32,6 +32,7 @@ export enum Messages {
 
   AUTH_ACTIVATE_ACCOUNT_DEFAULT = 'Please wait, we will activate your account!',
   AUTH_LOGOUT = 'Logged out success!',
+  AUTH_USER_UNDEFINED = 'Please log in your account!',
 
   /**
    * * Errors

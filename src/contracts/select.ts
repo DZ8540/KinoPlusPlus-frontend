@@ -1,4 +1,4 @@
 export type Value = {
-  value: string | number,
+  value: string | number | boolean,
   text: string | number,
 }

@@ -4,21 +4,44 @@ import type { Ref, PropType } from 'vue'
 import type { Value } from '@/contracts/select'
 // * Types
 
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, reactive } from 'vue'
 import { Select } from '@/assets/vendor/Select'
 
+const emit = defineEmits(['change'])
 const props = defineProps({
   name: {
     type: String,
     required: true,
   },
+  mainValue: {
+    required: false,
+  },
   values: {
     type: Array as PropType<Value[]>,
     required: true,
   },
+  isFull: {
+    type: Boolean,
+    default: false,
+  },
+  isLikeInput: {
+    type: Boolean,
+    default: false,
+  }
 })
 
 const select: Ref<HTMLDivElement | null> = ref(null)
+const classNames: any[] = reactive(['Select', { 'Select__full': props.isFull }])
+const inputBlockClassNames: any[] = reactive(['Select__inputBlock', { 'Input__input': props.isLikeInput }])
+
+function changeHandler(): void {
+  const selectVal: any = select.value!.querySelector('input')!.value
+  emit('change', selectVal)
+}
+
+function setCheckedAttr(val: Value['value']): object {
+  return val == props.mainValue ? { 'data-checked': '' } : {}
+}
 
 onMounted(() => {
   new Select(select.value!)
@@ -26,17 +49,17 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="Select" ref="select" tabindex="-1" :data-name="props.name">
-    <input type="hidden" data-id="dz-input">
+  <div :class="classNames" ref="select" tabindex="-1" :data-name="props.name">
+    <input @change="changeHandler" type="hidden" data-id="dz-input">
 
-    <div class="Select__inputBlock">
+    <div :class="inputBlockClassNames">
       <span class="Select__input Font Font__text Font__bold" data-id="dz-inputText"></span>
       <span class="Select__icon transition"><i class="Icon Icon__arrow"></i></span>
     </div>
 
     <ul class="Select__list Box transition">
       <li class="Select__item" v-for="item in props.values">
-        <span class="Select__text Font Font__text Font__regular" :data-value="item.value">{{ item.text }}</span>
+        <span v-bind="setCheckedAttr(item.value)" :data-value="item.value" class="Select__text Font Font__text Font__regular">{{ item.text }}</span>
       </li>
     </ul>
   </div>

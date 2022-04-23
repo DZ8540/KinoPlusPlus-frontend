@@ -1,4 +1,5 @@
 // * Types
+import type { User } from '@/contracts/user'
 import type { Genre } from '@/contracts/genre'
 import type { Video } from '@/contracts/video'
 // * Types
@@ -20,6 +21,9 @@ export const ROUTES = {
     login: '/auth/login',
     logout: '/auth/logout', 
     activateUser: (token: string) => `/auth/emailVerify/${token}`
+  },
+  user: {
+    update: (userId: User['id']) => `/user/${userId}`
   }
 } as const
 

@@ -1,7 +1,18 @@
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+import { reactive } from 'vue'
+
+const props = defineProps({
+  isLite: {
+    type: Boolean,
+    default: false,
+  }
+})
+
+const classNames: any[] = reactive(['Title', 'Font', 'Font__title', 'Font__bold', { 'Title__lite': props.isLite }])
+</script>
 
 <template>
-  <h1 class="Title Font Font__title Font__bold">
+  <h1 :class="classNames">
     <slot></slot>
   </h1>
 </template>

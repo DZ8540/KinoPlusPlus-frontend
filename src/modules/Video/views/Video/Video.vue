@@ -53,41 +53,41 @@ onMounted(async () => {
           </div>
 
           <div class="Box">
-            <List v-slot="{ classNames }">
+            <List v-slot="{ classNames, textClassName }">
 
               <li :class="classNames">
-                <span class="List__text Font Font__text Font__regular">Age limit: {{ state.item.ageLimit }}</span>
+                <span :class="textClassName" class="Font Font__text Font__regular">Age limit: {{ state.item.ageLimit }}</span>
               </li>
               
               <li :class="classNames">
-                <span class="List__text Font Font__text Font__regular">Released: {{ state.item.releasedForUser }}</span>
+                <span :class="textClassName" class="Font Font__text Font__regular">Released: {{ state.item.releasedForUser }}</span>
               </li>
               
               <li :class="classNames">
-                <span class="List__text Font Font__text Font__regular">Duration: {{ state.item.duration }}</span>
+                <span :class="textClassName" class="Font Font__text Font__regular">Duration: {{ state.item.duration }}</span>
               </li>
               
               <li :class="classNames">
-                <span class="List__text Font Font__text Font__regular">Open rooms count: 2</span>
+                <span :class="textClassName" class="Font Font__text Font__regular">Open rooms count: 2</span>
               </li>
               
               <li :class="classNames">
-                <span class="List__text Font Font__text Font__regular">Country: {{ state.item.country }}</span>
+                <span :class="textClassName" class="Font Font__text Font__regular">Country: {{ state.item.country }}</span>
               </li>
               
               <li :class="classNames">
-                <span class="List__text Font Font__text Font__regular">Director: <a href="#" class="Link Font Font__text Font__regular transition">Director Name</a></span>
+                <span :class="textClassName" class="Font Font__text Font__regular">Director: <a href="#" class="Link Font Font__text Font__regular transition">Director Name</a></span>
               </li>
               
               <li :class="classNames">
-                <span class="List__text Font Font__text Font__regular">
+                <span :class="textClassName" class="Font Font__text Font__regular">
                   Genres:
                   <Link v-for="genre in state.displayGenres" :to="{ name: 'genre', params: { slug: genre.slug } }">{{ genre.name }}</Link>
                 </span>
               </li>
               
               <li :class="classNames">
-                <span class="List__text Font Font__text Font__regular">IMDB rating: {{ state.item.rating }}</span>
+                <span :class="textClassName" class="Font Font__text Font__regular">IMDB rating: {{ state.item.rating }}</span>
               </li>
 
             </List>

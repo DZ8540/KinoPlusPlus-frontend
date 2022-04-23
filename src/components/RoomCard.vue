@@ -22,27 +22,27 @@ const props = defineProps({
   <div class="RoomCard Box">
 
     <div class="RoomCard__img">
-      <img :src="props.video.posterForUser" alt="">
+      <img :src="props.video.poster" alt="">
     </div>
 
     <div>
       <h1 class="Font Font__title Font__bold">{{ props.video.name }}</h1>
 
-      <List v-slot="{ classNames }" class="RoomCard__list">
+      <List v-slot="{ classNames, textClassName }" class="RoomCard__list">
       
         <li :class="classNames">
-          <span class="List__text Font Font__text Font__regular">
+          <span :class="textClassName" class="Font Font__text Font__regular">
             Creator: 
             <Link weight="regular" size="text">User name</Link>
           </span>
         </li>
 
         <li :class="classNames">
-          <span class="List__text Font Font__text Font__regular">Users count: 3</span>
+          <span :class="textClassName" class="Font Font__text Font__regular">Users count: 3</span>
         </li>
 
         <li :class="classNames">
-          <span class="List__text Font Font__text Font__regular">Date of creation: 11.12.11</span>
+          <span :class="textClassName" class="Font Font__text Font__regular">Date of creation: 11.12.11</span>
         </li>
 
       </List>

@@ -2,6 +2,7 @@ import { reactive } from 'vue'
 
 export default class {
   public classNames: string[] = reactive(['List__li'])
+  public textClassName: string = 'List__text'
 
   /**
    * * Private properties

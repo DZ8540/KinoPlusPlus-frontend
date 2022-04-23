@@ -15,7 +15,7 @@ state.withoutDots(props.withoutDots)
 <template>
   <ul class="List">
 
-    <slot :classNames="state.classNames">
+    <slot :classNames="state.classNames" :textClassName="state.textClassName">
       <li v-for="item in 3" :class="state.classNames">
         <span class="List__text Font Font__text Font__regular">List item {{ item }}</span>
       </li>

@@ -290,9 +290,9 @@ onMounted(() => {
         </li>
 
         <li class="Navbar__rightListLi uk-visible@l">
-          <a href="#" class="Navbar__rightListLink">
+          <router-link class="Navbar__rightListLink" :to="{ name: 'profile' }">
             <Icon type="USER" />
-          </a>
+          </router-link>
         </li>
 
         <li class="Navbar__rightListLi uk-visible@l">
