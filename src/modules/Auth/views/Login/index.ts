@@ -1,14 +1,17 @@
-
+// * Types
 import type { Ref } from 'vue'
 import type { AxiosResponse } from 'axios'
 import type { User } from '@/contracts/user'
-import type { ErrorFromQuery, Response } from '@/contracts/response'
+import type { LoginData } from '@/contracts/api'
+import type { Validation } from '@vuelidate/core'
+import type { Response } from '@/contracts/response'
+// * Types
 
 import useVuelidate from '@vuelidate/core'
 import { reactive } from 'vue'
 import { login } from '@/api/auth'
-import { Messages } from '@/contracts/response'
 import { useUserData } from '@/store/userDataStore'
+import { checkFormData, displayExternalErrors } from '@/helpers'
 import { useNotificationBus } from '@/store/notificationBusStore'
 import { required, email, minLength, maxLength } from '@vuelidate/validators'
 
@@ -16,7 +19,7 @@ const userData = useUserData()
 const notifications = useNotificationBus()
 
 export default class {
-  public formData: { [key: string]: string } = reactive({
+  public formData: LoginData = reactive({
     email: '',
     password: '',
   })
@@ -35,18 +38,10 @@ export default class {
     password: '',
   })
 
-  public v$ = useVuelidate(this.rules, this.formData, { $autoDirty: true, $externalResults: this.externalErrors })
-
-  public castErrors(val: any): boolean {
-    return Boolean(val)
-  }
-
-  public getFirstError(inputName: keyof typeof this.formData): Ref<string> | string {
-    return this.v$.value[inputName].$errors[0].$message
-  }
+  public v$: Ref<Validation<any, LoginData>> = useVuelidate(this.rules, this.formData, { $autoDirty: true, $externalResults: this.externalErrors })
 
   public async submitHandler(): Promise<void> {
-    await this.checkFormData()
+    await checkFormData(this.v$)
 
     try {
       const response: AxiosResponse<Response<{ user: User, token: string }>> = await login(this.formData)
@@ -61,7 +56,7 @@ export default class {
       userData.initialize(response.data.body!.user, response.data.body!.token)
     } catch (err: Response | any) {
       if (err.errors)
-        this.displayExternalErrors(err.errors)
+        displayExternalErrors<LoginData>(this.externalErrors, err.errors)
 
       notifications.addNotification({
         type: 'error',
@@ -73,19 +68,6 @@ export default class {
   /**
    * * Private methods
    */
-
-  private async checkFormData(): Promise<void> {
-    const result: boolean = await this.v$.value.$validate()
-      
-    if (!result) 
-      throw Messages.VALIDATION_ERR
-  }
-
-  private displayExternalErrors(errors: ErrorFromQuery[]): void {
-    for (const item of errors) {
-      this.externalErrors[item.field] = item.message
-    }
-  }
 
   private resetForm(): void {
     this.formData.email = ''

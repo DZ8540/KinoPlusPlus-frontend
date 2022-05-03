@@ -1,7 +1,6 @@
 <script lang="ts" setup>
-import State from './index'
+import { reactive } from 'vue'
 
-const state = new State()
 const props = defineProps({
   withoutDots: {
     type: Boolean,
@@ -9,14 +8,15 @@ const props = defineProps({
   },
 })
 
-state.withoutDots(props.withoutDots)
+const textClassName: string = 'List__text'
+const classNames: any[] = reactive(['List__li', { 'List__li__withoutDot': props.withoutDots }])
 </script>
 
 <template>
   <ul class="List">
 
-    <slot :classNames="state.classNames" :textClassName="state.textClassName">
-      <li v-for="item in 3" :class="state.classNames">
+    <slot :classNames="classNames" :textClassName="textClassName">
+      <li v-for="item in 3" :class="classNames">
         <span class="List__text Font Font__text Font__regular">List item {{ item }}</span>
       </li>
     </slot>

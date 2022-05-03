@@ -5,9 +5,9 @@ import type { Video } from '@/contracts/video'
 // * Types
 
 // * Components
+import List from './List.vue'
+import Link from './Link.vue'
 import Button from './Button.vue'
-import List from './List/List.vue'
-import Link from './Link/Link.vue'
 // * Components
 
 const props = defineProps({

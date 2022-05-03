@@ -4,15 +4,13 @@ import type { Ref, PropType } from 'vue'
 // * Types
 
 import UIkit from 'uikit'
-import State from './index'
 import { onBeforeUnmount, onMounted, ref } from 'vue'
 
 // * Components
-import Input from '../Input/Input.vue'
+import Input from './Input.vue'
 import Button from '@/components/Button.vue'
 // * Components
 
-const state = new State()
 const props = defineProps({
   options: {
     type: Object as PropType<UIkit.UIkitDropOptions>,
@@ -25,11 +23,9 @@ const props = defineProps({
 let DOMDrop: UIkit.UIkitDropElement
 const drop: Ref<HTMLDivElement | null> = ref(null)
 
-state.setOptions(props.options)
-
 onMounted(() => {
   if (drop.value)
-    DOMDrop = UIkit.drop(drop.value, state.options)
+    DOMDrop = UIkit.drop(drop.value, props.options)
 })
 
 onBeforeUnmount(() => {

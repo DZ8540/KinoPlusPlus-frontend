@@ -1,24 +1,46 @@
 <script lang="ts" setup>
 // * Types
 import type { Ref } from 'vue'
+import type { MenuItem } from '@/contracts/tabs'
 // * Types
 
 import State from './index'
 import { ref } from 'vue'
 import { useUserData } from '@/store/userDataStore'
+import { castErrors, getFirstError } from '@/helpers'
 
 // * Components
+import List from '@/components/List.vue'
+import Tabs from '@/components/Tabs.vue'
 import Title from '@/components/Title.vue'
+import Input from '@/components/Input.vue'
 import Select from '@/components/Select.vue'
 import Button from '@/components/Button.vue'
-import List from '@/components/List/List.vue'
-import Input from '@/components/Input/Input.vue'
 // * Components
 
 const state = new State()
 const userData = useUserData()
 
+const totalCount: Ref<number> = ref(0)
 const isUpdateProfileMode: Ref<boolean> = ref(false)
+const tabs: MenuItem[] = [
+  {
+    text: 'Achieves',
+    to: { name: 'profile' },
+  },
+  {
+    text: 'Wishlist',
+    to: { name: 'wishlist' },
+  },
+  {
+    text: 'Later list',
+    to: '/',
+  },
+  {
+    text: 'History',
+    to: '/',
+  },
+]
 
 function toggleProfileMode(val: boolean): void {
   isUpdateProfileMode.value = val
@@ -32,8 +54,13 @@ function setSexForUser(val: boolean): void {
   state.formData.sex = val
 }
 
+function setTotalCount(newTotalCount: number): void {
+  totalCount.value = newTotalCount
+}
+
 async function submitHandler(): Promise<void> {
   await state.submitHandler.apply(state)
+  toggleProfileMode(false)
 }
 </script>
 
@@ -63,7 +90,7 @@ async function submitHandler(): Promise<void> {
                 <input :class="inputClassNames" v-model="state.formData.nickname" type="text" placeholder="User Name">
               </template>
 
-              <template v-if="state.castErrors(state.v$.value.nickname.$errors.length)" #error>{{ state.getFirstError('nickname') }}</template>
+              <template v-if="castErrors(state.v$.value.nickname.$errors.length)" #error>{{ getFirstError(state.v$, 'nickname') }}</template>
             </Input> 
 
             <Input class="profileInput">
@@ -71,7 +98,7 @@ async function submitHandler(): Promise<void> {
                 <input :class="inputClassNames" v-model="state.formData.email" type="email" placeholder="Email">
               </template>
 
-              <template v-if="state.castErrors(state.v$.value.email.$errors.length)" #error>{{ state.getFirstError('email') }}</template>
+              <template v-if="castErrors(state.v$.value.email.$errors.length)" #error>{{ getFirstError(state.v$, 'email') }}</template>
             </Input>
 
             <Input class="profileInput">
@@ -79,7 +106,7 @@ async function submitHandler(): Promise<void> {
                 <input :class="inputClassNames" v-model="state.formData.phone" type="text" placeholder="Phone">
               </template>
 
-              <template v-if="state.castErrors(state.v$.value.phone.$errors.length)" #error>{{ state.getFirstError('phone') }}</template>
+              <template v-if="castErrors(state.v$.value.phone.$errors.length)" #error>{{ getFirstError(state.v$, 'phone') }}</template>
             </Input>
 
             <!-- TODO: Make datepicker -->
@@ -97,7 +124,7 @@ async function submitHandler(): Promise<void> {
                 <input :class="inputClassNames" v-model="state.formData.oldPassword" type="password" placeholder="Your old password">
               </template>
 
-              <template v-if="state.castErrors(state.v$.value.oldPassword.$errors.length)" #error>{{ state.getFirstError('oldPassword') }}</template>
+              <template v-if="castErrors(state.v$.value.oldPassword.$errors.length)" #error>{{ getFirstError(state.v$, 'oldPassword') }}</template>
             </Input>
 
             <Input class="registerBox__input">
@@ -105,7 +132,7 @@ async function submitHandler(): Promise<void> {
                 <input :class="inputClassNames" v-model="state.formData.password" type="password" placeholder="Your new password">
               </template>
 
-              <template v-if="state.castErrors(state.v$.value.password.$errors.length)" #error>{{ state.getFirstError('password') }}</template>
+              <template v-if="castErrors(state.v$.value.password.$errors.length)" #error>{{ getFirstError(state.v$, 'password') }}</template>
             </Input>
 
             <Input class="registerBox__input">
@@ -113,7 +140,7 @@ async function submitHandler(): Promise<void> {
                 <input :class="inputClassNames" v-model="state.formData.passwordConfirm" type="password" placeholder="Confirm password">
               </template>
 
-              <template v-if="state.castErrors(state.v$.value.passwordConfirm.$errors.length)" #error>{{ state.getFirstError('passwordConfirm') }}</template>
+              <template v-if="castErrors(state.v$.value.passwordConfirm.$errors.length)" #error>{{ getFirstError(state.v$, 'passwordConfirm') }}</template>
             </Input>
 
             <div class="achievementBtns">
@@ -179,193 +206,9 @@ async function submitHandler(): Promise<void> {
         </div>
       </div>
 
-      <div class="Tabs">
-        <div class="Tabs__menu mb">
-          <ul class="Tabs__list">
-
-            <li class="Tabs__li">
-              <button class="Tab Tab--active Font Font__regular Font__text transition">Achieves</button>
-            </li>
-
-            <li class="Tabs__li">
-              <button class="Tab Font Font__regular Font__text transition">Wishlist</button>
-            </li>
-
-            <li class="Tabs__li">
-              <button class="Tab Font Font__regular Font__text transition">Later list</button>
-            </li>
-
-            <li class="Tabs__li">
-              <button class="Tab Font Font__regular Font__text transition">History</button>
-            </li>
-
-          </ul>
-
-          <span class="Tabs__count Font Font__text Font__regular">Results shown: 16</span>
-        </div>
-
-        <div class="Tabs__elements">
-          <div class="uk-child-width-1-4@m uk-child-width-1-3@s uk-child-width-1-2" uk-grid>
-
-            <div>
-              <a href="achievement.html" class="Box AchievementCard">
-                <div class="AchievementCard__header">
-                  <img src="<%= require('/Src/Img/achievementEmblem.png') %>" class="AchievementCard__img" alt="">
-                </div>
-
-                <div class="AchievementCard__footer">
-                  <span class="Link AchievementCard__name Font Font__text Font__regular transition">You met the autobots</span>
-                </div>
-              </a>
-            </div>
-
-            <div>
-              <a href="achievement.html" class="Box AchievementCard">
-                <div class="AchievementCard__header">
-                  <img src="<%= require('/Src/Img/achievementEmblem.png') %>" class="AchievementCard__img" alt="">
-                </div>
-
-                <div class="AchievementCard__footer">
-                  <span class="Link AchievementCard__name Font Font__text Font__regular transition">You met the autobots</span>
-                </div>
-              </a>
-            </div>
-
-            <div>
-              <a href="achievement.html" class="Box AchievementCard">
-                <div class="AchievementCard__header">
-                  <img src="<%= require('/Src/Img/achievementEmblem.png') %>" class="AchievementCard__img" alt="">
-                </div>
-
-                <div class="AchievementCard__footer">
-                  <span class="Link AchievementCard__name Font Font__text Font__regular transition">You met the autobots</span>
-                </div>
-              </a>
-            </div>
-
-            <div>
-              <a href="achievement.html" class="Box AchievementCard">
-                <div class="AchievementCard__header">
-                  <img src="<%= require('/Src/Img/achievementEmblem.png') %>" class="AchievementCard__img" alt="">
-                </div>
-
-                <div class="AchievementCard__footer">
-                  <span class="Link AchievementCard__name Font Font__text Font__regular transition">You met the autobots</span>
-                </div>
-              </a>
-            </div>
-
-            <div>
-              <a href="achievement.html" class="Box AchievementCard">
-                <div class="AchievementCard__header">
-                  <img src="<%= require('/Src/Img/achievementEmblem.png') %>" class="AchievementCard__img" alt="">
-                </div>
-
-                <div class="AchievementCard__footer">
-                  <span class="Link AchievementCard__name Font Font__text Font__regular transition">You met the autobots</span>
-                </div>
-              </a>
-            </div>
-
-            <div>
-              <a href="achievement.html" class="Box AchievementCard">
-                <div class="AchievementCard__header">
-                  <img src="<%= require('/Src/Img/achievementEmblem.png') %>" class="AchievementCard__img" alt="">
-                </div>
-
-                <div class="AchievementCard__footer">
-                  <span class="Link AchievementCard__name Font Font__text Font__regular transition">You met the autobots</span>
-                </div>
-              </a>
-            </div>
-
-            <div>
-              <a href="achievement.html" class="Box AchievementCard">
-                <div class="AchievementCard__header">
-                  <img src="<%= require('/Src/Img/achievementEmblem.png') %>" class="AchievementCard__img" alt="">
-                </div>
-
-                <div class="AchievementCard__footer">
-                  <span class="Link AchievementCard__name Font Font__text Font__regular transition">You met the autobots</span>
-                </div>
-              </a>
-            </div>
-
-            <div>
-              <a href="achievement.html" class="Box AchievementCard">
-                <div class="AchievementCard__header">
-                  <img src="<%= require('/Src/Img/achievementEmblem.png') %>" class="AchievementCard__img" alt="">
-                </div>
-
-                <div class="AchievementCard__footer">
-                  <span class="Link AchievementCard__name Font Font__text Font__regular transition">You met the autobots</span>
-                </div>
-              </a>
-            </div>
-
-            <div>
-              <a href="achievement.html" class="Box AchievementCard">
-                <div class="AchievementCard__header">
-                  <img src="<%= require('/Src/Img/achievementEmblem.png') %>" class="AchievementCard__img" alt="">
-                </div>
-
-                <div class="AchievementCard__footer">
-                  <span class="Link AchievementCard__name Font Font__text Font__regular transition">You met the autobots</span>
-                </div>
-              </a>
-            </div>
-
-            <div>
-              <a href="achievement.html" class="Box AchievementCard">
-                <div class="AchievementCard__header">
-                  <img src="<%= require('/Src/Img/achievementEmblem.png') %>" class="AchievementCard__img" alt="">
-                </div>
-
-                <div class="AchievementCard__footer">
-                  <span class="Link AchievementCard__name Font Font__text Font__regular transition">You met the autobots</span>
-                </div>
-              </a>
-            </div>
-
-            <div>
-              <a href="achievement.html" class="Box AchievementCard">
-                <div class="AchievementCard__header">
-                  <img src="<%= require('/Src/Img/achievementEmblem.png') %>" class="AchievementCard__img" alt="">
-                </div>
-
-                <div class="AchievementCard__footer">
-                  <span class="Link AchievementCard__name Font Font__text Font__regular transition">You met the autobots</span>
-                </div>
-              </a>
-            </div>
-
-            <div>
-              <a href="achievement.html" class="Box AchievementCard">
-                <div class="AchievementCard__header">
-                  <img src="<%= require('/Src/Img/achievementEmblem.png') %>" class="AchievementCard__img" alt="">
-                </div>
-
-                <div class="AchievementCard__footer">
-                  <span class="Link AchievementCard__name Font Font__text Font__regular transition">You met the autobots</span>
-                </div>
-              </a>
-            </div>
-
-            <div>
-              <a href="achievement.html" class="Box AchievementCard">
-                <div class="AchievementCard__header">
-                  <img src="<%= require('/Src/Img/achievementEmblem.png') %>" class="AchievementCard__img" alt="">
-                </div>
-
-                <div class="AchievementCard__footer">
-                  <span class="Link AchievementCard__name Font Font__text Font__regular transition">You met the autobots</span>
-                </div>
-              </a>
-            </div>
-
-          </div>
-        </div>
-      </div>
+      <Tabs :menu="tabs" :total-result="totalCount">
+        <router-view @set-total-result="setTotalCount" />
+      </Tabs>
     </div>
 
   </div>

@@ -1,29 +1,25 @@
 <script lang="ts" setup>
 // * Types
-import type { PropType } from 'vue'
+import type { PropType, Ref } from 'vue'
 import type { RouteLocationRaw } from 'vue-router'
-import type { UnparsedVideo } from '@/contracts/video'
+import type { UnparsedVideo, Video, WishlistActions } from '@/contracts/video'
 // * Types
 
 import State from './index'
 
 // * Components
-import Icon from '../Icon/Icon.vue'
+import Icon from '../Icon.vue'
+import { ref } from 'vue'
+import { Duration } from 'luxon'
+import { useUserData } from '@/store/userDataStore'
 // * Components
 
 const state = new State()
+const userData = useUserData()
 const props = defineProps({
   item: {
     type: Object as PropType<UnparsedVideo>,
     required: true,
-  },
-  isInLaterList: {
-    type: Boolean,
-    default: false,
-  },
-  isInWishList: {
-    type: Boolean,
-    default: false,
   },
   to: {
     type: [Object, String] as PropType<RouteLocationRaw>,
@@ -31,9 +27,32 @@ const props = defineProps({
   },
 })
 
-state.setItem(props.item)
-state.setLaterList(props.isInLaterList)
-state.setWishList(props.isInWishList)
+const item: Ref<Video> = ref({ ...parseItem(props.item) })
+
+function parseItem(item: UnparsedVideo): Video {
+  const duration: string = Duration.fromISOTime(item.duration).toFormat("mm 'minutes'")
+  const rating: string = item.rating.replace('.', ',')
+  const ageLimit: string = `+${item.ageLimit}`
+  const wishlistStatus: boolean = item.wishlistStatus ?? false
+
+  return {
+    ...item,
+    duration,
+    rating,
+    ageLimit,
+    wishlistStatus,
+  }
+}
+
+async function wishlistAction(): Promise<void> {
+  const wishlistStatus: boolean = item.value.wishlistStatus
+  const action: WishlistActions = wishlistStatus ? 'delete' : 'add'
+
+  try {
+    await state.wishlistAction(item.value.id, action)
+    item.value.wishlistStatus = !wishlistStatus
+  } catch (err: any) {}
+}
 </script>
 
 <template>
@@ -41,33 +60,31 @@ state.setWishList(props.isInWishList)
     <div class="Card__header">
 
       <router-link class="Card__imgLink" :to="props.to">
-        <img :src="state.item.poster" class="Card__img transition" alt="">
+        <img :src="item.poster" class="Card__img transition" alt="">
       </router-link>
 
-      <label class="Card__later transition">
-        <input type="checkbox" class="hide" v-model="state.isInLaterList.value">
-        <Icon type="CLOCK_SOLID" v-if="state.isInLaterList.value" />
-        <Icon type="CLOCK" v-else />
-      </label>
+      <div v-if="userData.user" class="Card__later transition">
+        <!-- <Icon type="CLOCK_SOLID" v-if="item.wishlistStatus" /> -->
+        <Icon type="CLOCK" />
+      </div>
 
-      <div class="Card__right transition">
-        <label class="Card__wishlist">
-          <input type="checkbox" class="hide" v-model="state.isInWishList.value">
-          <Icon type="HEART_SOLID" v-if="state.isInWishList.value" />
+      <div v-if="userData.user" class="Card__right transition">
+        <div @click="wishlistAction" class="Card__wishlist">
+          <Icon type="HEART_SOLID" v-if="item.wishlistStatus" />
           <Icon type="HEART" v-else />
-        </label>
+        </div>
 
-        <span class="Card__ageLimit Font Font__text Font__regular Card__yellow">{{ state.item.ageLimit }}</span>
+        <span class="Card__ageLimit Font Font__text Font__regular Card__yellow">{{ item.ageLimit }}</span>
       </div>
 
       <div class="Card__bottom transition">
-        <span class="Card__attribute Font Font__regular Font__text Card__yellow">{{ state.item.rating }}</span>
-        <span class="Card__attribute Font Font__regular Font__text Card__yellow">{{ state.item.duration }}</span>
+        <span class="Card__attribute Font Font__regular Font__text Card__yellow">{{ item.rating }}</span>
+        <span class="Card__attribute Font Font__regular Font__text Card__yellow">{{ item.duration }}</span>
       </div>
     </div>
 
     <div class="Card__footer">
-      <router-link :to="props.to" class="Link Card__name Font Font__text Font__regular transition">{{ state.item.name }}</router-link>
+      <router-link :to="props.to" class="Link Card__name Font Font__text Font__regular transition">{{ item.name }}</router-link>
     </div>
   </div>
 </template>

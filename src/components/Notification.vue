@@ -1,16 +1,14 @@
 <script lang="ts" setup>
 // * Types
 import type { PropType } from 'vue'
+import type { IconsTypes } from '@/contracts/fonts'
 import type { Types } from '@/contracts/notification'
 // * Types
 
-import State from './index'
-
 // * Components
-import Icon from '../Icon/Icon.vue'
+import Icon from './Icon.vue'
 // * Components
 
-const state = new State()
 const props = defineProps({
   type: {
     type: String as PropType<Types>,
@@ -18,12 +16,23 @@ const props = defineProps({
   },
 })
 
-state.setType(props.type)
+function getType(): keyof typeof IconsTypes {
+  switch (props.type) {
+    case 'success':
+      return 'SUCCESS'
+
+    case 'error':
+      return 'ERROR'
+  
+    default:
+      return 'SUCCESS'
+  }
+}
 </script>
 
 <template>
   <div class="Notification Box transition">
-    <Icon class="Notification__icon" :type="state.getType()" />
+    <Icon class="Notification__icon" :type="getType()" />
 
     <span class="Font Font__text Font__regular">
       <slot></slot>

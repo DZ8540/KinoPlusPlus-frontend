@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 // * Types
 import type { Genre } from '@/contracts/genre'
+import type { MenuItem } from '@/contracts/tabs'
 // * Types
 
 import State from './index'
@@ -8,9 +9,9 @@ import { onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 
 // * Components
+import Tabs from '@/components/Tabs.vue'
 import Button from '@/components/Button.vue'
 import Card from '@/components/Card/Card.vue'
-import Tabs from '@/components/Tabs/Tabs.vue'
 import Preloader from '@/components/Preloader.vue'
 // * Components
 
@@ -18,6 +19,20 @@ const state = new State()
 const route = useRoute()
 
 const slug: Genre['slug'] = route.params.slug as string
+const tabs: MenuItem[] = [
+  {
+    text: 'Movies',
+    to: ''
+  },
+  {
+    text: 'Serials',
+    to: '/'
+  },
+  {
+    text: 'Cartoons',
+    to: '/'
+  },
+]
 
 function nextPage(): void {
   state.nextPage.apply(state)
@@ -40,7 +55,7 @@ onMounted(async () => {
         <p class="Font Font__regular Font__text">{{ state.item.description }}</p>
       </div>
 
-      <Tabs :total-result="state.totalResults.value">
+      <Tabs :menu="tabs" :total-result="state.totalResults.value">
         <div class="uk-child-width-1-4@m uk-child-width-1-3@s uk-child-width-1-2" uk-grid>
 
           <div v-for="item in state.movies">

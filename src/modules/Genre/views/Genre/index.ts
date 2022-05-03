@@ -13,6 +13,9 @@ import { getGenre } from '@/api/genre'
 // import { checkQuery } from '@/helpers'
 import { searchVideo } from '@/api/video'
 import { DEFAULT_GENRE } from '@/config/genre'
+import { useUserData } from '@/store/userDataStore'
+
+const userData = useUserData()
 
 export default class {
   public totalResults: Ref<number> = ref(0)
@@ -65,10 +68,10 @@ export default class {
 
   private async getMovies(): Promise<void> {
     try {
-      const query: AxiosResponse<Response<Paginate<UnparsedVideo>>> = await searchVideo({ page: this.page.value, genres: [ this.item.id ] })
+      const query: AxiosResponse<Response<Paginate<UnparsedVideo>>> = await searchVideo({ page: this.page.value, genres: [ this.item.id ] }, userData.user?.id)
       // checkQuery(query)
 
-      this.lastPage = query.data.body!.meta.last_page
+      this.lastPage = query.data.body!.meta.lastPage
       this.totalResults.value = query.data.body!.meta.total
 
       for (const item of query.data.body!.data) {

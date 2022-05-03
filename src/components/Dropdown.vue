@@ -4,15 +4,13 @@ import type { Ref, PropType } from 'vue'
 // * Types
 
 import UIkit from 'uikit'
-import State from './index'
-import { onBeforeUnmount, onMounted, ref } from 'vue'
+import { onBeforeUnmount, onMounted, ref, reactive } from 'vue'
 
 // * Components
-import Icon from '../Icon/Icon.vue'
-import Link from '../Link/Link.vue'
+import Icon from './Icon.vue'
+import Link from './Link.vue'
 // * Components
 
-const state = new State()
 const props = defineProps({
   options: {
     type: Object as PropType<UIkit.UIkitDropdownOptions>,
@@ -23,19 +21,23 @@ const props = defineProps({
 })
 
 let DOMDropdown: UIkit.UIkitDropdownElement
-const dropdown: Ref<HTMLDivElement | null> = ref(null)
 const arrow: Ref<HTMLElement | null> = ref(null)
+const dropdown: Ref<HTMLDivElement | null> = ref(null)
+const isArrowActive: Ref<boolean> = ref(false)
+const arrowClassNames: any[] = reactive(['Dropdown__arrow', { 'Dropdown__arrow--active': isArrowActive }])
 
-state.setOptions(props.options)
+function setArrowToActive(val: boolean): void {
+  isArrowActive.value = val
+}
 
 onMounted(() => {
   if (dropdown.value) {
-    DOMDropdown = UIkit.dropdown(dropdown.value, {})
+    DOMDropdown = UIkit.dropdown(dropdown.value, props.options)
 
     // @ts-ignore
     UIkit.util.on(dropdown.value, 'show', () => {
       if (arrow.value)
-        state.setArrowToActive()
+        setArrowToActive(true)
       else
         console.warn('Arrow icon in dropdown not found!')
     })
@@ -43,7 +45,7 @@ onMounted(() => {
     // @ts-ignore
     UIkit.util.on(dropdown.value, 'hide', () => {
       if (arrow.value)
-        state.unsetArrowToActive()
+        setArrowToActive(false)
       else
         console.warn('Arrow icon in dropdown not found!')
     })
@@ -64,7 +66,7 @@ onBeforeUnmount(() => {
       <Link to="#">
         <slot name="title">Dropdown</slot>
       </Link>
-      <Icon type="ARROW" :class="state.arrowClassNames" ref="arrow" />
+      <Icon type="ARROW" :class="arrowClassNames" ref="arrow" />
     </div>
 
     <div class="Dropdown__drop" ref="dropdown">

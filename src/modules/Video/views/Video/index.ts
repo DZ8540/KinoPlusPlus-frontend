@@ -1,43 +1,35 @@
 // * Types
-import type { Ref } from 'vue'
 import type { AxiosResponse } from 'axios'
-import type { Actor } from '@/contracts/actor'
+import type { User } from '@/contracts/user'
 import type { Response } from '@/contracts/response'
-import type { UnparsedVideo, Video } from '@/contracts/video'
+import type { UnparsedVideo, Video, WishlistActions } from '@/contracts/video'
 // * Types
 
 import Logger from '@/assets/vendor/Logger'
 import { Duration } from 'luxon'
-import { reactive, ref } from 'vue'
 import { getVideo } from '@/api/video'
+import { useUserData } from '@/store/userDataStore'
+import { useWishlistAction } from '@/composables/wishlist'
 // import { checkQuery } from '@/helpers'
-import { DEFAULT_VIDEO } from '@/config/video'
+
+const userData = useUserData()
 
 export default class {
-  public isLoaded: Ref<boolean> = ref(true)
+  public async getItem(slug: Video['slug']): Promise<Video> {
+    const currentUserId: User['id'] | undefined = userData.user?.id
 
-  public actors: Actor[] = reactive([])
-  public displayGenres: Video['genres'] = reactive([])
-  public item: Video = reactive({ ...DEFAULT_VIDEO })
-
-  public setLoaded(val: boolean): void {
-    this.isLoaded.value = val
-  }
-
-  public setActors(actors: Actor[]): void {
-    this.actors = actors
-  }
-
-  public async getItem(slug: Video['slug']): Promise<void> {
     try {
-      const query: AxiosResponse<Response<UnparsedVideo>> = await getVideo(slug)
+      const query: AxiosResponse<Response<UnparsedVideo>> = await getVideo(slug, currentUserId)
       // checkQuery(query)
 
-      this.item = this.parseItem(query.data.body!)
-      this.setLoaded(false)
+      return this.parseItem(query.data.body!)
     } catch (err: any) {
-      return Logger.error(err)
+      throw Logger.error(err)
     }
+  }
+
+  public async wishlistAction(videoId: Video['id'], action: WishlistActions): Promise<void> {
+    await useWishlistAction(videoId, action)
   }
 
   /**
@@ -45,27 +37,20 @@ export default class {
    */
 
   private parseItem(item: UnparsedVideo): Video {
+    if (!item.genres)
+      throw new Error('Genres is undefined!')
+
     const duration: string = Duration.fromISOTime(item.duration).toFormat("h 'hour' mm 'minutes'")
     const rating: string = item.rating.replace('.', ',')
     const ageLimit: string = `+${item.ageLimit}`
-
-    for (let i = 0; i < item.genres.length; i++) {
-      const currentGenre: Video['genres'][number] = item.genres[i]
-      const indexForConditionArrLength: number = i + 1
-
-      if (indexForConditionArrLength < item.genres.length) {
-        const displayName: string = `${currentGenre.name}, `
-        currentGenre.name = displayName
-      }
-
-      this.displayGenres.push(currentGenre)
-    }
+    const wishlistStatus: boolean = item.wishlistStatus ?? false
 
     return {
       ...item,
       duration,
       rating,
       ageLimit,
+      wishlistStatus,
     }
   }
 }

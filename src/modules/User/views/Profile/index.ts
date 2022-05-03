@@ -2,19 +2,20 @@
 import type { AxiosResponse } from 'axios'
 import type { User } from '@/contracts/user'
 import type { Value } from '@/contracts/select'
-import type { ErrorFromQuery, Response } from '@/contracts/response'
+import type { UserData } from '@/contracts/api'
+import type { Response } from '@/contracts/response'
 // * Types
 
 import useVuelidate from '@vuelidate/core'
 import { reactive } from 'vue'
-import { isEqual } from '@/helpers'
 import { updateUser } from '@/api/user'
 import { Messages } from '@/contracts/response'
 import { useUserData } from '@/store/userDataStore'
 import { useNotificationBus } from '@/store/notificationBusStore'
+import { checkFormData, displayExternalErrors, isEqual } from '@/helpers'
 import { 
   required, email, minLength, 
-  maxLength, requiredIf, numeric 
+  maxLength, requiredIf, numeric,
 } from '@vuelidate/validators'
 
 const userData = useUserData()
@@ -32,7 +33,7 @@ export default class {
     },
   ]
 
-  public formData: { [key: string]: string | number | boolean | null } = reactive({
+  public formData: UserData & { oldPassword: UserData['password'] } = reactive({
     nickname: userData.user!.nickname,
     email: userData.user!.email,
     avatar: null,
@@ -80,14 +81,6 @@ export default class {
 
   public v$ = useVuelidate(this.rules, this.formData, { $autoDirty: true, $externalResults: this.externalErrors })
 
-  public castErrors(val: any): boolean {
-    return Boolean(val)
-  }
-
-  public getFirstError(inputName: keyof typeof this.formData) {
-    return this.v$.value[inputName].$errors[0].$message
-  }
-
   public async submitHandler(): Promise<void> {
     await this.checkFormData()
 
@@ -108,7 +101,7 @@ export default class {
       })
 
       if (err.errors)
-        this.displayExternalErrors(err.errors)
+        displayExternalErrors(this.externalErrors, err.errors)
     }
   }
 
@@ -129,20 +122,11 @@ export default class {
    */
 
   private async checkFormData(): Promise<void> {
-    const result: boolean = await this.v$.value.$validate()
-
     if (!isEqual(this.formData.password as string, this.formData.passwordConfirm as string)) {
       this.externalErrors.passwordConfirm = 'Should equal to password field!'
       throw Messages.VALIDATION_ERR
     }
       
-    if (!result) 
-      throw Messages.VALIDATION_ERR
-  }
-
-  private displayExternalErrors(errors: ErrorFromQuery[]): void {
-    for (const item of errors) {
-      this.externalErrors[item.field] = item.message
-    }
+    await checkFormData(this.v$)
   }
 }

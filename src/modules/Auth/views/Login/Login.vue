@@ -1,12 +1,13 @@
 <script lang="ts" setup>
 import State from './index'
 import { useRouter } from 'vue-router'
+import { castErrors, getFirstError } from '@/helpers'
 
 // * Components
+import Link from '@/components/Link.vue'
 import Title from '@/components/Title.vue'
+import Input from '@/components/Input.vue'
 import Button from '@/components/Button.vue'
-import Link from '@/components/Link/Link.vue'
-import Input from '@/components/Input/Input.vue'
 // * Components
 
 const state = new State()
@@ -35,7 +36,7 @@ async function submitHandler(): Promise<void> {
           <input :class="inputClassNames" v-model="state.formData.email" type="email" placeholder="Email">
         </template>
 
-        <template v-if="state.castErrors(state.v$.value.email.$errors.length)" #error>{{ state.getFirstError('email') }}</template>
+        <template v-if="castErrors(state.v$.value.email.$errors.length)" #error>{{ getFirstError(state.v$, 'email') }}</template>
       </Input>
 
       <Input class="registerBox__input">
@@ -43,7 +44,7 @@ async function submitHandler(): Promise<void> {
           <input :class="inputClassNames" v-model="state.formData.password" type="password" placeholder="Password">
         </template>
          
-        <template v-if="state.castErrors(state.v$.value.password.$errors.length)" #error>{{ state.getFirstError('password') }}</template>
+        <template v-if="castErrors(state.v$.value.password.$errors.length)" #error>{{ getFirstError(state.v$, 'password') }}</template>
       </Input>
 
       <!-- * Delete this and place captcha -->

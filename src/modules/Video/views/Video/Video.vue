@@ -1,39 +1,74 @@
 <script lang="ts" setup>
 // * Types
-import type { Video } from '@/contracts/video'
+import type { Ref } from 'vue'
+import type { Actor } from '@/contracts/actor'
+import type { Genre } from '@/contracts/genre'
+import type { Video, WishlistActions } from '@/contracts/video'
 // * Types
 
 import State from './index'
-import { onMounted } from 'vue'
 import { useRoute } from 'vue-router'
+import { DEFAULT_VIDEO } from '@/config/video'
+import { onMounted, reactive, ref } from 'vue'
 import { DEFAULT_ACTOR } from '@/config/actor'
+import { useUserData } from '@/store/userDataStore'
 
 // * Components
+import List from '@/components/List.vue'
+import Icon from '@/components/Icon.vue'
+import Link from '@/components/Link.vue'
 import Button from '@/components/Button.vue'
-import List from '@/components/List/List.vue'
-import Icon from '@/components/Icon/Icon.vue'
-import Link from '@/components/Link/Link.vue'
+import Slider from '@/components/Slider.vue'
 import RoomCard from '@/components/RoomCard.vue'
 import Accordion from '@/components/Accordion.vue'
 import Preloader from '@/components/Preloader.vue'
-import Slider from '@/components/Slider/Slider.vue'
-import ActorCardMini from '@/components/ActorCardMini/ActorCardMini.vue'
+import ActorCardMini from '@/components/ActorCardMini.vue'
 // * Components
 
-const state = new State()
 const route = useRoute()
+const state = new State()
+const userData = useUserData()
 
+let item: Ref<Video> = ref({ ...DEFAULT_VIDEO })
+const isLoaded: Ref<boolean> = ref(false)
 const slug: Video['slug'] = route.params.slug as string
+const displayGenres: Pick<Genre, "id" | "slug" | "name">[] = reactive([])
+const actors: Actor[] = reactive([
+  { ...DEFAULT_ACTOR }, { ...DEFAULT_ACTOR }, { ...DEFAULT_ACTOR }, 
+  { ...DEFAULT_ACTOR }, { ...DEFAULT_ACTOR }, { ...DEFAULT_ACTOR }, 
+  { ...DEFAULT_ACTOR }, { ...DEFAULT_ACTOR }, { ...DEFAULT_ACTOR }, 
+  { ...DEFAULT_ACTOR }
+])
+
+function parseGenres(): void {
+  for (let i = 0; i < item.value.genres!.length; i++) {
+    const currentGenre: (Pick<Genre, "id" | "slug" | "name">[])[number] = item.value.genres![i]
+    const indexForConditionArrLength: number = i + 1
+
+    if (indexForConditionArrLength < item.value.genres!.length) {
+      const displayName: string = `${currentGenre.name}, `
+      currentGenre.name = displayName
+    }
+
+    displayGenres.push(currentGenre)
+  }
+}
+
+async function wishlistAction(): Promise<void> {
+  const wishlistStatus: boolean = item.value.wishlistStatus
+  const action: WishlistActions = wishlistStatus ? 'delete' : 'add'
+
+  try {
+    await state.wishlistAction(item.value.id, action)
+    item.value.wishlistStatus = !wishlistStatus
+  } catch (err: any) {}
+}
 
 onMounted(async () => {
-  state.getItem(slug)
+  item.value = await state.getItem(slug)
+  parseGenres()
 
-  state.setActors([
-    { ...DEFAULT_ACTOR }, { ...DEFAULT_ACTOR }, { ...DEFAULT_ACTOR }, 
-    { ...DEFAULT_ACTOR }, { ...DEFAULT_ACTOR }, { ...DEFAULT_ACTOR }, 
-    { ...DEFAULT_ACTOR }, { ...DEFAULT_ACTOR }, { ...DEFAULT_ACTOR }, 
-    { ...DEFAULT_ACTOR }
-  ])
+  isLoaded.value = true
 })
 </script>
 
@@ -43,28 +78,28 @@ onMounted(async () => {
 
   <div class="uk-container" uk-scrollspy="cls: uk-animation-scale-down; delay: 100">
 
-    <Preloader v-if="state.isLoaded.value" />
+    <Preloader v-if="!isLoaded" />
     <div v-else class="content">
       <div class="mb" uk-grid>
         <div class="uk-width-1-3@s">
 
           <div class="Box Box__lite Box__avatar mb">
-            <img class="Box__bg" :src="state.item.poster" alt="">
+            <img class="Box__bg" :src="item.poster" alt="">
           </div>
 
           <div class="Box">
             <List v-slot="{ classNames, textClassName }">
 
               <li :class="classNames">
-                <span :class="textClassName" class="Font Font__text Font__regular">Age limit: {{ state.item.ageLimit }}</span>
+                <span :class="textClassName" class="Font Font__text Font__regular">Age limit: {{ item.ageLimit }}</span>
               </li>
               
               <li :class="classNames">
-                <span :class="textClassName" class="Font Font__text Font__regular">Released: {{ state.item.releasedForUser }}</span>
+                <span :class="textClassName" class="Font Font__text Font__regular">Released: {{ item.releasedForUser }}</span>
               </li>
               
               <li :class="classNames">
-                <span :class="textClassName" class="Font Font__text Font__regular">Duration: {{ state.item.duration }}</span>
+                <span :class="textClassName" class="Font Font__text Font__regular">Duration: {{ item.duration }}</span>
               </li>
               
               <li :class="classNames">
@@ -72,7 +107,7 @@ onMounted(async () => {
               </li>
               
               <li :class="classNames">
-                <span :class="textClassName" class="Font Font__text Font__regular">Country: {{ state.item.country }}</span>
+                <span :class="textClassName" class="Font Font__text Font__regular">Country: {{ item.country }}</span>
               </li>
               
               <li :class="classNames">
@@ -82,12 +117,12 @@ onMounted(async () => {
               <li :class="classNames">
                 <span :class="textClassName" class="Font Font__text Font__regular">
                   Genres:
-                  <Link v-for="genre in state.displayGenres" :to="{ name: 'genre', params: { slug: genre.slug } }">{{ genre.name }}</Link>
+                  <Link v-for="genre in displayGenres" :to="{ name: 'genre', params: { slug: genre.slug } }">{{ genre.name }}</Link>
                 </span>
               </li>
               
               <li :class="classNames">
-                <span :class="textClassName" class="Font Font__text Font__regular">IMDB rating: {{ state.item.rating }}</span>
+                <span :class="textClassName" class="Font Font__text Font__regular">IMDB rating: {{ item.rating }}</span>
               </li>
 
             </List>
@@ -98,16 +133,17 @@ onMounted(async () => {
         <div class="uk-width-2-3@s">
 
           <div class="Box mb video__box">
-            <h1 class="Font Font__bold Font__title mb">{{ state.item.name }}</h1>
+            <h1 class="Font Font__bold Font__title mb">{{ item.name }}</h1>
 
-            <p class="Font Font__regular Font__text">{{ state.item.description }}</p>
+            <p class="Font Font__regular Font__text">{{ item.description }}</p>
 
-            <div class="video__lists">
+            <div v-if="userData.user" class="video__lists">
               <button class="video__laterList">
                 <Icon type="CLOCK" />
               </button>
               <button class="video__wishList">
-                <Icon type="HEART" />
+                <Icon v-if="item.wishlistStatus" @click="wishlistAction" type="HEART_SOLID" />
+                <Icon v-else @click="wishlistAction" type="HEART" />
               </button>
             </div>
 
@@ -125,7 +161,7 @@ onMounted(async () => {
               :items-count-mobile-view="3" 
               :is-with-show-more="false"
             >
-              <li class="Slider__li" v-for="item in state.actors">
+              <li class="Slider__li" v-for="item in actors">
                 <ActorCardMini :item="item" />
               </li>
             </Slider>
@@ -139,19 +175,19 @@ onMounted(async () => {
         <div class="uk-child-width-1-3@s uk-grid-medium" uk-grid>
           <div>
             <div class="Box Box__lite">
-              <img :src="state.item.firstImageForUser" class="Box__bg" alt="">
+              <img :src="item.firstImage" class="Box__bg" alt="">
             </div>
           </div>
 
           <div>
             <div class="Box Box__lite">
-              <img :src="state.item.secondImageForUser" class="Box__bg" alt="">
+              <img :src="item.secondImage" class="Box__bg" alt="">
             </div>
           </div>
 
           <div>
             <div class="Box Box__lite">
-              <img :src="state.item.thirdImageForUser" class="Box__bg" alt="">
+              <img :src="item.thirdImage" class="Box__bg" alt="">
             </div>
           </div>
         </div>
@@ -171,8 +207,8 @@ onMounted(async () => {
         <template #content>
           <List v-slot="{ classNames }" without-dots>
 
-            <li v-for="item in 3" :class="classNames">
-              <RoomCard :video="state.item" />
+            <li v-for="_ in 3" :class="classNames">
+              <RoomCard :video="item" />
             </li>
 
           </List>

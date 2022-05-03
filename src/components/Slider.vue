@@ -4,15 +4,13 @@ import type { Ref, PropType } from 'vue'
 // * Types
 
 import UIkit from 'uikit'
-import State from './index'
-import { onBeforeUnmount, onMounted, ref } from 'vue'
+import { onBeforeUnmount, onMounted, ref, reactive } from 'vue'
 
 // * Components
-import Button from '../Button.vue'
-import Icon from '../Icon/Icon.vue'
+import Icon from './Icon.vue'
+import Button from './Button.vue'
 // * Components
 
-const state = new State()
 const props = defineProps({
   options: {
     type: Object as PropType<UIkit.UIkitSliderOptions>,
@@ -40,19 +38,21 @@ const props = defineProps({
 
 let DOMSlider: UIkit.UIkitSliderElement
 const slider: Ref<HTMLDivElement | null> = ref(null)
-
-state.setOptions(props.options)
-state.setItemsCount(props.itemsCountView, props.itemsCountSmallView, props.itemsCountMobileView)
-state.setWithShowMore(props.isWithShowMore)
-
-onMounted(() => {
-  if (slider.value)
-    DOMSlider = UIkit.slider(slider.value, state.options)
-})
+const itemsCountClasses: string[] = reactive([
+  'uk-slider-items', 
+  `uk-child-width-1-${props.itemsCountView}@m`,
+  `uk-child-width-1-${props.itemsCountSmallView}@s`,
+  `uk-child-width-1-${props.itemsCountMobileView}`,
+])
 
 onBeforeUnmount(() => {
   if (DOMSlider) // @ts-ignore
     DOMSlider.$destroy(true)
+})
+
+onMounted(() => {
+  if (slider.value)
+    DOMSlider = UIkit.slider(slider.value, props.options)
 })
 </script>
 
@@ -62,7 +62,7 @@ onBeforeUnmount(() => {
 
       <div class="uk-position-relative">
         <div class="uk-slider-container">
-          <ul :class="state.itemsCountClasses">
+          <ul :class="itemsCountClasses">
 
             <slot>
               <li class="Slider__li" v-for="item in 10">
@@ -84,7 +84,7 @@ onBeforeUnmount(() => {
             </Button>
           </div>
 
-          <Button v-if="state.isWithShowMore.value" type="button" to="#">Show more</Button>
+          <Button v-if="isWithShowMore" type="button" to="#">Show more</Button>
         </div>
       </div>
 

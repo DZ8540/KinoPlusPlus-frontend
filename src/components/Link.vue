@@ -4,11 +4,10 @@ import type { PropType } from 'vue'
 import type { RouteLocationRaw } from 'vue-router'
 // * Types
 
-import State from './index'
-import { FONT_SIZES, FONT_WEIGHTS } from '@/config/fonts'
+import { onMounted, reactive } from 'vue'
 import { FontSizeTypes, FontWeightTypes } from '@/contracts/fonts'
+import { castFontClass, FONT_SIZES, FONT_WEIGHTS } from '@/config/fonts'
 
-const state = new State()
 const props = defineProps({
   weight: {
     type: String as PropType<typeof FONT_WEIGHTS[number]>,
@@ -24,12 +23,20 @@ const props = defineProps({
   },
 })
 
-state.addClassName(props.weight)
-state.addClassName(props.size)
+const defaultClassNames: string[] = reactive(['Link', 'Font', 'transition'])
+
+function addClassName(className: string): void {
+  defaultClassNames.push(castFontClass(className))
+}
+
+onMounted(() => {
+  addClassName(props.size)
+  addClassName(props.weight)
+})
 </script>
 
 <template>
-  <router-link :to="props.to" :class="state.defaultClassNames">
+  <router-link :to="props.to" :class="defaultClassNames">
     <slot>Link</slot>
   </router-link>
 </template>

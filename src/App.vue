@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 // * Components
 import Footer from './components/Footer.vue'
-import Navbar from './components/Navbar/Navbar.vue'
-import Notification from './components/Notification/Notification.vue'
+import Navbar from './components/Navbar.vue'
+import Notification from './components/Notification.vue'
 // * Components
 
 import { useNotificationBus } from './store/notificationBusStore'
@@ -17,7 +17,7 @@ const notifications = useNotificationBus()
     </header>
 
     <main>
-      <router-view></router-view>
+      <router-view />
     </main>
   </div>
 

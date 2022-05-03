@@ -1,12 +1,12 @@
 <script lang="ts" setup>
-import State from './index'
+import { reactive } from 'vue'
 
-const state = new State()
+const inputClassNames: string[] = reactive(['Input__input', 'Font', 'Font__bold', 'Font__text', 'transition'])
 </script>
 
 <template>
   <div class="Input">
-    <slot :input-class-names="state.inputClassNames"></slot>
+    <slot :input-class-names="inputClassNames"></slot>
     
     <span class="Input__error Font Font__regular Font__text">
       <slot name="error"></slot>

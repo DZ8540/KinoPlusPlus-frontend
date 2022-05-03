@@ -7,8 +7,8 @@ import UIkit from 'uikit'
 import { onBeforeUnmount, onMounted, ref } from 'vue'
 
 // * Components
-import Icon from './Icon/Icon.vue'
-import List from './List/List.vue'
+import Icon from './Icon.vue'
+import List from './List.vue'
 // * Components
 
 let DOMAccordion: UIkit.UIkitAccordionElement
@@ -18,7 +18,7 @@ onMounted(() => {
   if (accordion.value) {
     DOMAccordion = UIkit.accordion(accordion.value, {})
   } else {
-    console.warn('Dropdown not found!')
+    console.warn('Accordion not found!')
   }
 })
 

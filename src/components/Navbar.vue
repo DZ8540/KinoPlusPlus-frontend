@@ -1,22 +1,21 @@
 <script lang="ts" setup>
 // * Types
 import type { Ref, PropType } from 'vue'
+import type { Value } from '@/contracts/select'
 // * Types
 
 import UIkit from 'uikit'
-import State from './index'
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, reactive, onBeforeMount } from 'vue'
 
 // * Components
-import Select from '../Select.vue'
-import Icon from '../Icon/Icon.vue'
-import Link from '../Link/Link.vue'
-import Dropdown from '../Dropdown/Dropdown.vue'
-import SearchDrop from '../SearchDrop/SearchDrop.vue'
-import ThemeSwitcher from '@/components/ThemeSwitcher/ThemeSwitcher.vue'
+import Icon from './Icon.vue'
+import Link from './Link.vue'
+import Select from './Select.vue'
+import Dropdown from './Dropdown.vue'
+import SearchDrop from './SearchDrop.vue'
+import ThemeSwitcher from '@/components/ThemeSwitcher.vue'
 // * Components
 
-const state = new State()
 const props = defineProps({
   options: {
     type: Object as PropType<UIkit.UIkitNavbarOptions>,
@@ -32,14 +31,23 @@ const props = defineProps({
   }
 })
 
+const langs: Value[] = reactive([])
 const navbar: Ref<HTMLDivElement | null> = ref(null)
+const searchDropBoundaryClassName: string = 'SearchDropBoundaryBind'
 
-state.setOptions(props.options)
-state.setLangs(props.langs)
+function setLangs(langsArr: string[]): void {
+  for (const key in langsArr) {
+    langs.push({ value: key, text: langsArr[key] })
+  }
+}
+
+onBeforeMount(() => {
+  setLangs(props.langs)
+})
 
 onMounted(() => {
   if (navbar.value)
-    UIkit.navbar(navbar.value, state.options)
+    UIkit.navbar(navbar.value, props.options)
 })
 </script>
 
@@ -278,15 +286,15 @@ onMounted(() => {
       <ul class="Navbar__rightList" uk-scrollspy="target: > li; cls: uk-animation-slide-right; delay: 100">
 
         <li class="Navbar__rightListLi uk-visible@l">
-          <Select :values="state.langs" name="Lang" />
+          <Select :values="langs" :main-value="0" name="Lang" />
         </li>
 
-        <li class="Navbar__rightListLi uk-visible@l" :class="state.searchDropBoundaryClassName.value">
+        <li class="Navbar__rightListLi uk-visible@l" :class="searchDropBoundaryClassName">
           <a href="#" class="Navbar__rightListLink">
             <Icon type="SEARCH" />
           </a>
 
-          <SearchDrop :options="{ mode: 'click', boundary: `.${state.searchDropBoundaryClassName.value}` }" />
+          <SearchDrop :options="{ mode: 'click', boundary: `.${searchDropBoundaryClassName}` }" />
         </li>
 
         <li class="Navbar__rightListLi uk-visible@l">

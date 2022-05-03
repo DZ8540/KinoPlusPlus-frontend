@@ -9,7 +9,7 @@ import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 
 // * Components
-// import Link from './components/link/Link.vue'
+// import Link from './components/Link.vue'
 // * Components
 
 const app = createApp(App)

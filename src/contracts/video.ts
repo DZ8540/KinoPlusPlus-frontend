@@ -14,16 +14,25 @@ export type UnparsedVideo = {
   viewsCount: number,
   releasedForUser: string,
   poster: string,
-  firstImageForUser: string,
-  secondImageForUser: string,
-  thirdImageForUser: string,
-  genres: Pick<Genre, 'id' | 'slug' | 'name'>[]
+  firstImage: string,
+  secondImage: string,
+  thirdImage: string,
+  genres?: Pick<Genre, 'id' | 'slug' | 'name'>[]
+  wishlistStatus?: boolean,
 }
 
 export type Video = Omit<UnparsedVideo, 'ageLimit'> & {
   ageLimit: string,
+  wishlistStatus: boolean,
 }
 
 export type ApiSearchData = ApiDefaultValues & {
   genres?: Genre['id'][],
+}
+
+export type WishlistActions = 'add' | 'delete'
+
+export type MainPageGenre = {
+  title: Genre['name'],
+  videos: UnparsedVideo[],
 }

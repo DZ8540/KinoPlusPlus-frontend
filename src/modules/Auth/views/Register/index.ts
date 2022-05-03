@@ -1,19 +1,21 @@
-
+// * Types
 import type { AxiosResponse } from 'axios'
-import type { ErrorFromQuery, Response } from '@/contracts/response'
+import type { Response } from '@/contracts/response'
+import type { RegistrationData } from '@/contracts/api'
+// * Types
 
 import useVuelidate from '@vuelidate/core'
 import { reactive } from 'vue'
-import { isEqual } from '@/helpers'
 import { register } from '@/api/auth'
 import { Messages } from '@/contracts/response'
 import { useNotificationBus } from '@/store/notificationBusStore'
+import { checkFormData, displayExternalErrors, isEqual } from '@/helpers'
 import { required, email, minLength, maxLength } from '@vuelidate/validators'
 
 const notifications = useNotificationBus()
 
 export default class {
-  public formData = reactive({
+  public formData: RegistrationData = reactive({
     nickname: '',
     email: '',
     password: '',
@@ -48,14 +50,6 @@ export default class {
 
   public v$ = useVuelidate(this.rules, this.formData, { $autoDirty: true, $externalResults: this.externalErrors })
 
-  public castErrors(val: any): boolean {
-    return Boolean(val)
-  }
-
-  public getFirstError(inputName: keyof typeof this.formData) {
-    return this.v$.value[inputName].$errors[0].$message
-  }
-
   public async submitHandler(): Promise<void> {
     await this.checkFormData()
 
@@ -75,7 +69,7 @@ export default class {
       })
 
       if (err.errors)
-        this.displayExternalErrors(err.errors)
+        displayExternalErrors(this.externalErrors, err.errors)
     }
   }
 
@@ -84,21 +78,12 @@ export default class {
    */
 
   private async checkFormData(): Promise<void> {
-    const result: boolean = await this.v$.value.$validate()
-
     if (!isEqual(this.formData.password, this.formData.passwordConfirm)) {
       this.externalErrors.passwordConfirm = 'Should equal to password field!'
       throw Messages.VALIDATION_ERR
     }
       
-    if (!result) 
-      throw Messages.VALIDATION_ERR
-  }
-
-  private displayExternalErrors(errors: ErrorFromQuery[]): void {
-    for (const item of errors) {
-      this.externalErrors[item.field] = item.message
-    }
+    await checkFormData(this.v$)
   }
 
   private resetForm(): void {

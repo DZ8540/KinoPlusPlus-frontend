@@ -1,12 +1,12 @@
 <script lang="ts" setup>
 // * Types
 import type { PropType } from 'vue'
-import type { IconsTypes } from '../../contracts/fonts'
 // * Types
 
-import State from './index'
+import { onMounted, reactive } from 'vue'
+import { IconsTypes } from '../contracts/fonts'
+import { castIconClass, ICONS } from '@/config/fonts'
 
-const state = new State()
 const props = defineProps({
   type: {
     type: String as PropType<keyof typeof IconsTypes>,
@@ -14,11 +14,32 @@ const props = defineProps({
   },
 })
 
-state.addNewClassNames(props.type)
+const defaultClassNames: string[] = reactive(['Icon', 'transition', 'Font__text'])
+
+function addNewClassNames(...iconsTypesKeys: (keyof typeof IconsTypes)[]): void {
+  for (const item of iconsTypesKeys) {
+    switch (item) {
+      case 'ARROW_BOTTOM':
+      case 'ARROW_TOP':
+      case 'ARROW_RIGHT':
+        defaultClassNames.push(castIconClass(ICONS[IconsTypes['ARROW']]))
+        defaultClassNames.push(castIconClass(ICONS[IconsTypes[item]]))
+        break
+    
+      default:
+        defaultClassNames.push(castIconClass(ICONS[IconsTypes[item]]))
+        break
+    }
+  }
+}
+
+onMounted(() => {
+  addNewClassNames(props.type)
+})
 </script>
 
 <template>
-  <i :class="state.defaultClassNames"></i>
+  <i :class="defaultClassNames"></i>
 </template>
 
 <style lang="sass">

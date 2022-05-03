@@ -2,6 +2,7 @@
 // * Types
 import type { AxiosResponse } from 'axios'
 import type { User } from '@/contracts/user'
+import type { LoginData, RegistrationData } from '@/contracts/api'
 import type { ErrorResponse, Response } from '@/contracts/response'
 // * Types
 
@@ -9,7 +10,7 @@ import instance from './instance'
 import Logger from '@/assets/vendor/Logger'
 import { ROUTES } from '@/config/api'
 
-export async function register(data: object): Promise<AxiosResponse<Response<null>>> {
+export async function register(data: RegistrationData): Promise<AxiosResponse<Response<null>>> {
   try {
     return await instance.post<Response<null>>(ROUTES.auth.register, data)
   } catch (err: ErrorResponse | any) {
@@ -29,7 +30,7 @@ export async function activateUser(token: string): Promise<AxiosResponse<Respons
   }
 }
 
-export async function login(data: object): Promise<AxiosResponse<Response<{ user: User, token: string }>>> {
+export async function login(data: LoginData): Promise<AxiosResponse<Response<{ user: User, token: string }>>> {
   try {
     return await instance.post<Response<{ user: User, token: string }>>(ROUTES.auth.login, data)
   } catch (err: ErrorResponse | any) {

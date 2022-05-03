@@ -5,9 +5,6 @@ import type { Actor } from '@/contracts/actor'
 import type { RouteLocationRaw } from 'vue-router'
 // * Types
 
-import State from './index'
-
-const state = new State()
 const props = defineProps({
   item: {
     type: Object as PropType<Actor>,
@@ -18,16 +15,14 @@ const props = defineProps({
     default: '#'
   },
 })
-
-state.setItem(props.item)
 </script>
 
 <template>
   <router-link :to="props.to" class="ActorCardMini">
     <div class="ActorCardMini__img">
-      <img :src="state.item.image" :alt="state.item.name">
+      <img :src="props.item.image" :alt="props.item.name">
     </div>
-    <span class="Link Font Font__text Font__regular transition">{{ state.item.name }}</span>
+    <span class="Link Font Font__text Font__regular transition">{{ props.item.name }}</span>
   </router-link>
 </template>
 

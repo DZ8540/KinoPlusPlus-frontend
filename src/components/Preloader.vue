@@ -2,7 +2,7 @@
 
 <template>
   <div class="Preloader">
-    <div>
+    <div class="Box">
       <i class="Icon Icon__plus Preloader__firstIcon Preloader__icon"></i>
       <i class="Icon Icon__plus Preloader__icon"></i>
     </div>
@@ -19,6 +19,7 @@
   justify-content: center
   align-items: center
   margin: 30px 0
+  background-color: transparent
   &__icon
     color: $yellow !important
     font-size: 70px

@@ -15,7 +15,7 @@ export type ErrorResponse = {
   response: AxiosResponse<Response<any, ErrorFromQuery[]>>
 }
 
-export type ErrorFromQuery = {
+export type ErrorFromQuery<K = string> = {
   rule: string,
   field: string,
   message: string,
@@ -41,4 +41,11 @@ export enum Messages {
   TOKEN_ERR = 'Token expired or undefined!',
   ERR = 'Error! Please try again!',
   VALIDATION_ERR = 'Please, fill all fields correctly!',
+
+  /**
+   * * Video
+   */
+
+  VIDEO_WISHLIST_ADDED = 'Video has been added to your wishlist!',
+  VIDEO_WISHLIST_DELETED = 'Video has been deleted from your wishlist!',
 }

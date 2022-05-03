@@ -1,17 +1,18 @@
 <script lang="ts" setup>
-import State from './index'
-import { watch } from 'vue'
+// * Types
+import type { PropType } from 'vue'
+import type { MenuItem } from '@/contracts/tabs'
+// * Types
 
-const state = new State()
 const props = defineProps({
+  menu: {
+    type: Object as PropType<MenuItem[]>,
+    required: true,
+  },
   totalResult: {
     type: Number,
     default: 0,
   },
-})
-
-watch(props, (mutateProps) => {
-  state.setTotalResults(mutateProps.totalResult)
 })
 </script>
 
@@ -20,13 +21,13 @@ watch(props, (mutateProps) => {
     <div class="Tabs__menu mb">
       <ul class="Tabs__list">
 
-        <li class="Tabs__li">
-          <button class="Tab Tab--active Font Font__regular Font__text transition">Movies</button>
+        <li v-for="item of props.menu" class="Tabs__li">
+          <router-link :to="item.to" exact-active-class="Tab--active" class="Tab Font Font__regular Font__text transition">{{ item.text }}</router-link>
         </li>
 
       </ul>
 
-      <span class="Tabs__count Font Font__text Font__regular">Results shown: {{ state.totalResults.value }}</span>
+      <span class="Tabs__count Font Font__text Font__regular">Total result: {{ props.totalResult }}</span>
     </div>
 
     <div class="Tabs__elements">

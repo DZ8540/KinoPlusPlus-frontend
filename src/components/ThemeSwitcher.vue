@@ -1,17 +1,16 @@
 <script lang="ts" setup>
 // * Types
 import type { Ref } from 'vue'
+import type { Options } from '@/contracts/themeSwitcher'
 // * Types
 
-import State from './index'
 import { onMounted, ref } from 'vue'
 import { ThemeSwitcher } from '@dz8540/custom-themeswitcher'
 
 // * Components
-import Icon from '../Icon/Icon.vue'
+import Icon from './Icon.vue'
 // * Components
 
-const state = new State()
 const props = defineProps({
   name: {
     type: String,
@@ -20,9 +19,18 @@ const props = defineProps({
 })
 
 const switcher: Ref<HTMLDivElement | null> = ref(null)
+const options: Options = {
+  linkId: import.meta.env.VITE_LINK_ID,
+  schemeKey: import.meta.env.VITE_SCHEME_KEY,
+  defaultScheme: import.meta.env.VITE_DEFAULT_SCHEME,
+  routes: {
+    light: import.meta.env.VITE_LIGHT_SCHEME_PATH,
+    dark: import.meta.env.VITE_DARK_SCHEME_PATH,
+  },
+}
 
 onMounted(() => {
-  new ThemeSwitcher(switcher.value!, state.options)
+  new ThemeSwitcher(switcher.value!, options)
 })
 </script>
 
