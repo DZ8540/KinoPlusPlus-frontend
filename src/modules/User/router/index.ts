@@ -3,22 +3,23 @@ import type { RouteRecordRaw } from 'vue-router'
 // * Types
 
 import checkUser from '@/middleware/checkUser'
+import { RoutesNames } from '@/config/router'
 
 export default [
   {
     path: '/profile',
     beforeEnter: checkUser,
-    component: () => import('../views/Profile/Profile.vue'),
+    component: () => import('../views/Profile.vue'),
     children: [
       {
         path: '',
-        name: 'profile',
-        component: () => import('../views/Achievements/Achievements.vue'),
+        name: RoutesNames.PROFILE,
+        component: () => import('../views/Achievements.vue'),
       },
       {
         path: 'wishlist',
-        name: 'wishlist',
-        component: () => import('../views/Wishlist/Wishlist.vue'),
+        name: RoutesNames.WISHLIST,
+        component: () => import('../views/Wishlist.vue'),
       },
     ],
   },

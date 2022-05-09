@@ -1,5 +1,7 @@
+// * Types
 import type { User } from './user'
 import type { Video } from './video'
+// * Types
 
 export type Paginate<D = any> = {
   meta: {
@@ -16,7 +18,7 @@ export type Paginate<D = any> = {
   data: D[],
 }
 
-export type ApiDefaultValues = {
+export type ApiDefaultPayload = {
   page: number,
   limit?: number,
 }
@@ -25,23 +27,23 @@ export type ApiDefaultValues = {
  * * Auth
  */
 
-export type LoginData = {
+export type LoginPayload = {
   email: User['email'] & string,
   password: string,
 }
 
-export type RegistrationData = {
+export type RegistrationPayload = {
   nickname: User['nickname'],
   email: User['email'],
   password: string,
-  passwordConfirm: RegistrationData['password'],
+  passwordConfirm: RegistrationPayload['password'],
 }
 
 /**
  * * Video
  */
 
-export type WishlistData = {
+export type WishlistPayload = {
   userId: User['id'],
   videoId: Video['id'],
 }
@@ -50,12 +52,12 @@ export type WishlistData = {
  * * User
  */
 
-export type UserData = {
+export type UserPayload = {
   nickname: User['nickname'],
   email: User['email'],
   avatar?: null,
   phone?: User['phone'],
   sex?: User['sex'],
   password?: string,
-  passwordConfirm?: RegistrationData['password'],
+  passwordConfirm?: RegistrationPayload['password'],
 }

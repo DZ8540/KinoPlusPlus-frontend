@@ -5,14 +5,13 @@ import type { UnparsedVideo } from '@/contracts/video'
 // * Types
 
 import UIkit from 'uikit'
-import State from './index'
+import { RoutesNames } from '@/config/router'
 import { onBeforeUnmount, onMounted, ref } from 'vue'
 
 // * Components
 import Button from '@/components/Button.vue'
 // * Components
 
-const state = new State()
 const props = defineProps({
   options: {
     type: Object as PropType<UIkit.UIkitSliderOptions>,
@@ -29,12 +28,9 @@ const props = defineProps({
 let DOMSlider: UIkit.UIkitSliderElement
 const slider: Ref<HTMLDivElement | null> = ref(null)
 
-state.setOptions(props.options)
-state.setItems(props.items)
-
 onMounted(() => {
   if (slider.value) {
-    DOMSlider = UIkit.slider(slider.value, state.options)
+    DOMSlider = UIkit.slider(slider.value, props.options)
 
     // For fix slider 
     DOMSlider.show(1)
@@ -54,13 +50,13 @@ onBeforeUnmount(() => {
     <div ref="slider">
 
       <ul class="uk-slider-items Slideshow__onIndexPageList">
-        <li v-for="item in state.items">
+        <li v-for="item in props.items">
           <img :src="item.poster" class="Slideshow__onIndexPageImage transition" alt="">
 
           <div class="Slideshow__onIndexPageContent transition" uk-slideshow-parallax="x: 500, -500">
             <p class="Font Font__text Font__regular Slideshow__onIndexPageText moreLineEllipsis">{{ item.description }}</p>
 
-            <Button :to="{ name: 'video', params: { slug: item.slug } }" class="Link__forButton" type="anchor">Show detail</Button>
+            <Button :to="{ name: RoutesNames.VIDEO, params: { slug: item.slug } }" class="Link__forButton" type="anchor">Show detail</Button>
           </div>
         </li>
       </ul>

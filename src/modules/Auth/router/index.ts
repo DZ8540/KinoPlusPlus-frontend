@@ -4,29 +4,30 @@ import type { RouteRecordRaw } from 'vue-router'
 
 import checkTokenQuery from '@/middleware/checkTokenQuery'
 import removeCurrentUser from '@/middleware/removeCurrentUser'
+import { RoutesNames } from '@/config/router'
 
 export default [
   {
     path: '/auth/register',
     alias: '/register',
-    name: 'register',
-    component: () => import('../views/Register/Register.vue'),
+    name: RoutesNames.REGISTER,
+    component: () => import('../views/Register.vue'),
   },
   {
     path: '/auth/activateUser',
     beforeEnter: checkTokenQuery,
-    component: () => import('../views/ActivateUser/ActivateUser.vue'),
+    component: () => import('../views/ActivateUser.vue'),
   },
   {
     path: '/auth/login',
     alias: '/login',
-    name: 'login',
-    component: () => import('../views/Login/Login.vue')
+    name: RoutesNames.LOGIN,
+    component: () => import('../views/Login.vue')
   },
   {
     path: '/auth/logout',
     alias: '/logout',
-    name: 'logout',
+    name: RoutesNames.LOGOUT,
     beforeEnter: removeCurrentUser,
   },
 ] as RouteRecordRaw[]

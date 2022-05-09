@@ -2,15 +2,17 @@
 import type { RouteRecordRaw } from 'vue-router'
 // * Types
 
+import { RoutesNames } from '@/config/router'
+
 export default [
   {
     path: '/genres',
-    name: 'genres',
-    component: () => import('../views/Genres/Genres.vue'),
+    name: RoutesNames.GENRES,
+    component: () => import('../views/Genres.vue'),
   },
   {
     path: '/genres/:slug',
-    name: 'genre',
-    component: () => import('../views/Genre/Genre.vue')
+    name: RoutesNames.GENRE,
+    component: () => import('../views/Genre.vue')
   },
 ] as RouteRecordRaw[]

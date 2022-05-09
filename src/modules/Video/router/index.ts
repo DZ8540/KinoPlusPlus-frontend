@@ -2,25 +2,25 @@
 import type { RouteRecordRaw } from 'vue-router'
 // * Types
 
-import { HOME_ROUTE_NAME } from '@/config/router'
+import { RoutesNames } from '@/config/router'
 
 export default [
   {
     path: '/home',
     name: 'home',
-    redirect: { name: HOME_ROUTE_NAME },
+    redirect: { name: RoutesNames.HOME },
     component: () => import('@/views/Home.vue'),
     children: [
       {
         path: 'movies',
-        name: HOME_ROUTE_NAME,
-        component: () => import('../views/Movies/Movies.vue')
+        name: RoutesNames.HOME,
+        component: () => import('../views/Movies.vue')
       }
     ],
   },
   {
     path: '/video/:slug',
-    name: 'video',
-    component: () => import('@/modules/Video/views/Video/Video.vue')
+    name: RoutesNames.VIDEO,
+    component: () => import('../views/Video.vue')
   },
 ] as RouteRecordRaw[]

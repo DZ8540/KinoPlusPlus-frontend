@@ -2,9 +2,10 @@
 import type { NavigationGuardNext, RouteLocationNormalized } from 'vue-router'
 // * Types
 
-import { Messages } from '@/contracts/response'
-import { useNotificationBus } from '@/store/notificationBusStore'
+import { Messages } from '@/config/response'
+import { RoutesNames } from '@/config/router'
 import { useUserData } from '@/store/userDataStore'
+import { useNotificationBus } from '@/store/notificationBusStore'
 
 export default function(to: RouteLocationNormalized, _: RouteLocationNormalized, next: NavigationGuardNext) {
   const userData = useUserData()
@@ -12,11 +13,11 @@ export default function(to: RouteLocationNormalized, _: RouteLocationNormalized,
 
   if (!userData.user) {
     notifications.addNotification({
-      msg: Messages.AUTH_USER_UNDEFINED,
+      msg: Messages.USER_UNDEFINED,
       type: 'error',
     })
 
-    next({ name: 'login' })
+    next({ name: RoutesNames.LOGIN })
   } else {
     next()
   }

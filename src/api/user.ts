@@ -2,30 +2,29 @@
 import type { AxiosResponse } from 'axios'
 import type { User } from '@/contracts/user'
 import type { UnparsedVideo } from '@/contracts/video'
-import type { ApiDefaultValues, Paginate } from '@/contracts/api'
 import type { ErrorResponse, Response } from '@/contracts/response'
+import type { ApiDefaultPayload, Paginate, UserPayload } from '@/contracts/api'
 // * Types
 
 import instance from './instance'
-import Logger from '@/assets/vendor/Logger'
-import { ROUTES } from '@/config/api'
+import { API_ROUTES } from '@/config/api'
 
-export async function updateUser(userId: User['id'], data: object): Promise<AxiosResponse<Response<User>>> {
+export async function updateUserApi(userId: User['id'], payload: UserPayload): Promise<AxiosResponse<Response<User>>> {
   try {
-    return await instance.patch<Response<User>>(ROUTES.user.update(userId), data)
-  } catch (err: ErrorResponse | any) {
-    Logger.error(err)
+    return await instance.patch<Response<User>>(API_ROUTES.user.update(userId), payload)
+  } catch (_err: any) {
+    const err: ErrorResponse = _err
 
-    throw err.response.data
+    throw err.response
   }
 }
 
-export async function getUserWishlist(userId: User['id'], data: ApiDefaultValues): Promise<AxiosResponse<Response<Paginate<UnparsedVideo>>>> {
+export async function getUserWishlistApi(userId: User['id'], payload: ApiDefaultPayload): Promise<AxiosResponse<Response<Paginate<UnparsedVideo>>>> {
   try {
-    return await instance.post<Response<Paginate<UnparsedVideo>>>(ROUTES.user.wishlist(userId), data)
-  } catch (err: ErrorResponse | any) {
-    Logger.error(err)
+    return await instance.post<Response<Paginate<UnparsedVideo>>>(API_ROUTES.user.wishlist(userId), payload)
+  } catch (_err: any) {
+    const err: ErrorResponse = _err
 
-    throw err.response.data
+    throw err.response
   }
 }

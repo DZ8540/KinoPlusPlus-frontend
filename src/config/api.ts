@@ -4,7 +4,7 @@ import type { Genre } from '@/contracts/genre'
 import type { Video } from '@/contracts/video'
 // * Types
 
-export const ROUTES = {
+export const API_ROUTES = {
   video: {
     newest: (currentUserId?: User['id']) => `/videos/newest/${currentUserId ?? ''}`,
     popular: (currentUserId?: User['id']) => `/videos/popular/${currentUserId ?? ''}`,
@@ -15,13 +15,14 @@ export const ROUTES = {
   genre: {
     all: '/genres',
     showOnMainPage: '/genres/showOnMainPage',
-    item: (slug: Genre['slug']) => `/genres/${slug}`
+    item: (slug: Genre['slug']) => `/genres/${slug}`,
+    genreMovies: (slug: Genre['slug'], currentUserId?: User['id']) => `/genres/movies/${slug}/${currentUserId ?? ''}`,
   },
   auth: {
     register: '/auth/register',
     login: '/auth/login',
     logout: '/auth/logout', 
-    activateUser: (token: string) => `/auth/emailVerify/${token}`
+    activateUser: (token: string) => `/auth/emailVerify/${token}`,
   },
   user: {
     update: (userId: User['id']) => `/user/${userId}`,

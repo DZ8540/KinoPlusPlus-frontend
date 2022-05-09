@@ -17,35 +17,6 @@ export type ErrorResponse = {
 
 export type ErrorFromQuery<K = string> = {
   rule: string,
-  field: string,
+  field: K,
   message: string,
-}
-
-/**
- * * Enums
- */
-
-export enum Messages {
-  /**
-   * * Auth
-   */
-
-  AUTH_ACTIVATE_ACCOUNT_DEFAULT = 'Please wait, we will activate your account!',
-  AUTH_LOGOUT = 'Logged out success!',
-  AUTH_USER_UNDEFINED = 'Please log in your account!',
-
-  /**
-   * * Errors
-   */
-
-  TOKEN_ERR = 'Token expired or undefined!',
-  ERR = 'Error! Please try again!',
-  VALIDATION_ERR = 'Please, fill all fields correctly!',
-
-  /**
-   * * Video
-   */
-
-  VIDEO_WISHLIST_ADDED = 'Video has been added to your wishlist!',
-  VIDEO_WISHLIST_DELETED = 'Video has been deleted from your wishlist!',
 }

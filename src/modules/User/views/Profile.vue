@@ -1,13 +1,27 @@
 <script lang="ts" setup>
 // * Types
 import type { Ref } from 'vue'
+import type { Value } from '@/contracts/select'
 import type { MenuItem } from '@/contracts/tabs'
+import type { UserPayload } from '@/contracts/api'
+import type { ErrorResponse } from '@/contracts/response'
 // * Types
 
-import State from './index'
-import { ref } from 'vue'
+import useVuelidate from '@vuelidate/core'
+import UserService from '@/services/UserService'
+import { ref, reactive } from 'vue'
+import { Messages } from '@/config/response'
+import { RoutesNames } from '@/config/router'
 import { useUserData } from '@/store/userDataStore'
-import { castErrors, getFirstError } from '@/helpers'
+import { useNotificationBus } from '@/store/notificationBusStore'
+import { 
+  castErrors, checkFormData, getFirstError, 
+  isEqual, displayExternalErrors,
+} from '@/helpers'
+import { 
+  required, email, minLength, 
+  maxLength, requiredIf, numeric,
+} from '@vuelidate/validators'
 
 // * Components
 import List from '@/components/List.vue'
@@ -18,19 +32,30 @@ import Select from '@/components/Select.vue'
 import Button from '@/components/Button.vue'
 // * Components
 
-const state = new State()
 const userData = useUserData()
+const notifications = useNotificationBus()
 
 const totalCount: Ref<number> = ref(0)
 const isUpdateProfileMode: Ref<boolean> = ref(false)
+
+const sexValues: Value[] = [
+  {
+    text: 'Male',
+    value: false,
+  },
+  {
+    text: 'Female',
+    value: true,
+  },
+]
 const tabs: MenuItem[] = [
   {
     text: 'Achieves',
-    to: { name: 'profile' },
+    to: { name: RoutesNames.PROFILE },
   },
   {
     text: 'Wishlist',
-    to: { name: 'wishlist' },
+    to: { name: RoutesNames.WISHLIST },
   },
   {
     text: 'Later list',
@@ -42,25 +67,110 @@ const tabs: MenuItem[] = [
   },
 ]
 
+const formData: UserPayload & { oldPassword: UserPayload['password'] } = reactive({
+  nickname: userData.user!.nickname,
+  email: userData.user!.email,
+  avatar: null,
+  phone: userData.user!.phone,
+  sex: userData.user!.sex,
+  oldPassword: '',
+  password: '',
+  passwordConfirm: '',
+})
+const rules: any = {
+  nickname: { 
+    required, 
+    minLength: minLength(3),
+    maxLength: maxLength(20),
+  },
+  email: { required, email },
+  phone: { required, numeric },
+  sex: { required },
+  oldPassword: {
+    minLength: minLength(8),
+    maxLength: maxLength(30),
+  },
+  password: { 
+    requiredIf: requiredIf(formData.oldPassword as string),
+    minLength: minLength(8),
+    maxLength: maxLength(30),
+  },
+  passwordConfirm: { 
+    requiredIf: requiredIf(formData.password as string), 
+    minLength: minLength(8),
+    maxLength: maxLength(30),
+  },
+}
+const externalErrors: any = reactive({
+  nickname: '',
+  email: '',
+  avatar: null,
+  phone: '',
+  sex: '',
+  password: '',
+  passwordConfirm: '',
+})
+
+const v$ = useVuelidate(rules, formData, { $autoDirty: true, $externalResults: externalErrors })
+
 function toggleProfileMode(val: boolean): void {
   isUpdateProfileMode.value = val
 }
 
-function resetForm(): void {
-  state.resetForm.apply(state)
-}
-
 function setSexForUser(val: boolean): void {
-  state.formData.sex = val
+  formData.sex = val
 }
 
 function setTotalCount(newTotalCount: number): void {
   totalCount.value = newTotalCount
 }
 
+function resetForm(): void {
+  formData.email = userData.user!.email
+  formData.nickname = userData.user!.nickname
+  formData.phone = userData.user!.phone
+  formData.sex = userData.user!.sex
+  formData.oldPassword = ''
+  formData.password = ''
+  formData.passwordConfirm = ''
+
+  v$.value.$reset()
+}
+
+async function updateUserProfileCheckFormData(): Promise<void> {
+  if (!isEqual(formData.password!, formData.passwordConfirm!)) {
+    externalErrors.passwordConfirm = 'Should equal to password field!'
+    throw Messages.VALIDATION_ERR
+  }
+    
+  await checkFormData(v$)
+}
+
 async function submitHandler(): Promise<void> {
-  await state.submitHandler.apply(state)
-  toggleProfileMode(false)
+  try {
+    try {
+      await updateUserProfileCheckFormData()
+    } catch (_err: any) {
+      const err: Messages = _err
+
+      notifications.addNotification({
+        msg: err,
+        type: 'error',
+      })
+
+      throw null
+    }
+
+    await UserService.updateProfile(formData)
+    resetForm()
+
+    toggleProfileMode(false)
+  } catch (_err: any) {
+    const err: ErrorResponse['response']['data']['errors'] | null = _err
+
+    if (err)
+      displayExternalErrors(externalErrors, err)
+  }
 }
 </script>
 
@@ -87,26 +197,26 @@ async function submitHandler(): Promise<void> {
           <div class="Box Box__overflow">
             <Input class="profileInput">
               <template v-slot="{ inputClassNames }">
-                <input :class="inputClassNames" v-model="state.formData.nickname" type="text" placeholder="User Name">
+                <input :class="inputClassNames" v-model="formData.nickname" type="text" placeholder="User Name">
               </template>
 
-              <template v-if="castErrors(state.v$.value.nickname.$errors.length)" #error>{{ getFirstError(state.v$, 'nickname') }}</template>
+              <template v-if="castErrors(v$.nickname.$errors.length)" #error>{{ getFirstError(v$, 'nickname') }}</template>
             </Input> 
 
             <Input class="profileInput">
               <template v-slot="{ inputClassNames }">
-                <input :class="inputClassNames" v-model="state.formData.email" type="email" placeholder="Email">
+                <input :class="inputClassNames" v-model="formData.email" type="email" placeholder="Email">
               </template>
 
-              <template v-if="castErrors(state.v$.value.email.$errors.length)" #error>{{ getFirstError(state.v$, 'email') }}</template>
+              <template v-if="castErrors(v$.email.$errors.length)" #error>{{ getFirstError(v$, 'email') }}</template>
             </Input>
 
             <Input class="profileInput">
               <template v-slot="{ inputClassNames }">
-                <input :class="inputClassNames" v-model="state.formData.phone" type="text" placeholder="Phone">
+                <input :class="inputClassNames" v-model="formData.phone" type="text" placeholder="Phone">
               </template>
 
-              <template v-if="castErrors(state.v$.value.phone.$errors.length)" #error>{{ getFirstError(state.v$, 'phone') }}</template>
+              <template v-if="castErrors(v$.phone.$errors.length)" #error>{{ getFirstError(v$, 'phone') }}</template>
             </Input>
 
             <!-- TODO: Make datepicker -->
@@ -115,32 +225,32 @@ async function submitHandler(): Promise<void> {
               <span class="Input__error Font Font__regular Font__text">Text error</span>
             </div> -->
 
-            <Select @change="setSexForUser" :main-value="state.formData.sex" :values="state.sexValues" name="Sex" is-full is-like-input />
+            <Select @change="setSexForUser" :main-value="formData.sex" :values="sexValues" name="Sex" is-full is-like-input />
 
             <Title is-lite>Password</Title>
 
             <Input class="registerBox__input">
               <template v-slot="{ inputClassNames }">
-                <input :class="inputClassNames" v-model="state.formData.oldPassword" type="password" placeholder="Your old password">
+                <input :class="inputClassNames" v-model="formData.oldPassword" type="password" placeholder="Your old password">
               </template>
 
-              <template v-if="castErrors(state.v$.value.oldPassword.$errors.length)" #error>{{ getFirstError(state.v$, 'oldPassword') }}</template>
+              <template v-if="castErrors(v$.oldPassword.$errors.length)" #error>{{ getFirstError(v$, 'oldPassword') }}</template>
             </Input>
 
             <Input class="registerBox__input">
               <template v-slot="{ inputClassNames }">
-                <input :class="inputClassNames" v-model="state.formData.password" type="password" placeholder="Your new password">
+                <input :class="inputClassNames" v-model="formData.password" type="password" placeholder="Your new password">
               </template>
 
-              <template v-if="castErrors(state.v$.value.password.$errors.length)" #error>{{ getFirstError(state.v$, 'password') }}</template>
+              <template v-if="castErrors(v$.password.$errors.length)" #error>{{ getFirstError(v$, 'password') }}</template>
             </Input>
 
             <Input class="registerBox__input">
               <template v-slot="{ inputClassNames }">
-                <input :class="inputClassNames" v-model="state.formData.passwordConfirm" type="password" placeholder="Confirm password">
+                <input :class="inputClassNames" v-model="formData.passwordConfirm" type="password" placeholder="Confirm password">
               </template>
 
-              <template v-if="castErrors(state.v$.value.passwordConfirm.$errors.length)" #error>{{ getFirstError(state.v$, 'passwordConfirm') }}</template>
+              <template v-if="castErrors(v$.passwordConfirm.$errors.length)" #error>{{ getFirstError(v$, 'passwordConfirm') }}</template>
             </Input>
 
             <div class="achievementBtns">

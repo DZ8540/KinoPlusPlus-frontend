@@ -5,8 +5,5 @@ export type Genre = {
   description: string,
   createdAt: string,
   image?: string,
-}
-
-export type AggregateGenre = Genre & {
-  moviesCount: number,
+  moviesCount?: number,
 }

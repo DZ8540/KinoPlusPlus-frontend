@@ -5,16 +5,15 @@ import type { RouteLocationRaw } from 'vue-router'
 import type { UnparsedVideo, Video, WishlistActions } from '@/contracts/video'
 // * Types
 
-import State from './index'
-
-// * Components
-import Icon from '../Icon.vue'
+import UserService from '@/services/UserService'
 import { ref } from 'vue'
 import { Duration } from 'luxon'
 import { useUserData } from '@/store/userDataStore'
+
+// * Components
+import Icon from './Icon.vue'
 // * Components
 
-const state = new State()
 const userData = useUserData()
 const props = defineProps({
   item: {
@@ -49,7 +48,7 @@ async function wishlistAction(): Promise<void> {
   const action: WishlistActions = wishlistStatus ? 'delete' : 'add'
 
   try {
-    await state.wishlistAction(item.value.id, action)
+    await UserService.wishlistAction(item.value.id, action)
     item.value.wishlistStatus = !wishlistStatus
   } catch (err: any) {}
 }

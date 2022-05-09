@@ -4,15 +4,11 @@ import type { Validation } from '@vuelidate/core'
 import type { ErrorFromQuery } from '@/contracts/response'
 // * Types
 
-import { Messages } from '@/contracts/response'
+import { Messages } from '@/config/response'
 
-// export function checkQuery<I = any>(query: AxiosResponse<Response<I>>): void {
-//   if (!query.data.body)
-//     throw Messages.ERR
-
-//   if (query.data.status != 200)
-//     throw query.data.message
-// }
+/**
+ * * For vuelidate
+ */
 
 export function isEqual(from: string, to: string): boolean {
   return from !== to ? false : true
@@ -22,8 +18,8 @@ export function castErrors(val: any): boolean {
   return Boolean(val)
 }
 
-export function getFirstError<O>(data: Ref<Validation<any, O>>, inputName: keyof Ref<O>['value']): Ref<string> | string {
-  return data.value[inputName].$errors[0].$message
+export function getFirstError<O>(data: Validation<any, O>, inputName: keyof Ref<O>['value']): Ref<string> | string {
+  return data[inputName].$errors[0].$message
 }
 
 export async function checkFormData<O>(data: Ref<Validation<any, O>>): Promise<void> {

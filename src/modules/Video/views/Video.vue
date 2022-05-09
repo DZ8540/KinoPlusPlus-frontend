@@ -3,11 +3,14 @@
 import type { Ref } from 'vue'
 import type { Actor } from '@/contracts/actor'
 import type { Genre } from '@/contracts/genre'
-import type { Video, WishlistActions } from '@/contracts/video'
+import type { UnparsedVideo, Video, WishlistActions } from '@/contracts/video'
 // * Types
 
-import State from './index'
+import UserService from '@/services/UserService'
+import VideoService from '@/services/VideoService'
+import { Duration } from 'luxon'
 import { useRoute } from 'vue-router'
+import { RoutesNames } from '@/config/router'
 import { DEFAULT_VIDEO } from '@/config/video'
 import { onMounted, reactive, ref } from 'vue'
 import { DEFAULT_ACTOR } from '@/config/actor'
@@ -26,7 +29,6 @@ import ActorCardMini from '@/components/ActorCardMini.vue'
 // * Components
 
 const route = useRoute()
-const state = new State()
 const userData = useUserData()
 
 let item: Ref<Video> = ref({ ...DEFAULT_VIDEO })
@@ -54,21 +56,39 @@ function parseGenres(): void {
   }
 }
 
+function parseItem(item: UnparsedVideo): Video {
+  const duration: string = Duration.fromISOTime(item.duration).toFormat("h 'hour' mm 'minutes'")
+  const rating: string = item.rating.replace('.', ',')
+  const ageLimit: string = `+${item.ageLimit}`
+  const wishlistStatus: boolean = item.wishlistStatus ?? false
+
+  return {
+    ...item,
+    duration,
+    rating,
+    ageLimit,
+    wishlistStatus,
+  }
+}
+
 async function wishlistAction(): Promise<void> {
   const wishlistStatus: boolean = item.value.wishlistStatus
   const action: WishlistActions = wishlistStatus ? 'delete' : 'add'
 
   try {
-    await state.wishlistAction(item.value.id, action)
+    await UserService.wishlistAction(item.value.id, action)
     item.value.wishlistStatus = !wishlistStatus
   } catch (err: any) {}
 }
 
 onMounted(async () => {
-  item.value = await state.getItem(slug)
-  parseGenres()
+  try {
+    const unparsedVideo: UnparsedVideo = await VideoService.get(slug)
+    item.value = parseItem(unparsedVideo)
+    parseGenres()
 
-  isLoaded.value = true
+    isLoaded.value = true
+  } catch (_err: any) {}
 })
 </script>
 
@@ -117,7 +137,7 @@ onMounted(async () => {
               <li :class="classNames">
                 <span :class="textClassName" class="Font Font__text Font__regular">
                   Genres:
-                  <Link v-for="genre in displayGenres" :to="{ name: 'genre', params: { slug: genre.slug } }">{{ genre.name }}</Link>
+                  <Link v-for="genre in displayGenres" :to="{ name: RoutesNames.GENRE, params: { slug: genre.slug } }">{{ genre.name }}</Link>
                 </span>
               </li>
               

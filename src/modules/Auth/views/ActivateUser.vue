@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import State from './index'
+import AuthService from '@/services/AuthService'
 import { onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 
@@ -7,18 +7,17 @@ import { useRoute } from 'vue-router'
 import Title from '@/components/Title.vue'
 // * Components
 
-const state = new State()
 const route = useRoute()
 
 const token: string = route.query.token as string
 
 onMounted(async () => {
-  state.activate(token)
+  await AuthService.activateUser(token)
 })
 </script>
 
 <template>
-  <Title>{{ state.message.value }}</Title>
+  <Title>Please wait, we will activate your account!</Title>
 </template>
 
 <style lang="sass"></style>

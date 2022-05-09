@@ -5,6 +5,7 @@ import type { Value } from '@/contracts/select'
 // * Types
 
 import UIkit from 'uikit'
+import { RoutesNames } from '@/config/router'
 import { onMounted, ref, reactive, onBeforeMount } from 'vue'
 
 // * Components
@@ -55,7 +56,7 @@ onMounted(() => {
   <nav class="Navbar transition" ref="navbar">
 
     <div class="Navbar__left">
-      <router-link :to="{ name: 'home' }" uk-scrollspy="cls: uk-animation-slide-left; delay: 100">
+      <router-link :to="{ name: RoutesNames.HOME }" uk-scrollspy="cls: uk-animation-slide-left; delay: 100">
         <img src="@/assets/img/logo.png" class="Navbar__logo" alt="">
       </router-link>
     </div>
@@ -64,7 +65,7 @@ onMounted(() => {
       <ul class="Navbar__nav" uk-scrollspy="target: > li; cls: uk-animation-slide-top; delay: 100">
 
         <li class="Navbar__navLi">
-          <Link :to="{ name: 'home' }">Main</Link>
+          <Link :to="{ name: RoutesNames.HOME }">Main</Link>
         </li>
 
         <li class="Navbar__navLi">
@@ -268,7 +269,7 @@ onMounted(() => {
         </li>
 
         <li class="Navbar__navLi">
-          <Link :to="{ name: 'genres' }">All genres</Link>
+          <Link :to="{ name: RoutesNames.GENRES }">All genres</Link>
         </li>
 
         <li class="Navbar__navLi">
@@ -298,7 +299,7 @@ onMounted(() => {
         </li>
 
         <li class="Navbar__rightListLi uk-visible@l">
-          <router-link class="Navbar__rightListLink" :to="{ name: 'profile' }">
+          <router-link class="Navbar__rightListLink" :to="{ name: RoutesNames.PROFILE }">
             <Icon type="USER" />
           </router-link>
         </li>

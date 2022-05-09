@@ -1,5 +1,7 @@
+// * Types
 import type { Genre } from './genre'
-import type { ApiDefaultValues } from './api'
+import type { ApiDefaultPayload } from './api'
+// * Types
 
 export type UnparsedVideo = {
   id: number,
@@ -26,7 +28,7 @@ export type Video = Omit<UnparsedVideo, 'ageLimit'> & {
   wishlistStatus: boolean,
 }
 
-export type ApiSearchData = ApiDefaultValues & {
+export type ApiSearchData = ApiDefaultPayload & {
   genres?: Genre['id'][],
 }
 

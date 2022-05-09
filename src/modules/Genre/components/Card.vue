@@ -1,16 +1,13 @@
 <script lang="ts" setup>
 // * Types
 import type { PropType } from 'vue'
+import type { Genre } from '@/contracts/genre'
 import type { RouteLocationRaw } from 'vue-router'
-import type { AggregateGenre } from '@/contracts/genre'
 // * Types
 
-import State from './index'
-
-const state = new State()
 const props = defineProps({
   item: {
-    type: Object as PropType<AggregateGenre>,
+    type: Object as PropType<Genre>,
     required: true,
   },
   to: {
@@ -19,19 +16,19 @@ const props = defineProps({
   },
 })
 
-state.setItem(props.item)
+const moviesCount: Genre['moviesCount'] & number = props.item.moviesCount ?? 0
 </script>
 
 <template>
   <div class="Card">
     <div class="Card__header">
 
-      <router-link class="Card__imgLink" :to="props.to">
+      <router-link :to="props.to" class="Card__imgLink">
         <img src="@/assets/img/empty.jpg" class="Card__img transition" alt="">
       </router-link>
 
       <div class="Card__bottom transition">
-        <span class="Card__attribute Font Font__regular Font__text Card__yellow">Movies: {{ state.item.moviesCount }}</span>
+        <span class="Card__attribute Font Font__regular Font__text Card__yellow">Movies: {{ moviesCount }}</span>
         <!-- <span class="Card__attribute Font Font__regular Font__text Card__yellow">Serials: 105</span>
         <span class="Card__attribute Font Font__regular Font__text Card__yellow">Cartoons: 105</span>
         <span class="Card__attribute Font Font__regular Font__text Card__yellow">Cartoon serials: 105</span> -->
@@ -39,7 +36,7 @@ state.setItem(props.item)
     </div>
 
     <div class="Card__footer">
-      <router-link :to="props.to" class="Link Card__name Font Font__text Font__regular transition">{{ state.item.name }}</router-link>
+      <router-link :to="props.to" class="Link Card__name Font Font__text Font__regular transition">{{ props.item.name }}</router-link>
     </div>
   </div>
 </template>

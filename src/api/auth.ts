@@ -1,51 +1,50 @@
-
 // * Types
 import type { AxiosResponse } from 'axios'
 import type { User } from '@/contracts/user'
-import type { LoginData, RegistrationData } from '@/contracts/api'
 import type { ErrorResponse, Response } from '@/contracts/response'
+import type { LoginPayload, RegistrationPayload } from '@/contracts/api'
 // * Types
 
 import instance from './instance'
 import Logger from '@/assets/vendor/Logger'
-import { ROUTES } from '@/config/api'
+import { API_ROUTES } from '@/config/api'
 
-export async function register(data: RegistrationData): Promise<AxiosResponse<Response<null>>> {
+export async function registerApi(payload: RegistrationPayload): Promise<void> {
   try {
-    return await instance.post<Response<null>>(ROUTES.auth.register, data)
-  } catch (err: ErrorResponse | any) {
-    Logger.error(err)
+    await instance.post(API_ROUTES.auth.register, payload)
+  } catch (_err: any) {
+    const err: ErrorResponse = _err
 
-    throw err.response.data
+    throw err.response
   }
 }
 
-export async function activateUser(token: string): Promise<AxiosResponse<Response<User>>> {
+export async function activateUserApi(token: string): Promise<void> {
   try {
-    return await instance.post<Response<User>>(ROUTES.auth.activateUser(token))
-  } catch (err: ErrorResponse | any) {
-    Logger.error(err)
+    await instance.post(API_ROUTES.auth.activateUser(token))
+  } catch (_err: any) {
+    const err: ErrorResponse = _err
 
-    throw err.response.data
+    throw err.response
   }
 }
 
-export async function login(data: LoginData): Promise<AxiosResponse<Response<{ user: User, token: string }>>> {
+export async function loginApi(payload: LoginPayload): Promise<AxiosResponse<Response<{ user: User, token: string }>>> {
   try {
-    return await instance.post<Response<{ user: User, token: string }>>(ROUTES.auth.login, data)
-  } catch (err: ErrorResponse | any) {
-    Logger.error(err)
+    return await instance.post<Response<{ user: User, token: string }>>(API_ROUTES.auth.login, payload)
+  } catch (_err: any) {
+    const err: ErrorResponse = _err
 
-    throw err.response.data
+    throw err.response
   }
 }
 
-export async function logout(): Promise<AxiosResponse<Response<null>>> {
+export async function logoutApi(): Promise<AxiosResponse<Response<null>>> {
   try {
-    return await instance.post<Response<null>>(ROUTES.auth.logout)
-  } catch (err: ErrorResponse | any) {
-    Logger.error(err)
+    return await instance.post<Response<null>>(API_ROUTES.auth.logout)
+  } catch (_err: any) {
+    const err: ErrorResponse = _err
 
-    throw err.response.data
+    throw err.response
   }
 }
