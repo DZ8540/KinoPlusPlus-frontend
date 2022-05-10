@@ -38,3 +38,13 @@ export async function getUserLaterListApi(userId: User['id'], payload: ApiDefaul
     throw err.response
   }
 }
+
+export async function getUserHistoryListApi(userId: User['id'], payload: ApiDefaultPayload): Promise<AxiosResponse<Response<Paginate<UnparsedVideo>>>> {
+  try {
+    return await instance.post<Response<Paginate<UnparsedVideo>>>(API_ROUTES.user.historyList(userId), payload)
+  } catch (_err: any) {
+    const err: ErrorResponse = _err
+
+    throw err.response
+  }
+}

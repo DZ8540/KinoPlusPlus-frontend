@@ -10,7 +10,10 @@ import BaseService from './BaseService'
 import Logger from '@/assets/vendor/Logger'
 import { Messages } from '@/config/response'
 import { laterListApi, wishlistApi } from '@/api/video'
-import { getUserLaterListApi, getUserWishlistApi, updateUserApi } from '@/api/user'
+import { 
+  getUserHistoryListApi, getUserLaterListApi, 
+  getUserWishlistApi, updateUserApi,
+} from '@/api/user'
 
 
 export default class UserService extends BaseService {
@@ -33,6 +36,21 @@ export default class UserService extends BaseService {
         throw err.data.errors
 
       throw null
+    }
+  }
+
+  public static async getHistoryList(payload: ApiDefaultPayload): Promise<Paginate<UnparsedVideo>> {
+    const user: ParseUser = this.getUser()
+
+    try {
+      const response: AxiosResponse<Response<Paginate<UnparsedVideo>>> = await getUserHistoryListApi(user.id, payload)
+
+      return response.data.body!
+    } catch (_err: any) {
+      const err: ErrorResponse['response'] = _err
+      Logger.error(err)
+
+      throw this.errorNotify(err.data.message)
     }
   }
 

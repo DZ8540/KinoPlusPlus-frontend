@@ -26,6 +26,11 @@ export default [
         name: RoutesNames.LATER_LIST,
         component: () => import('../views/LaterList.vue'),
       },
+      {
+        path: 'historyList',
+        name: RoutesNames.HISTORY_LIST,
+        component: () => import('../views/HistoryList.vue'),
+      },
     ],
   },
 ] as RouteRecordRaw[]

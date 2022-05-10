@@ -22,6 +22,7 @@ export enum RoutesNames {
   PROFILE = 'profile',
   WISHLIST = 'wishlist',
   LATER_LIST = 'laterList',
+  HISTORY_LIST = 'historyList',
 
   /**
    * * Video

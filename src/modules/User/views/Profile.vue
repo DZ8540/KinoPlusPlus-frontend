@@ -63,7 +63,7 @@ const tabs: MenuItem[] = [
   },
   {
     text: 'History',
-    to: '/',
+    to: { name: RoutesNames.HISTORY_LIST },
   },
 ]
 

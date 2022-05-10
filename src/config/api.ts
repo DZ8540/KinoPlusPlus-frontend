@@ -29,6 +29,7 @@ export const API_ROUTES = {
     update: (userId: User['id']) => `/user/${userId}`,
     wishlist: (userId: User['id']) => `/user/wishlist/${userId}`,
     laterList: (userId: User['id']) => `/user/laterList/${userId}`,
+    historyList: (userId: User['id']) => `/user/historyList/${userId}`,
   }
 } as const
 
