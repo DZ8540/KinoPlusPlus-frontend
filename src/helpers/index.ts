@@ -2,9 +2,28 @@
 import type { Ref } from 'vue'
 import type { Validation } from '@vuelidate/core'
 import type { ErrorFromQuery } from '@/contracts/response'
+import type { UnparsedVideo, Video } from '@/contracts/video'
 // * Types
 
+import { Duration } from 'luxon'
 import { Messages } from '@/config/response'
+
+export function parseVideo(item: UnparsedVideo): Video {
+  const duration: string = Duration.fromISOTime(item.duration).toFormat("h 'hour' mm 'minutes'")
+  const rating: string = item.rating.replace('.', ',')
+  const ageLimit: string = `+${item.ageLimit}`
+  const wishlistStatus: boolean = item.wishlistStatus ?? false
+  const laterListStatus: boolean = item.laterListStatus ?? false
+
+  return {
+    ...item,
+    duration,
+    rating,
+    ageLimit,
+    wishlistStatus,
+    laterListStatus,
+  }
+}
 
 /**
  * * For vuelidate

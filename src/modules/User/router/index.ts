@@ -21,6 +21,11 @@ export default [
         name: RoutesNames.WISHLIST,
         component: () => import('../views/Wishlist.vue'),
       },
+      {
+        path: 'laterList',
+        name: RoutesNames.LATER_LIST,
+        component: () => import('../views/LaterList.vue'),
+      },
     ],
   },
 ] as RouteRecordRaw[]

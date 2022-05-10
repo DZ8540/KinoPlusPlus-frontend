@@ -35,6 +35,9 @@ export enum Messages {
   VIDEO_WISHLIST_ADDED = 'Video has been added to your wishlist!',
   VIDEO_WISHLIST_DELETED = 'Video has been deleted from your wishlist!',
 
+  VIDEO_LATER_LIST_ADDED = 'Video has been added to your later list!',
+  VIDEO_LATER_LIST_DELETED = 'Video has been deleted from your later list!',
+
   /**
    * * User
    */

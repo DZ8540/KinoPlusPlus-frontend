@@ -22,9 +22,9 @@ let page: number = 1
 let lastPage: number = 0
 const limit: number = 20
 const totalCount: Ref<number> = ref(0)
-const wishlist: UnparsedVideo[] = reactive([])
-const isWishListLoaded: Ref<boolean> = ref(false)
+const laterList: UnparsedVideo[] = reactive([])
 const isShowShowMoreBtn: Ref<boolean> = ref(true)
+const isLaterListLoaded: Ref<boolean> = ref(false)
 
 async function nextPage(): Promise<void> {
   if (page < lastPage) {
@@ -35,11 +35,11 @@ async function nextPage(): Promise<void> {
 
 async function addNewMovies(): Promise<void> {
   try {
-    const newWishlist: Paginate<UnparsedVideo> = await UserService.getWishlist({ page, limit })
+    const newLaterList: Paginate<UnparsedVideo> = await UserService.getLaterList({ page, limit })
 
-    lastPage = newWishlist.meta.lastPage
-    totalCount.value = newWishlist.meta.total
-    wishlist.push(...newWishlist.data)
+    lastPage = newLaterList.meta.lastPage
+    totalCount.value = newLaterList.meta.total
+    laterList.push(...newLaterList.data)
 
     emit(EventsNames.TOTAL_RESULT, totalCount.value)
 
@@ -50,15 +50,15 @@ async function addNewMovies(): Promise<void> {
 
 onMounted(async () => {
   await addNewMovies()
-  isWishListLoaded.value = true
+  isLaterListLoaded.value = true
 })
 </script>
 
 <template>
-  <Preloader v-if="!isWishListLoaded" />
+  <Preloader v-if="!isLaterListLoaded" />
   <div v-else class="uk-child-width-1-4@m uk-child-width-1-3@s uk-child-width-1-2" uk-grid>
 
-    <div v-for="item in wishlist">
+    <div v-for="item in laterList">
       <Card
        :item="item" 
        :to="{ name: RoutesNames.VIDEO, params: { slug: item.slug }}" 

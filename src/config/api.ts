@@ -10,6 +10,7 @@ export const API_ROUTES = {
     popular: (currentUserId?: User['id']) => `/videos/popular/${currentUserId ?? ''}`,
     search: (currentUserId?: User['id']) => `/videos/search/${currentUserId ?? ''}`,
     wishlist: (currentUserId?: User['id']) => `/videos/wishlist/${currentUserId ?? ''}`,
+    laterList: (currentUserId?: User['id']) => `/videos/laterList/${currentUserId ?? ''}`,
     item: (slug: Video['slug'], currentUserId?: User['id']) => `/videos/${slug}/${currentUserId ?? ''}`,
   },
   genre: {
@@ -27,6 +28,7 @@ export const API_ROUTES = {
   user: {
     update: (userId: User['id']) => `/user/${userId}`,
     wishlist: (userId: User['id']) => `/user/wishlist/${userId}`,
+    laterList: (userId: User['id']) => `/user/laterList/${userId}`,
   }
 } as const
 

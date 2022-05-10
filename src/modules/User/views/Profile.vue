@@ -59,7 +59,7 @@ const tabs: MenuItem[] = [
   },
   {
     text: 'Later list',
-    to: '/',
+    to: { name: RoutesNames.LATER_LIST },
   },
   {
     text: 'History',

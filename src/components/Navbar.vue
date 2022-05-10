@@ -6,6 +6,7 @@ import type { Value } from '@/contracts/select'
 
 import UIkit from 'uikit'
 import { RoutesNames } from '@/config/router'
+import { useUserData } from '@/store/userDataStore'
 import { onMounted, ref, reactive, onBeforeMount } from 'vue'
 
 // * Components
@@ -17,6 +18,7 @@ import SearchDrop from './SearchDrop.vue'
 import ThemeSwitcher from '@/components/ThemeSwitcher.vue'
 // * Components
 
+const userData = useUserData()
 const props = defineProps({
   options: {
     type: Object as PropType<UIkit.UIkitNavbarOptions>,
@@ -290,7 +292,7 @@ onMounted(() => {
           <Select :values="langs" :main-value="0" name="Lang" />
         </li>
 
-        <li class="Navbar__rightListLi uk-visible@l" :class="searchDropBoundaryClassName">
+        <li :class="searchDropBoundaryClassName" class="Navbar__rightListLi uk-visible@l">
           <a href="#" class="Navbar__rightListLink">
             <Icon type="SEARCH" />
           </a>
@@ -299,8 +301,14 @@ onMounted(() => {
         </li>
 
         <li class="Navbar__rightListLi uk-visible@l">
-          <router-link class="Navbar__rightListLink" :to="{ name: RoutesNames.PROFILE }">
+          <router-link :to="{ name: RoutesNames.PROFILE }" class="Navbar__rightListLink">
             <Icon type="USER" />
+          </router-link>
+        </li>
+
+        <li v-if="userData.user" class="Navbar__rightListLi uk-visible@l">
+          <router-link :to="{ name: RoutesNames.LOGOUT }" class="Navbar__rightListLink">
+            <Icon type="LOGOUT" />
           </router-link>
         </li>
 

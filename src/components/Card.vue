@@ -2,12 +2,13 @@
 // * Types
 import type { PropType, Ref } from 'vue'
 import type { RouteLocationRaw } from 'vue-router'
-import type { UnparsedVideo, Video, WishlistActions } from '@/contracts/video'
+import type { UnparsedVideo, Video, ListsActions } from '@/contracts/video'
 // * Types
 
 import UserService from '@/services/UserService'
 import { ref } from 'vue'
 import { Duration } from 'luxon'
+import { parseVideo } from '@/helpers'
 import { useUserData } from '@/store/userDataStore'
 
 // * Components
@@ -29,27 +30,30 @@ const props = defineProps({
 const item: Ref<Video> = ref({ ...parseItem(props.item) })
 
 function parseItem(item: UnparsedVideo): Video {
-  const duration: string = Duration.fromISOTime(item.duration).toFormat("mm 'minutes'")
-  const rating: string = item.rating.replace('.', ',')
-  const ageLimit: string = `+${item.ageLimit}`
-  const wishlistStatus: boolean = item.wishlistStatus ?? false
+  const parsedItem: Video = parseVideo(item)
+  
+  parsedItem.duration = Duration.fromISOTime(item.duration).toFormat("mm 'minutes'")
 
-  return {
-    ...item,
-    duration,
-    rating,
-    ageLimit,
-    wishlistStatus,
-  }
+  return parsedItem
 }
 
 async function wishlistAction(): Promise<void> {
   const wishlistStatus: boolean = item.value.wishlistStatus
-  const action: WishlistActions = wishlistStatus ? 'delete' : 'add'
+  const action: ListsActions = wishlistStatus ? 'delete' : 'add'
 
   try {
     await UserService.wishlistAction(item.value.id, action)
     item.value.wishlistStatus = !wishlistStatus
+  } catch (err: any) {}
+}
+
+async function laterListAction(): Promise<void> {
+  const laterListStatus: boolean = item.value.laterListStatus
+  const action: ListsActions = laterListStatus ? 'delete' : 'add'
+
+  try {
+    await UserService.laterListAction(item.value.id, action)
+    item.value.laterListStatus = !laterListStatus
   } catch (err: any) {}
 }
 </script>
@@ -62,15 +66,15 @@ async function wishlistAction(): Promise<void> {
         <img :src="item.poster" class="Card__img transition" alt="">
       </router-link>
 
-      <div v-if="userData.user" class="Card__later transition">
-        <!-- <Icon type="CLOCK_SOLID" v-if="item.wishlistStatus" /> -->
-        <Icon type="CLOCK" />
+      <div v-if="userData.user" @click="laterListAction" class="Card__later transition">
+        <Icon v-if="item.laterListStatus" type="CLOCK_SOLID" />
+        <Icon v-else type="CLOCK" />
       </div>
 
       <div v-if="userData.user" class="Card__right transition">
         <div @click="wishlistAction" class="Card__wishlist">
-          <Icon type="HEART_SOLID" v-if="item.wishlistStatus" />
-          <Icon type="HEART" v-else />
+          <Icon v-if="item.wishlistStatus" type="HEART_SOLID" />
+          <Icon v-else type="HEART" />
         </div>
 
         <span class="Card__ageLimit Font Font__text Font__regular Card__yellow">{{ item.ageLimit }}</span>

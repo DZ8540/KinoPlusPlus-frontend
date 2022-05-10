@@ -3,13 +3,13 @@
 import type { Ref } from 'vue'
 import type { Actor } from '@/contracts/actor'
 import type { Genre } from '@/contracts/genre'
-import type { UnparsedVideo, Video, WishlistActions } from '@/contracts/video'
+import type { UnparsedVideo, Video, ListsActions } from '@/contracts/video'
 // * Types
 
 import UserService from '@/services/UserService'
 import VideoService from '@/services/VideoService'
-import { Duration } from 'luxon'
 import { useRoute } from 'vue-router'
+import { parseVideo } from '@/helpers'
 import { RoutesNames } from '@/config/router'
 import { DEFAULT_VIDEO } from '@/config/video'
 import { onMounted, reactive, ref } from 'vue'
@@ -56,24 +56,9 @@ function parseGenres(): void {
   }
 }
 
-function parseItem(item: UnparsedVideo): Video {
-  const duration: string = Duration.fromISOTime(item.duration).toFormat("h 'hour' mm 'minutes'")
-  const rating: string = item.rating.replace('.', ',')
-  const ageLimit: string = `+${item.ageLimit}`
-  const wishlistStatus: boolean = item.wishlistStatus ?? false
-
-  return {
-    ...item,
-    duration,
-    rating,
-    ageLimit,
-    wishlistStatus,
-  }
-}
-
 async function wishlistAction(): Promise<void> {
   const wishlistStatus: boolean = item.value.wishlistStatus
-  const action: WishlistActions = wishlistStatus ? 'delete' : 'add'
+  const action: ListsActions = wishlistStatus ? 'delete' : 'add'
 
   try {
     await UserService.wishlistAction(item.value.id, action)
@@ -81,10 +66,20 @@ async function wishlistAction(): Promise<void> {
   } catch (err: any) {}
 }
 
+async function laterListAction(): Promise<void> {
+  const laterListStatus: boolean = item.value.laterListStatus
+  const action: ListsActions = laterListStatus ? 'delete' : 'add'
+
+  try {
+    await UserService.laterListAction(item.value.id, action)
+    item.value.laterListStatus = !laterListStatus
+  } catch (err: any) {}
+}
+
 onMounted(async () => {
   try {
     const unparsedVideo: UnparsedVideo = await VideoService.get(slug)
-    item.value = parseItem(unparsedVideo)
+    item.value = parseVideo(unparsedVideo)
     parseGenres()
 
     isLoaded.value = true
@@ -158,12 +153,13 @@ onMounted(async () => {
             <p class="Font Font__regular Font__text">{{ item.description }}</p>
 
             <div v-if="userData.user" class="video__lists">
-              <button class="video__laterList">
-                <Icon type="CLOCK" />
+              <button @click="laterListAction" class="video__laterList">
+                <Icon v-if="item.laterListStatus" type="CLOCK_SOLID" />
+                <Icon v-else type="CLOCK" />
               </button>
-              <button class="video__wishList">
-                <Icon v-if="item.wishlistStatus" @click="wishlistAction" type="HEART_SOLID" />
-                <Icon v-else @click="wishlistAction" type="HEART" />
+              <button @click="wishlistAction" class="video__wishList">
+                <Icon v-if="item.wishlistStatus" type="HEART_SOLID" />
+                <Icon v-else type="HEART" />
               </button>
             </div>
 

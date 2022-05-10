@@ -48,6 +48,11 @@ export type WishlistPayload = {
   videoId: Video['id'],
 }
 
+export type LaterListPayload = {
+  userId: User['id'],
+  videoId: Video['id'],
+}
+
 /**
  * * User
  */

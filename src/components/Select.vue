@@ -4,10 +4,11 @@ import type { Ref, PropType } from 'vue'
 import type { Value } from '@/contracts/select'
 // * Types
 
+import { EventsNames } from '@/config/event'
 import { onMounted, ref, reactive } from 'vue'
 import { Select } from '@/assets/vendor/Select'
 
-const emit = defineEmits(['change'])
+const emit = defineEmits([EventsNames.SELECT_CHANGE])
 const props = defineProps({
   name: {
     type: String,
@@ -36,7 +37,7 @@ const inputBlockClassNames: any[] = reactive(['Select__inputBlock', { 'Input__in
 
 function changeHandler(): void {
   const selectVal: any = select.value!.querySelector('input')!.value
-  emit('change', selectVal)
+  emit(EventsNames.SELECT_CHANGE, selectVal)
 }
 
 function setCheckedAttr(val: Value['value']): object {

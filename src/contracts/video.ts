@@ -21,18 +21,20 @@ export type UnparsedVideo = {
   thirdImage: string,
   genres?: Pick<Genre, 'id' | 'slug' | 'name'>[]
   wishlistStatus?: boolean,
+  laterListStatus?: boolean,
 }
 
 export type Video = Omit<UnparsedVideo, 'ageLimit'> & {
   ageLimit: string,
   wishlistStatus: boolean,
+  laterListStatus: boolean,
 }
 
 export type ApiSearchData = ApiDefaultPayload & {
   genres?: Genre['id'][],
 }
 
-export type WishlistActions = 'add' | 'delete'
+export type ListsActions = 'add' | 'delete'
 
 export type MainPageGenre = {
   title: Genre['name'],

@@ -18,7 +18,6 @@ export default class AuthService extends BaseService {
       this.successNotify(Messages.AUTH_ACTIVATE_ACCOUNT_SUCCESS)
     } catch (_err: any) {
       Logger.error(_err)
-
       throw this.errorNotify(Messages.ERR)
     }
   }
@@ -64,13 +63,12 @@ export default class AuthService extends BaseService {
   public static async logout(): Promise<void> {
     try {
       await logoutApi()
-
-      this.userData().removeCurrentUser()
-      this.successNotify(Messages.AUTH_LOGOUT)
     } catch (_err: any) {
       Logger.error(_err)
-
-      this.errorNotify(Messages.ERR)
+      // this.errorNotify(Messages.ERR)
     }
+
+    this.userData().removeCurrentUser()
+    this.successNotify(Messages.AUTH_LOGOUT)
   }
 }
