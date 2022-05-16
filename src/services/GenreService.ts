@@ -1,7 +1,7 @@
 // * Types
 import type { AxiosResponse } from 'axios'
 import type { Genre } from '@/contracts/genre'
-import type { ParseUser } from '@/contracts/user'
+import type { ParsedUser } from '@/contracts/user'
 import type { UnparsedVideo } from '@/contracts/video'
 import type { ApiDefaultPayload, Paginate } from '@/contracts/api'
 import type { ErrorResponse, Response } from '@/contracts/response'
@@ -38,7 +38,7 @@ export default class GenreService extends BaseService {
   }
 
   public static async getGenreMovies(payload: ApiDefaultPayload, slug: Genre['slug']): Promise<Paginate<UnparsedVideo>> {
-    let userId: ParseUser['id'] | undefined
+    let userId: ParsedUser['id'] | undefined
 
     try {
       userId = this.getUser().id

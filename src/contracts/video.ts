@@ -1,7 +1,10 @@
 // * Types
+import type { User } from './user'
 import type { Genre } from './genre'
 import type { ApiDefaultPayload } from './api'
 // * Types
+
+export type ListsActions = 'add' | 'delete'
 
 export type UnparsedVideo = {
   id: number,
@@ -22,6 +25,8 @@ export type UnparsedVideo = {
   genres?: Pick<Genre, 'id' | 'slug' | 'name'>[]
   wishlistStatus?: boolean,
   laterListStatus?: boolean,
+  createdAt: string,
+  updatedAt: string,
 }
 
 export type Video = Omit<UnparsedVideo, 'ageLimit'> & {
@@ -34,9 +39,21 @@ export type ApiSearchData = ApiDefaultPayload & {
   genres?: Genre['id'][],
 }
 
-export type ListsActions = 'add' | 'delete'
-
 export type MainPageGenre = {
   title: Genre['name'],
   videos: UnparsedVideo[],
+}
+
+export type VideoComment = {
+  id: number,
+  description: string,
+  videoId: Video['id'],
+  userId: User['id'],
+  createdAt: string,
+  updatedAt: string,
+  user?: User,
+}
+
+export type ParsedVideoComment = VideoComment & {
+  time: string
 }

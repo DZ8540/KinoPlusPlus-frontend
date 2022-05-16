@@ -1,6 +1,6 @@
 // * Types
 import type { AxiosResponse } from 'axios'
-import type { ParseUser, User } from '@/contracts/user'
+import type { ParsedUser, User } from '@/contracts/user'
 import type { ErrorResponse, Response } from '@/contracts/response'
 import type { UnparsedVideo, Video, ListsActions } from '@/contracts/video'
 import type { ApiDefaultPayload, Paginate, UserPayload, WishlistPayload } from '@/contracts/api'
@@ -9,7 +9,7 @@ import type { ApiDefaultPayload, Paginate, UserPayload, WishlistPayload } from '
 import BaseService from './BaseService'
 import Logger from '@/assets/vendor/Logger'
 import { Messages } from '@/config/response'
-import { laterListApi, wishlistApi } from '@/api/video'
+import { laterListApi, wishlistApi } from '@/api/Video/video'
 import { 
   getUserHistoryListApi, getUserLaterListApi, 
   getUserWishlistApi, updateUserApi,
@@ -18,7 +18,7 @@ import {
 
 export default class UserService extends BaseService {
   public static async updateProfile(payload: UserPayload): Promise<void> {
-    const user: ParseUser = this.getUser()
+    const user: ParsedUser = this.getUser()
 
     try {
       const response: AxiosResponse<Response<User>> = await updateUserApi(user.id, payload)
@@ -40,7 +40,7 @@ export default class UserService extends BaseService {
   }
 
   public static async getHistoryList(payload: ApiDefaultPayload): Promise<Paginate<UnparsedVideo>> {
-    const user: ParseUser = this.getUser()
+    const user: ParsedUser = this.getUser()
 
     try {
       const response: AxiosResponse<Response<Paginate<UnparsedVideo>>> = await getUserHistoryListApi(user.id, payload)
@@ -59,7 +59,7 @@ export default class UserService extends BaseService {
    */
 
   public static async getWishlist(payload: ApiDefaultPayload): Promise<Paginate<UnparsedVideo>> {
-    const user: ParseUser = this.getUser()
+    const user: ParsedUser = this.getUser()
 
     try {
       const response: AxiosResponse<Response<Paginate<UnparsedVideo>>> = await getUserWishlistApi(user.id, payload)
@@ -74,7 +74,7 @@ export default class UserService extends BaseService {
   }
 
   public static async wishlistAction(videoId: Video['id'], action: ListsActions): Promise<void> {
-    const user: ParseUser = this.getUser()
+    const user: ParsedUser = this.getUser()
     
     const msg: Messages = action == 'add' ? Messages.VIDEO_WISHLIST_ADDED : Messages.VIDEO_WISHLIST_DELETED
     const payload: WishlistPayload = {
@@ -97,7 +97,7 @@ export default class UserService extends BaseService {
    */
 
   public static async getLaterList(payload: ApiDefaultPayload): Promise<Paginate<UnparsedVideo>> {
-    const user: ParseUser = this.getUser()
+    const user: ParsedUser = this.getUser()
 
     try {
       const response: AxiosResponse<Response<Paginate<UnparsedVideo>>> = await getUserLaterListApi(user.id, payload)
@@ -112,7 +112,7 @@ export default class UserService extends BaseService {
   }
 
   public static async laterListAction(videoId: Video['id'], action: ListsActions): Promise<void> {
-    const user: ParseUser = this.getUser()
+    const user: ParsedUser = this.getUser()
     
     const msg: Messages = action == 'add' ? Messages.VIDEO_LATER_LIST_ADDED : Messages.VIDEO_LATER_LIST_DELETED
     const payload: WishlistPayload = {

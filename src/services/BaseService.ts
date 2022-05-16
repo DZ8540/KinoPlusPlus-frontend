@@ -1,5 +1,5 @@
 // * Types
-import type { ParseUser } from '@/contracts/user'
+import type { ParsedUser } from '@/contracts/user'
 // * Types
 
 import { Messages } from '@/config/response'
@@ -10,8 +10,8 @@ export default class BaseService {
   protected static userData = () => useUserData()
   private static notifications = () => useNotificationBus()
 
-  protected static getUser(): ParseUser {
-    const user: ParseUser | null = this.userData().user
+  protected static getUser(): ParsedUser {
+    const user: ParsedUser | null = this.userData().user
 
     if (!user)
       throw Messages.USER_UNDEFINED

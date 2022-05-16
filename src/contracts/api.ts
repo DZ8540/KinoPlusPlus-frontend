@@ -21,6 +21,7 @@ export type Paginate<D = any> = {
 export type ApiDefaultPayload = {
   page: number,
   limit?: number,
+  orderBy?: 'asc' | 'desc',
 }
 
 /**
@@ -51,6 +52,12 @@ export type WishlistPayload = {
 export type LaterListPayload = {
   userId: User['id'],
   videoId: Video['id'],
+}
+
+export type VideoCommentPayload = {
+  userId: User['id'],
+  videoId: User['id'],
+  description: string,
 }
 
 /**

@@ -1,18 +1,18 @@
 // * Types
 import type { AxiosResponse } from 'axios'
-import type { ParseUser } from '@/contracts/user'
+import type { ParsedUser } from '@/contracts/user'
 import type { Response } from '@/contracts/response'
 import type { UnparsedVideo, Video } from '@/contracts/video'
 // * Types
 
-import BaseService from './BaseService'
+import BaseService from '../BaseService'
 import Logger from '@/assets/vendor/Logger'
 import { Messages } from '@/config/response'
-import { getVideoApi, newestApi, popularApi } from '@/api/video'
+import { getVideoApi, newestApi, popularApi } from '@/api/Video/video'
 
 export default class VideoService extends BaseService {
   public static async get(slug: Video['slug']): Promise<UnparsedVideo> {
-    let userId: ParseUser['id'] | undefined
+    let userId: ParsedUser['id'] | undefined
 
     try {
       userId = this.getUser().id
@@ -31,7 +31,7 @@ export default class VideoService extends BaseService {
   }
 
   public static async getNewest(): Promise<UnparsedVideo[]> {
-    let userId: ParseUser['id'] | undefined
+    let userId: ParsedUser['id'] | undefined
 
     try {
       userId = this.getUser().id
@@ -50,7 +50,7 @@ export default class VideoService extends BaseService {
   }
 
   public static async getPopular(): Promise<UnparsedVideo[]> {
-    let userId: ParseUser['id'] | undefined
+    let userId: ParsedUser['id'] | undefined
 
     try {
       userId = this.getUser().id

@@ -4,6 +4,9 @@ import type { Video } from '@/contracts/video'
 
 import { DEFAULT_GENRE } from './genre'
 
+export const VIDEO_COMMENTS_DESCRIPTION_MIN_LENGTH: number = 2
+export const VIDEO_COMMENTS_DESCRIPTION_MAX_LENGTH: number = 4096
+
 export const DEFAULT_VIDEO: Video = {
   id: 1,
   ageLimit: '+0',
@@ -20,6 +23,9 @@ export const DEFAULT_VIDEO: Video = {
   slug: 'test',
   thirdImage: 'test',
   viewsCount: 0,
+  createdAt: 'today',
+  updatedAt: 'today',
+  laterListStatus: false,
   wishlistStatus: false,
   genres: [
     { 

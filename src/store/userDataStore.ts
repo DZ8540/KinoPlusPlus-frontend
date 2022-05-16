@@ -1,13 +1,14 @@
 
 // * Types
-import type { ParseUser, User } from '@/contracts/user'
+import type { ParsedUser, User } from '@/contracts/user'
 // * Types
 
 import { defineStore } from 'pinia'
+import { parseUser } from '@/helpers'
 
 export const useUserData = defineStore('userData', {
   state: () => ({
-    user: null as ParseUser | null,
+    user: null as ParsedUser | null,
     token: null as string | null,
   }),
   actions: {
@@ -27,13 +28,3 @@ export const useUserData = defineStore('userData', {
     // }
   },
 })
-
-function parseUser(item: User): ParseUser {
-  if (!item.avatar)
-    item.avatar = '@/assets/img/empty.jpg'
-
-  if (!item.phone)
-    item.phone = 'Not set'
-
-  return item as ParseUser
-}

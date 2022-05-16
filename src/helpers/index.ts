@@ -1,11 +1,13 @@
 // * Types
 import type { Ref } from 'vue'
 import type { Validation } from '@vuelidate/core'
+import type { ParsedUser, User } from '@/contracts/user'
 import type { ErrorFromQuery } from '@/contracts/response'
 import type { UnparsedVideo, Video } from '@/contracts/video'
+import type { VideoComment, ParsedVideoComment } from '@/contracts/video'
 // * Types
 
-import { Duration } from 'luxon'
+import { DateTime, Duration } from 'luxon'
 import { Messages } from '@/config/response'
 
 export function parseVideo(item: UnparsedVideo): Video {
@@ -23,6 +25,22 @@ export function parseVideo(item: UnparsedVideo): Video {
     wishlistStatus,
     laterListStatus,
   }
+}
+
+export function parseUser(item: User): ParsedUser {
+  if (!item.avatar)
+    item.avatar = '/img/empty.jpg'
+
+  if (!item.phone)
+    item.phone = 'Not set'
+
+  return item as ParsedUser
+}
+
+export function parseComment(item: VideoComment): ParsedVideoComment {
+  const time: string = DateTime.fromISO(item.createdAt).toLocaleString(DateTime.TIME_SIMPLE)
+
+  return { ...item, time }
 }
 
 /**

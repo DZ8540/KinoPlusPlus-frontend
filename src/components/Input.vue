@@ -1,15 +1,13 @@
 <script lang="ts" setup>
-import { reactive } from 'vue'
-
-const inputClassNames: string[] = reactive(['Input__input', 'Font', 'Font__bold', 'Font__text', 'transition'])
+const inputClassNames: string[] = ['Input__input', 'Font', 'Font__bold', 'Font__text', 'transition']
 </script>
 
 <template>
   <div class="Input">
-    <slot :input-class-names="inputClassNames"></slot>
+    <slot :input-class-names="inputClassNames" />
     
     <span class="Input__error Font Font__regular Font__text">
-      <slot name="error"></slot>
+      <slot name="error" />
     </span>
   </div>
 </template>

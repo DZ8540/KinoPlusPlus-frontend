@@ -6,7 +6,7 @@ import type { LaterListPayload, Paginate, WishlistPayload } from '@/contracts/ap
 import type { ApiSearchData, UnparsedVideo, Video, ListsActions } from '@/contracts/video'
 // * Types
 
-import instance from './instance'
+import instance from '../instance'
 import Logger from '@/assets/vendor/Logger'
 import { API_ROUTES } from '@/config/api'
 

@@ -15,7 +15,7 @@ export type User = {
   createdAtForUser: string,
 }
 
-export type ParseUser = Omit<User, 'avatar' | 'phone'> & {
+export type ParsedUser = Omit<User, 'avatar' | 'phone'> & {
   avatar: string,
   phone: string,
 }

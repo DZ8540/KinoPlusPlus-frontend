@@ -6,8 +6,8 @@ import type { Genre } from '@/contracts/genre'
 import type { MainPageGenre, UnparsedVideo } from '@/contracts/video'
 // * Types
 
-import VideoService from '@/services/VideoService'
 import GenreService from '@/services/GenreService'
+import VideoService from '@/services/Video/VideoService'
 import { RoutesNames } from '@/config/router'
 import { ref, onMounted, reactive } from 'vue'
 
@@ -81,11 +81,11 @@ onMounted(async () => {
 
   <div class="uk-container">
     
-    <Preloader v-if="!isLoadedPopular" style="margin-top: 100px" />
-    <div v-else class="mb">
+    <div class="mb">
       <h1 class="Font Font__bold Font__title sliderTitleOnIndexPage">Popular</h1>
 
-      <Slider>
+      <Preloader v-if="!isLoadedPopular" style="margin-top: 100px" />
+      <Slider v-else>
         <li class="Slider__li" v-for="item in popular">
           <Card :item="item" :to="{ name: RoutesNames.VIDEO, params: { slug: item.slug } }" />
         </li>

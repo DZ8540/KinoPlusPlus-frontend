@@ -2,6 +2,7 @@
 import type { User } from '@/contracts/user'
 import type { Genre } from '@/contracts/genre'
 import type { Video } from '@/contracts/video'
+import type { VideoComment } from '@/contracts/video'
 // * Types
 
 export const API_ROUTES = {
@@ -12,6 +13,15 @@ export const API_ROUTES = {
     wishlist: (currentUserId?: User['id']) => `/videos/wishlist/${currentUserId ?? ''}`,
     laterList: (currentUserId?: User['id']) => `/videos/laterList/${currentUserId ?? ''}`,
     item: (slug: Video['slug'], currentUserId?: User['id']) => `/videos/${slug}/${currentUserId ?? ''}`,
+
+    /**
+     * * Comment
+     */
+
+    createComment: '/videos/comments',
+    updateComment: (id: VideoComment['id']) => `/videos/comments/${id}`,
+    deleteComment: (id: VideoComment['id']) => `/videos/comments/${id}`,
+    commentsPaginate: (id: Video['id']) => `/videos/comments/${id}`,
   },
   genre: {
     all: '/genres',

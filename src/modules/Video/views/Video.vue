@@ -3,17 +3,22 @@
 import type { Ref } from 'vue'
 import type { Actor } from '@/contracts/actor'
 import type { Genre } from '@/contracts/genre'
+import type { VideoComment } from '@/contracts/video'
+import type { UpdateCommentData } from '@/contracts/event'
+import type { Paginate, VideoCommentPayload } from '@/contracts/api'
 import type { UnparsedVideo, Video, ListsActions } from '@/contracts/video'
 // * Types
 
 import UserService from '@/services/UserService'
-import VideoService from '@/services/VideoService'
+import VideoService from '@/services/Video/VideoService'
+import VideoCommentService from '@/services/Video/VideoCommentService'
 import { useRoute } from 'vue-router'
 import { parseVideo } from '@/helpers'
 import { RoutesNames } from '@/config/router'
 import { DEFAULT_VIDEO } from '@/config/video'
 import { onMounted, reactive, ref } from 'vue'
 import { DEFAULT_ACTOR } from '@/config/actor'
+import { useInfiniteScroll } from '@vueuse/core'
 import { useUserData } from '@/store/userDataStore'
 
 // * Components
@@ -23,6 +28,7 @@ import Link from '@/components/Link.vue'
 import Button from '@/components/Button.vue'
 import Slider from '@/components/Slider.vue'
 import RoomCard from '@/components/RoomCard.vue'
+import Comments from '@/components/Comments.vue'
 import Accordion from '@/components/Accordion.vue'
 import Preloader from '@/components/Preloader.vue'
 import ActorCardMini from '@/components/ActorCardMini.vue'
@@ -42,6 +48,13 @@ const actors: Actor[] = reactive([
   { ...DEFAULT_ACTOR }
 ])
 
+let page: number = 1
+let lastPage: number = 0
+let limit: number = 8
+const comments: VideoComment[] = reactive([])
+const isCommentsLoaded: Ref<boolean> = ref(false)
+const isShowShowMoreComments: Ref<boolean> = ref(true)
+
 function parseGenres(): void {
   for (let i = 0; i < item.value.genres!.length; i++) {
     const currentGenre: (Pick<Genre, "id" | "slug" | "name">[])[number] = item.value.genres![i]
@@ -54,6 +67,25 @@ function parseGenres(): void {
 
     displayGenres.push(currentGenre)
   }
+}
+
+async function nextPage(): Promise<void> {
+  if (page < lastPage) {
+    page++
+    addNewComments()
+  }
+}
+
+async function addNewComments(): Promise<void> {
+  try {
+    const newComments: Paginate<VideoComment> = await VideoCommentService.getComments(item.value.id, { page, limit })
+
+    lastPage = newComments.meta.lastPage
+    comments.push(...newComments.data)
+
+    if (page >= lastPage)
+      isShowShowMoreComments.value = false
+  } catch (_err: any) {}
 }
 
 async function wishlistAction(): Promise<void> {
@@ -76,13 +108,52 @@ async function laterListAction(): Promise<void> {
   } catch (err: any) {}
 }
 
+async function sendComment(description: string): Promise<void> {
+  try {
+    const newComment: VideoComment = await VideoCommentService.createComment({ 
+      description,
+      videoId: item.value.id,
+    })
+
+    comments.unshift(newComment)
+  } catch (_err: any) {}
+}
+
+async function updateComment(data: UpdateCommentData): Promise<void> {
+  const payload: Omit<VideoCommentPayload, 'userId'> = {
+    videoId: item.value.id,
+    description: data.description,
+  }
+
+  try {
+    const { description }: VideoComment = await VideoCommentService.updateComment(data.id, payload)
+
+    const index: number = comments.findIndex((comment: VideoComment) => comment.id == data.id)
+    comments[index].description = description
+  } catch (_err: any) {}
+}
+
+async function deleteComment(id: VideoComment['id']): Promise<void> {
+  try {
+    await VideoCommentService.deleteComment(id)
+
+    const index: number = comments.findIndex((comment: VideoComment) => comment.id == id)
+    comments.splice(index, 1)
+  } catch (_err: any) {}
+}
+
 onMounted(async () => {
+  useInfiniteScroll(window, nextPage, { distance: 10 })
+
   try {
     const unparsedVideo: UnparsedVideo = await VideoService.get(slug)
     item.value = parseVideo(unparsedVideo)
-    parseGenres()
 
+    parseGenres()
     isLoaded.value = true
+
+    await addNewComments()
+    isCommentsLoaded.value = true
   } catch (_err: any) {}
 })
 </script>
@@ -679,166 +750,16 @@ onMounted(async () => {
 
           </div>
         </div>
-      </div>
-
-      <div class="Comments">
-
-        <h1 class="Comments__title Font Font__bold Font__title">Comments</h1>
-
-        <div class="Box mb">
-          <div class="Rating mb" data-name="Rating component">
-            <input type="hidden" name="" data-id="input" value="">
-
-            <button class="Rating__star" data-value="5">
-              <i class="Font__text Icon Icon__star Rating__icon Rating__icon--default"></i>
-              <i class="Font__text Icon Icon__star--solid Rating__icon Rating__icon--active"></i>
-            </button>
-
-            <button class="Rating__star" data-value="4">
-              <i class="Font__text Icon Icon__star Rating__icon Rating__icon--default"></i>
-              <i class="Font__text Icon Icon__star--solid Rating__icon Rating__icon--active"></i>
-            </button>
-
-            <button class="Rating__star" data-value="3">
-              <i class="Font__text Icon Icon__star Rating__icon Rating__icon--default"></i>
-              <i class="Font__text Icon Icon__star--solid Rating__icon Rating__icon--active"></i>
-            </button>
-
-            <button class="Rating__star" data-value="2">
-              <i class="Font__text Icon Icon__star Rating__icon Rating__icon--default"></i>
-              <i class="Font__text Icon Icon__star--solid Rating__icon Rating__icon--active"></i>
-            </button>
-
-            <button class="Rating__star" data-value="1">
-              <i class="Font__text Icon Icon__star Rating__icon Rating__icon--default"></i>
-              <i class="Font__text Icon Icon__star--solid Rating__icon Rating__icon--active"></i>
-            </button>
-
-          </div>
-
-          <div class="Textarea">
-            <textarea class="Textarea__textarea transition Font Font__regular Font__text" name="" id="" rows="8"
-              placeholder="Your comment"></textarea>
-            <div class="Textarea__info">
-              <span
-                class="Textarea__error transition Textarea__error--active Font Font__regular Font__text Font__error">Text
-                error</span>
-              <span class="Font Font__regular Font__mini Textarea__symbols">0/256</span>
-            </div>
-          </div>
-
-          <button class="Comments__btn Button Font Font__bold Font__text transition">Send</button>
-        </div>
-
-        <div class="Box mb">
-
-          <div class="Message">
-            <div class="Message__header">
-              <div>
-                <img src="<%= require('/Src/Img/actor.jpg') %>" class="Message__avatar" alt="">
-              </div>
-
-              <div class="Message__user">
-                <a href="profile.html" class="Message__name Font Font__text Font__regular Link transition">Jensen
-                  Ackles</a>
-                <span class="Message__time Font Font__mini Font__regular">At 16:04</span>
-              </div>
-            </div>
-
-            <div class="Message__footer">
-              <p class="Message__text Font Font__regular Font__text">Значимость этих проблем настолько очевидна, что
-                современная методология разработки обеспечивает широкому кругу (специалистов) участие в формировании новых
-                предложений. Внезапно, представители современных социальных резервов, которые представляют собой яркий
-                пример континентально-европейского типа политической культуры, будут описаны максимально подробно.
-                Банальные, но неопровержимые выводы, а также действия представителей оппозиции будут преданы
-                социально-демократической анафеме.</p>
-            </div>
-          </div>
-
-        </div>
-
-        <div class="Box mb">
-
-          <div class="Message">
-            <div class="Message__header">
-              <div>
-                <img src="<%= require('/Src/Img/actor.jpg') %>" class="Message__avatar" alt="">
-              </div>
-
-              <div class="Message__user">
-                <a href="profile.html" class="Message__name Font Font__text Font__regular Link transition">Jensen
-                  Ackles</a>
-                <span class="Message__time Font Font__mini Font__regular">At 16:04</span>
-              </div>
-            </div>
-
-            <div class="Message__footer">
-              <p class="Message__text Font Font__regular Font__text">Значимость этих проблем настолько очевидна, что
-                современная методология разработки обеспечивает широкому кругу (специалистов) участие в формировании новых
-                предложений. Внезапно, представители современных социальных резервов, которые представляют собой яркий
-                пример континентально-европейского типа политической культуры, будут описаны максимально подробно.
-                Банальные, но неопровержимые выводы, а также действия представителей оппозиции будут преданы
-                социально-демократической анафеме.</p>
-            </div>
-          </div>
-
-        </div>
-
-        <div class="Box mb">
-
-          <div class="Message">
-            <div class="Message__header">
-              <div>
-                <img src="<%= require('/Src/Img/actor.jpg') %>" class="Message__avatar" alt="">
-              </div>
-
-              <div class="Message__user">
-                <a href="profile.html" class="Message__name Font Font__text Font__regular Link transition">Jensen
-                  Ackles</a>
-                <span class="Message__time Font Font__mini Font__regular">At 16:04</span>
-              </div>
-            </div>
-
-            <div class="Message__footer">
-              <p class="Message__text Font Font__regular Font__text">Значимость этих проблем настолько очевидна, что
-                современная методология разработки обеспечивает широкому кругу (специалистов) участие в формировании новых
-                предложений. Внезапно, представители современных социальных резервов, которые представляют собой яркий
-                пример континентально-европейского типа политической культуры, будут описаны максимально подробно.
-                Банальные, но неопровержимые выводы, а также действия представителей оппозиции будут преданы
-                социально-демократической анафеме.</p>
-            </div>
-          </div>
-
-        </div>
-
-        <div class="Box mb">
-
-          <div class="Message">
-            <div class="Message__header">
-              <div>
-                <img src="<%= require('/Src/Img/actor.jpg') %>" class="Message__avatar" alt="">
-              </div>
-
-              <div class="Message__user">
-                <a href="profile.html" class="Message__name Font Font__text Font__regular Link transition">Jensen
-                  Ackles</a>
-                <span class="Message__time Font Font__mini Font__regular">At 16:04</span>
-              </div>
-            </div>
-
-            <div class="Message__footer">
-              <p class="Message__text Font Font__regular Font__text">Значимость этих проблем настолько очевидна, что
-                современная методология разработки обеспечивает широкому кругу (специалистов) участие в формировании новых
-                предложений. Внезапно, представители современных социальных резервов, которые представляют собой яркий
-                пример континентально-европейского типа политической культуры, будут описаны максимально подробно.
-                Банальные, но неопровержимые выводы, а также действия представителей оппозиции будут преданы
-                социально-демократической анафеме.</p>
-            </div>
-          </div>
-
-        </div>
-
       </div> -->
+
+      <Preloader v-if="!isCommentsLoaded" />
+      <Comments
+        v-else 
+        :comments="comments"
+        @send-comment="sendComment" 
+        @update-comment="updateComment" 
+        @delete-comment="deleteComment" 
+      />
     </div>
 
   </div>
