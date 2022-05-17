@@ -1,6 +1,6 @@
 // * Types
-import type { AxiosResponse } from 'axios'
 import type { ResponseCodes } from '@/config/response'
+import type { AxiosRequestConfig, AxiosResponse } from 'axios'
 // * Types
 
 export type Response<B = any, E = any> = {
@@ -12,7 +12,10 @@ export type Response<B = any, E = any> = {
 }
 
 export type ErrorResponse = {
-  response: AxiosResponse<Response<any, ErrorFromQuery[]>>
+  response: AxiosResponse<Response<any, ErrorFromQuery[]>>,
+  config: AxiosRequestConfig & {
+    _retry: boolean,
+  },
 }
 
 export type ErrorFromQuery<K = string> = {

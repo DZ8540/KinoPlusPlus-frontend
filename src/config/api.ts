@@ -30,9 +30,10 @@ export const API_ROUTES = {
     genreMovies: (slug: Genre['slug'], currentUserId?: User['id']) => `/genres/movies/${slug}/${currentUserId ?? ''}`,
   },
   auth: {
-    register: '/auth/register',
     login: '/auth/login',
-    logout: '/auth/logout', 
+    logout: '/auth/logout',
+    register: '/auth/register',
+    refresh: '/auth/refreshToken',
     activateUser: (token: string) => `/auth/emailVerify/${token}`,
   },
   user: {

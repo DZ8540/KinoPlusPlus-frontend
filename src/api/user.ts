@@ -9,9 +9,13 @@ import type { ApiDefaultPayload, Paginate, UserPayload } from '@/contracts/api'
 import instance from './instance'
 import { API_ROUTES } from '@/config/api'
 
-export async function updateUserApi(userId: User['id'], payload: UserPayload): Promise<AxiosResponse<Response<User>>> {
+export async function updateUserApi(userId: User['id'], payload: FormData | UserPayload): Promise<AxiosResponse<Response<User>>> {
   try {
-    return await instance.patch<Response<User>>(API_ROUTES.user.update(userId), payload)
+    return await instance.patch<Response<User>>(API_ROUTES.user.update(userId), payload, { 
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    })
   } catch (_err: any) {
     const err: ErrorResponse = _err
 

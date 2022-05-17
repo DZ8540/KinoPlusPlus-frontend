@@ -7,6 +7,7 @@ import type { UnparsedVideo, Video } from '@/contracts/video'
 import type { VideoComment, ParsedVideoComment } from '@/contracts/video'
 // * Types
 
+import { URL } from '@/config/api'
 import { DateTime, Duration } from 'luxon'
 import { Messages } from '@/config/response'
 
@@ -30,6 +31,8 @@ export function parseVideo(item: UnparsedVideo): Video {
 export function parseUser(item: User): ParsedUser {
   if (!item.avatar)
     item.avatar = '/img/empty.jpg'
+  else
+    item.avatar = `${URL}${item.avatar}`
 
   if (!item.phone)
     item.phone = 'Not set'

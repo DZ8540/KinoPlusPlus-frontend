@@ -1,11 +1,11 @@
 <script lang="ts" setup>
+import { useNotificationBus } from './store/notificationBusStore'
+
 // * Components
 import Footer from './components/Footer.vue'
 import Navbar from './components/Navbar.vue'
 import Notification from './components/Notification.vue'
 // * Components
-
-import { useNotificationBus } from './store/notificationBusStore'
 
 const notifications = useNotificationBus()
 </script>

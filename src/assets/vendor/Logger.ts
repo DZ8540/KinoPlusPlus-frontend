@@ -2,28 +2,28 @@ const MODE: string = import.meta.env.MODE
 
 // * I know about DI, but this way is fast!
 export default class Logger {
-  public static log(err: any): void {
+  public static log(...logInfo: any[]): void {
     try {
       this.checkMode()
 
-      console.log(err)
-    } catch (err: Error | any) {}
+      console.log(...logInfo)
+    } catch (_err: Error | any) {}
   }
 
-  public static info(err: any): void {
+  public static info(...info: any[]): void {
     try {
       this.checkMode()
 
-      console.info(err)
-    } catch (err: Error | any) {}
+      console.info(...info)
+    } catch (_err: Error | any) {}
   }
 
-  public static error(err: any): void {
+  public static error(...err: any[]): void {
     try {
       this.checkMode()
 
-      console.error(err)
-    } catch (err: Error | any) {}
+      console.error(...err)
+    } catch (_err: Error | any) {}
   }
 
   /**

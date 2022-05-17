@@ -67,10 +67,11 @@ const tabs: MenuItem[] = [
   },
 ]
 
+let avatarFile: MediaSource | undefined = undefined
+const avatarUrl: Ref<string> = ref(userData.user!.avatar)
 const formData: UserPayload & { oldPassword: UserPayload['password'] } = reactive({
   nickname: userData.user!.nickname,
   email: userData.user!.email,
-  avatar: null,
   phone: userData.user!.phone,
   sex: userData.user!.sex,
   oldPassword: '',
@@ -104,7 +105,6 @@ const rules: any = {
 const externalErrors: any = reactive({
   nickname: '',
   email: '',
-  avatar: null,
   phone: '',
   sex: '',
   password: '',
@@ -134,7 +134,17 @@ function resetForm(): void {
   formData.password = ''
   formData.passwordConfirm = ''
 
+  avatarFile = undefined
+  avatarUrl.value = userData.user!.avatar
+
   v$.value.$reset()
+}
+
+function onAvatarChange(e: Event): void { // @ts-ignore
+  const file: MediaSource = e.target.files[0]
+
+  avatarFile = file
+  avatarUrl.value = URL.createObjectURL(file)
 }
 
 async function updateUserProfileCheckFormData(): Promise<void> {
@@ -161,7 +171,7 @@ async function submitHandler(): Promise<void> {
       throw null
     }
 
-    await UserService.updateProfile(formData)
+    await UserService.updateProfile(formData, avatarFile)
     resetForm()
 
     toggleProfileMode(false)
@@ -185,8 +195,8 @@ async function submitHandler(): Promise<void> {
           
           <label class="profileAvatar" for="avatar">
             <div class="Box Box__lite Box__avatar mb">
-              <img :src="`http://localhost:3333${userData.user.avatar}`" class="Box__bg" alt="">
-              <input type="file" class="profileAvatar__input" name="avatar" id="avatar">
+              <img :src="avatarUrl" :alt="userData.user!.nickname" class="Box__bg">
+              <input @change="onAvatarChange" ref="avatarInputElement" type="file" class="profileAvatar__input" id="avatar">
             </div>
           </label>
 
@@ -266,10 +276,8 @@ async function submitHandler(): Promise<void> {
       <div v-else class="mb" uk-grid>
         <div class="uk-width-1-3@s">
           
-          <div class="profileAvatar" for="avatar">
-            <div class="Box Box__lite Box__avatar mb">
-              <img :src="`http://localhost:3333${userData.user.avatar}`" class="Box__bg" alt="">
-            </div>
+          <div class="Box Box__lite Box__avatar mb">
+            <img :src="userData.user!.avatar" class="Box__bg" alt="">
           </div>
 
         </div>
@@ -277,25 +285,25 @@ async function submitHandler(): Promise<void> {
         <div class="uk-width-2-3@s">
           
           <div class="Box">
-            <h1 class="Font Font__bold Font__title achievementTitle">{{ userData.user.nickname }}</h1>
+            <h1 class="Font Font__bold Font__title achievementTitle">{{ userData.user!.nickname }}</h1>
 
             <List v-slot="{ classNames, textClassName }">
 
               <li :class="classNames">
-                <span :class="[textClassName, 'Font', 'Font__text', 'Font__regular']">Email: {{ userData.user.email }}</span>
+                <span :class="[textClassName, 'Font', 'Font__text', 'Font__regular']">Email: {{ userData.user!.email }}</span>
               </li>
 
               <li :class="[...classNames, 'List__li__withoutDot']">
-                <span v-if="userData.user.isEmailVerified" :class="[textClassName, 'Font', 'Font__text', 'Font__regular', 'Font__success']">Your email is verified</span>
+                <span v-if="userData.user!.isEmailVerified" :class="[textClassName, 'Font', 'Font__text', 'Font__regular', 'Font__success']">Your email is verified</span>
                 <span v-else :class="[textClassName, 'Font', 'Font__text', 'Font__regular', 'Font__error']">Your email is not verified</span>
               </li>
 
               <li :class="classNames">
-                <span :class="[textClassName, 'Font', 'Font__text', 'Font__regular']">Birthday: {{ userData.user.birthdayForUser }}</span>
+                <span :class="[textClassName, 'Font', 'Font__text', 'Font__regular']">Birthday: {{ userData.user!.birthdayForUser }}</span>
               </li>
 
               <li :class="classNames">
-                <span :class="[textClassName, 'Font', 'Font__text', 'Font__regular']">Phone: {{ userData.user.phone }}</span>
+                <span :class="[textClassName, 'Font', 'Font__text', 'Font__regular']">Phone: {{ userData.user!.phone }}</span>
               </li>
 
               <li :class="classNames">
@@ -303,7 +311,7 @@ async function submitHandler(): Promise<void> {
               </li>
 
               <li :class="classNames">
-                <span :class="[textClassName, 'Font', 'Font__text', 'Font__regular']">Sex: {{ userData.user.sexForUser }}</span>
+                <span :class="[textClassName, 'Font', 'Font__text', 'Font__regular']">Sex: {{ userData.user!.sexForUser }}</span>
               </li>
 
             </List>

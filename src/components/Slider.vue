@@ -9,6 +9,7 @@ import { onBeforeUnmount, onMounted, ref, reactive } from 'vue'
 // * Components
 import Icon from './Icon.vue'
 import Button from './Button.vue'
+import type { RouteLocationRaw } from 'vue-router'
 // * Components
 
 const props = defineProps({
@@ -33,6 +34,10 @@ const props = defineProps({
   isWithShowMore: {
     type: Boolean,
     default: true,
+  },
+  showMoreRoute: {
+    type: [Object, String] as PropType<RouteLocationRaw>,
+    default: '#',
   },
 })
 
@@ -84,7 +89,7 @@ onMounted(() => {
             </Button>
           </div>
 
-          <Button v-if="isWithShowMore" type="button" to="#">Show more</Button>
+          <Button v-if="props.isWithShowMore" :to="props.showMoreRoute" type="anchor">Show more</Button>
         </div>
       </div>
 

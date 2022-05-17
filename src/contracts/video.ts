@@ -41,6 +41,7 @@ export type ApiSearchData = ApiDefaultPayload & {
 
 export type MainPageGenre = {
   title: Genre['name'],
+  slug: Genre['slug'],
   videos: UnparsedVideo[],
 }
 

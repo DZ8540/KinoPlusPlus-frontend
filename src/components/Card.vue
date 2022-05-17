@@ -147,6 +147,8 @@ async function laterListAction(): Promise<void> {
     display: flex
     justify-content: center
     align-content: center
+  &__wishlist, &__later
+    cursor: pointer
   &:hover
     .Card__img
       opacity: .4

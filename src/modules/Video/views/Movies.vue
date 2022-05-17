@@ -19,6 +19,11 @@ import Preloader from '@/components/Preloader.vue'
 import Slideshow from '@/modules/Video/components/Slideshow.vue'
 // * Components
 
+const slidersOptions: UIkit.UIkitSliderOptions = {
+  autoplay: true,
+  finite: true,
+}
+
 const genres: MainPageGenre[] = reactive([])
 const newest: UnparsedVideo[] = reactive([])
 const popular: UnparsedVideo[] = reactive([])
@@ -36,6 +41,7 @@ async function getAllGenres(): Promise<MainPageGenre[]> {
     for (const genre of response) {
       const genreData: MainPageGenre = {
         title: genre.name,
+        slug: genre.slug,
         videos: [],
       }
 
@@ -85,7 +91,7 @@ onMounted(async () => {
       <h1 class="Font Font__bold Font__title sliderTitleOnIndexPage">Popular</h1>
 
       <Preloader v-if="!isLoadedPopular" style="margin-top: 100px" />
-      <Slider v-else>
+      <Slider v-else :options="slidersOptions" :is-with-show-more="false">
         <li class="Slider__li" v-for="item in popular">
           <Card :item="item" :to="{ name: RoutesNames.VIDEO, params: { slug: item.slug } }" />
         </li>
@@ -97,8 +103,8 @@ onMounted(async () => {
       <div v-for="genreItem in genres" class="mb">
         <h1 class="Font Font__bold Font__title sliderTitleOnIndexPage">{{ genreItem.title }}</h1>
 
-        <Slider>
-          <li class="Slider__li" v-for="item in genreItem.videos">
+        <Slider :options="slidersOptions" :show-more-route="{ name: RoutesNames.GENRE, params: { slug: genreItem.slug } }" is-with-show-more>
+          <li v-for="item in genreItem.videos" class="Slider__li">
             <Card :item="item" :to="{ name: RoutesNames.VIDEO, params: { slug: item.slug } }" />
           </li>
         </Slider>

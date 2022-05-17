@@ -1,3 +1,4 @@
+import AuthService from '@/services/AuthService'
 import { RoutesNames } from '@/config/router'
 import { createRouter, createWebHistory } from 'vue-router'
 
@@ -8,7 +9,13 @@ const router = createRouter({
       path: '/',
       redirect: { name: RoutesNames.HOME },
     }
-  ]
+  ],
+})
+
+router.beforeEach(async (to, _, next) => {
+  await AuthService.refresh()
+
+  next()
 })
 
 export default router

@@ -8,7 +8,10 @@ import type { LoginPayload, RegistrationPayload } from '@/contracts/api'
 import BaseService from './BaseService'
 import Logger from '@/assets/vendor/Logger'
 import { Messages } from '@/config/response'
-import { activateUserApi, loginApi, logoutApi, registerApi } from '@/api/auth'
+import { 
+  activateUserApi, loginApi, logoutApi, 
+  refreshApi, registerApi,
+} from '@/api/auth'
 
 export default class AuthService extends BaseService {
   public static async activateUser(token: string): Promise<void> {
@@ -39,6 +42,21 @@ export default class AuthService extends BaseService {
         throw err.data.errors
 
       throw null
+    }
+  }
+
+  public static async refresh(): Promise<void> {
+    try {
+      const response: AxiosResponse<Response<{ user: User, token: string }>> = await refreshApi()
+
+      this.successNotify(Messages.AUTH_LOGIN)
+
+      this.userData().initialize(response.data.body!.user, response.data.body!.token)
+    } catch (_err: any) {
+      const err: ErrorResponse['response'] = _err
+      Logger.error(err)
+
+      this.errorNotify(err.data.message)
     }
   }
 

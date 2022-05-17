@@ -17,8 +17,16 @@ import {
 
 
 export default class UserService extends BaseService {
-  public static async updateProfile(payload: UserPayload): Promise<void> {
+  public static async updateProfile(data: UserPayload, avatar?: Blob | MediaSource): Promise<void> {
     const user: ParsedUser = this.getUser()
+    const payload: FormData = new FormData()
+
+    for (const key in data) {
+      payload.append(key, (<any>data)[key])
+    }
+
+    if (avatar)
+      payload.append('avatar', avatar as Blob)
 
     try {
       const response: AxiosResponse<Response<User>> = await updateUserApi(user.id, payload)

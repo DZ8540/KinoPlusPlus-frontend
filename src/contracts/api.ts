@@ -67,7 +67,7 @@ export type VideoCommentPayload = {
 export type UserPayload = {
   nickname: User['nickname'],
   email: User['email'],
-  avatar?: null,
+  avatar?: string,
   phone?: User['phone'],
   sex?: User['sex'],
   password?: string,

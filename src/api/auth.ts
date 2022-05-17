@@ -6,7 +6,6 @@ import type { LoginPayload, RegistrationPayload } from '@/contracts/api'
 // * Types
 
 import instance from './instance'
-import Logger from '@/assets/vendor/Logger'
 import { API_ROUTES } from '@/config/api'
 
 export async function registerApi(payload: RegistrationPayload): Promise<void> {
@@ -42,6 +41,16 @@ export async function loginApi(payload: LoginPayload): Promise<AxiosResponse<Res
 export async function logoutApi(): Promise<AxiosResponse<Response<null>>> {
   try {
     return await instance.post<Response<null>>(API_ROUTES.auth.logout)
+  } catch (_err: any) {
+    const err: ErrorResponse = _err
+
+    throw err.response
+  }
+}
+
+export async function refreshApi(): Promise<AxiosResponse<Response<{ user: User, token: string }>>> {
+  try {
+    return await instance.post<Response<{ user: User, token: string }>>(API_ROUTES.auth.refresh)
   } catch (_err: any) {
     const err: ErrorResponse = _err
 
