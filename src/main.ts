@@ -1,7 +1,7 @@
-// * Don't change index this imports
+// * Don't change index fot imports below
 import './registerDependencies'
 import './registerModules'
-// * Don't change index this imports
+// * Don't change index fot imports above
 
 import App from './App.vue'
 import router from './router'

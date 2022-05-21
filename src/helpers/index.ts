@@ -32,7 +32,7 @@ export function parseUser(item: User): ParsedUser {
   if (!item.avatar)
     item.avatar = '/img/empty.jpg'
   else
-    item.avatar = `${URL}${item.avatar}`
+    item.avatar = `${URL}/uploads/${item.avatar}`
 
   if (!item.phone)
     item.phone = 'Not set'

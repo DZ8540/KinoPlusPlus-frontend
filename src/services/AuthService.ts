@@ -49,8 +49,6 @@ export default class AuthService extends BaseService {
     try {
       const response: AxiosResponse<Response<{ user: User, token: string }>> = await refreshApi()
 
-      this.successNotify(Messages.AUTH_LOGIN)
-
       this.userData().initialize(response.data.body!.user, response.data.body!.token)
     } catch (_err: any) {
       const err: ErrorResponse['response'] = _err

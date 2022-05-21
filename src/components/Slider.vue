@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 // * Types
 import type { Ref, PropType } from 'vue'
+import type { RouteLocationRaw } from 'vue-router'
 // * Types
 
 import UIkit from 'uikit'
@@ -9,7 +10,6 @@ import { onBeforeUnmount, onMounted, ref, reactive } from 'vue'
 // * Components
 import Icon from './Icon.vue'
 import Button from './Button.vue'
-import type { RouteLocationRaw } from 'vue-router'
 // * Components
 
 const props = defineProps({

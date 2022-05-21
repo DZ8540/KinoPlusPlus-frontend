@@ -1,4 +1,4 @@
-import AuthService from '@/services/AuthService'
+import tryLogin from '@/middleware/tryLogin'
 import { RoutesNames } from '@/config/router'
 import { createRouter, createWebHistory } from 'vue-router'
 
@@ -12,10 +12,6 @@ const router = createRouter({
   ],
 })
 
-router.beforeEach(async (to, _, next) => {
-  await AuthService.refresh()
-
-  next()
-})
+router.beforeEach(tryLogin)
 
 export default router

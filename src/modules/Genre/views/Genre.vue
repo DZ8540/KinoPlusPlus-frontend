@@ -85,7 +85,7 @@ onMounted(async () => {
 
       <div class="Box genreTitle mb">
         <h1 class="Font Font__bold Font__title genreTitle__title">{{ item.name }}</h1>
-        <p class="Font Font__regular Font__text">{{ item.description }}</p>
+        <p class="Font Font__regular Font__text" v-html="item.description" />
       </div>
 
       <Tabs :menu="tabs" :total-result="totalResults">

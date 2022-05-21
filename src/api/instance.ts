@@ -1,10 +1,11 @@
 // * Types
-import type { AxiosRequestConfig } from 'axios'
+import type { AxiosRequestConfig, AxiosResponse } from 'axios'
 import type { ErrorResponse } from '@/contracts/response'
 // * Types
 
 import ms from 'ms'
 import axios from 'axios'
+import AuthService from '@/services/AuthService'
 import { TIMEOUT, URL } from '@/config/api'
 import { useUserData } from '@/store/userDataStore'
 
@@ -22,7 +23,7 @@ const instance = axios.create({
 
 instance.interceptors.request.use(
   (config: AxiosRequestConfig) => {
-    // Logger.info('Request', config._retry)
+    // Logger.info('Request', config)
 
     const userData = useUserData()
 
@@ -38,27 +39,26 @@ instance.interceptors.request.use(
   }
 )
 
-// instance.interceptors.response.use(
-//   (response: AxiosResponse<any>) => {
-//     // Logger.info('Response', response)
+instance.interceptors.response.use(
+  (response: AxiosResponse<any>) => {
+    // Logger.info('Response', response)
 
-//     return response
-//   },
-//   (err: ErrorResponse) => {
-//     // Logger.error('Response', err.response)
+    return response
+  },
+  async (err: ErrorResponse) => {
+    // Logger.error('Response', err.response)
 
-//     const originalConfig: ErrorResponse['config'] = err.config
+    const originalConfig: ErrorResponse['config'] = err.config
 
-//     console.log(originalConfig._retry)
+    if (err.response.data.code == 'TOKEN_EXPIRED' && !originalConfig._retry) {
+      originalConfig._retry = true
 
-//     if (err.response.data.code == 'TOKEN_EXPIRED' && !originalConfig._retry) {
-//       originalConfig._retry = true
+      await AuthService.refresh()
+      return instance(originalConfig)
+    }
 
-//       return AuthService.refresh().then(() => instance(originalConfig))
-//     }
-
-//     return Promise.reject(err)
-//   }
-// )
+    return Promise.reject(err)
+  }
+)
 
 export default instance
