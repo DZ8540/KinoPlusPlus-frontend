@@ -29,4 +29,10 @@ export enum RoutesNames {
    */
 
   VIDEO = 'video',
+
+  /**
+   * * Room
+   */
+
+  ROOM = 'room'
 }

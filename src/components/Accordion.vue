@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 // * Types
-import type { Ref } from 'vue'
+import type { PropType, Ref } from 'vue'
 // * Types
 
 import UIkit from 'uikit'
@@ -11,12 +11,21 @@ import Icon from './Icon.vue'
 import List from './List.vue'
 // * Components
 
+const props = defineProps({
+  options: {
+    type: Object as PropType<UIkit.UIkitAccordionOptions>,
+    default(): UIkit.UIkitAccordionOptions {
+      return {}
+    },
+  }
+})
+
 let DOMAccordion: UIkit.UIkitAccordionElement
 const accordion: Ref<HTMLDivElement | null> = ref(null)
 
 onMounted(() => {
   if (accordion.value) {
-    DOMAccordion = UIkit.accordion(accordion.value, {})
+    DOMAccordion = UIkit.accordion(accordion.value, props.options)
   } else {
     console.warn('Accordion not found!')
   }
@@ -31,19 +40,28 @@ onBeforeUnmount(() => {
 <template>
   <div class="Accordion">
     <ul ref="accordion">
-      <li class="Box Accordion__item">
-        <a class="uk-accordion-title Accordion__title Font Font__title Font__bold" href="#">
-          <slot name="title">Accordion</slot> 
-          <Icon class="Accordion__icon" type="ARROW" />
-        </a>
-        <div class="uk-accordion-content">
 
-          <slot name="content">
+      <!--
+        ! All in the slot below, should be copied!!
+        * Can be more than one!
+      -->
+
+      <slot>
+
+        <li class="Box Accordion__item">
+          <a class="uk-accordion-title Accordion__title Font Font__title Font__bold" href="#">
+            Accordion
+            <Icon type="ARROW" class="Accordion__icon" />
+          </a>
+          <div class="uk-accordion-content">
+
             <List />
-          </slot>
 
-        </div>
-      </li>
+          </div>
+        </li>
+
+      </slot>
+      
     </ul>
   </div>
 </template>

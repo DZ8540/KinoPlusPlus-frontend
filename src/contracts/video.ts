@@ -1,5 +1,6 @@
 // * Types
 import type { User } from './user'
+import type { Room } from './room'
 import type { Genre } from './genre'
 import type { ApiDefaultPayload } from './api'
 // * Types
@@ -17,12 +18,14 @@ export type UnparsedVideo = {
   rating: string,
   duration: string,
   viewsCount: number,
+  iframePath: string,
   releasedForUser: string,
-  poster: string,
-  firstImage: string,
-  secondImage: string,
-  thirdImage: string,
+  poster?: string,
+  firstImage?: string,
+  secondImage?: string,
+  thirdImage?: string,
   genres?: Pick<Genre, 'id' | 'slug' | 'name'>[]
+  rooms?: Room[]
   wishlistStatus?: boolean,
   laterListStatus?: boolean,
   createdAt: string,
@@ -30,6 +33,10 @@ export type UnparsedVideo = {
 }
 
 export type Video = Omit<UnparsedVideo, 'ageLimit'> & {
+  poster: string,
+  firstImage: string,
+  secondImage: string,
+  thirdImage: string,
   ageLimit: string,
   wishlistStatus: boolean,
   laterListStatus: boolean,
@@ -56,5 +63,5 @@ export type VideoComment = {
 }
 
 export type ParsedVideoComment = VideoComment & {
-  time: string
+  time: string,
 }

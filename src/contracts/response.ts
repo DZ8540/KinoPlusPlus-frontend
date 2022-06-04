@@ -6,7 +6,7 @@ import type { AxiosRequestConfig, AxiosResponse } from 'axios'
 export type Response<B = any, E = any> = {
   code: ResponseCodes,
   status: number,
-  message: string,
+  msg: string,
   body?: B,
   errors?: E,
 }

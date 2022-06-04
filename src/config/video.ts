@@ -9,6 +9,7 @@ export const VIDEO_COMMENTS_DESCRIPTION_MAX_LENGTH: number = 4096
 
 export const DEFAULT_VIDEO: Video = {
   id: 1,
+  iframePath: 'test',
   ageLimit: '+0',
   country: 'test',
   description: 'test',

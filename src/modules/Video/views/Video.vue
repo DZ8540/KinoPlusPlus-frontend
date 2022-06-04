@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 // * Types
 import type { Ref } from 'vue'
+import type { Room } from '@/contracts/room'
 import type { Actor } from '@/contracts/actor'
 import type { Genre } from '@/contracts/genre'
 import type { VideoComment } from '@/contracts/video'
@@ -10,15 +11,16 @@ import type { UnparsedVideo, Video, ListsActions } from '@/contracts/video'
 // * Types
 
 import UserService from '@/services/UserService'
+import RoomService from '@/services/RoomService'
 import VideoService from '@/services/Video/VideoService'
 import VideoCommentService from '@/services/Video/VideoCommentService'
-import { useRoute } from 'vue-router'
 import { parseVideo } from '@/helpers'
 import { RoutesNames } from '@/config/router'
 import { DEFAULT_VIDEO } from '@/config/video'
 import { onMounted, reactive, ref } from 'vue'
 import { DEFAULT_ACTOR } from '@/config/actor'
 import { useInfiniteScroll } from '@vueuse/core'
+import { useRoute, useRouter } from 'vue-router'
 import { useUserData } from '@/store/userDataStore'
 
 // * Components
@@ -28,19 +30,20 @@ import Link from '@/components/Link.vue'
 import Button from '@/components/Button.vue'
 import Slider from '@/components/Slider.vue'
 import RoomCard from '@/components/RoomCard.vue'
-import Comments from '@/components/Comments.vue'
+import Comments from '../components/Comments.vue'
 import Accordion from '@/components/Accordion.vue'
 import Preloader from '@/components/Preloader.vue'
 import ActorCardMini from '@/components/ActorCardMini.vue'
 // * Components
 
 const route = useRoute()
+const router = useRouter()
 const userData = useUserData()
 
 let item: Ref<Video> = ref({ ...DEFAULT_VIDEO })
 const isLoaded: Ref<boolean> = ref(false)
 const slug: Video['slug'] = route.params.slug as string
-const displayGenres: Pick<Genre, "id" | "slug" | "name">[] = reactive([])
+const displayGenres: Pick<Genre, 'id' | 'slug' | 'name'>[] = reactive([])
 const actors: Actor[] = reactive([
   { ...DEFAULT_ACTOR }, { ...DEFAULT_ACTOR }, { ...DEFAULT_ACTOR }, 
   { ...DEFAULT_ACTOR }, { ...DEFAULT_ACTOR }, { ...DEFAULT_ACTOR }, 
@@ -55,9 +58,19 @@ const comments: VideoComment[] = reactive([])
 const isCommentsLoaded: Ref<boolean> = ref(false)
 const isShowShowMoreComments: Ref<boolean> = ref(true)
 
+function isShowRooms(): boolean {
+  if (
+    !userData.user ||
+    !item.value.rooms ||
+    !item.value.rooms.length
+  ) return false
+
+  return true
+}
+
 function parseGenres(): void {
   for (let i = 0; i < item.value.genres!.length; i++) {
-    const currentGenre: (Pick<Genre, "id" | "slug" | "name">[])[number] = item.value.genres![i]
+    const currentGenre: (Pick<Genre, 'id' | 'slug' | 'name'>[])[number] = item.value.genres![i]
     const indexForConditionArrLength: number = i + 1
 
     if (indexForConditionArrLength < item.value.genres!.length) {
@@ -139,6 +152,14 @@ async function deleteComment(id: VideoComment['id']): Promise<void> {
 
     const index: number = comments.findIndex((comment: VideoComment) => comment.id == id)
     comments.splice(index, 1)
+  } catch (_err: any) {}
+}
+
+async function createRoom(): Promise<void> {
+  try {
+    const roomSlug: Room['slug'] = await RoomService.create(item.value.id)
+
+    router.push({ name: RoutesNames.ROOM, params: { slug: roomSlug } })
   } catch (_err: any) {}
 }
 
@@ -234,8 +255,8 @@ onMounted(async () => {
               </button>
             </div>
 
-            <div class="achievementBtns">
-              <Button type="anchor">Create room</Button>
+            <div v-if="userData.user" class="achievementBtns">
+              <Button @click="createRoom" type="button">Create room</Button>
             </div>
           </div>
 
@@ -257,23 +278,23 @@ onMounted(async () => {
         </div>
       </div>
 
-      <div class="images mb">
+      <div class="videoImages mb">
 
         <div class="uk-child-width-1-3@s uk-grid-medium" uk-grid>
           <div>
-            <div class="Box Box__lite">
+            <div class="videoImages__image Box Box__lite">
               <img :src="item.firstImage" class="Box__bg" alt="">
             </div>
           </div>
 
           <div>
-            <div class="Box Box__lite">
+            <div class="videoImages__image Box Box__lite">
               <img :src="item.secondImage" class="Box__bg" alt="">
             </div>
           </div>
 
           <div>
-            <div class="Box Box__lite">
+            <div class="videoImages__image Box Box__lite">
               <img :src="item.thirdImage" class="Box__bg" alt="">
             </div>
           </div>
@@ -284,22 +305,28 @@ onMounted(async () => {
       <div class="trailer mb Box">
         <h1 class="Font Font__title Font__bold">Trailer</h1>
 
-        <video src="" controls></video>
+        <video class="trailer__video" src="" controls></video>
       </div>
       
-      <Accordion class="mb">
+      <Accordion v-if="isShowRooms()" class="mb">
 
-        <template #title>Rooms</template>
+        <li class="Box Accordion__item">
+          <a class="uk-accordion-title Accordion__title Font Font__title Font__bold" href="#">
+            Rooms
+            <Icon type="ARROW" class="Accordion__icon" />
+          </a>
+          <div class="uk-accordion-content">
 
-        <template #content>
-          <List v-slot="{ classNames }" without-dots>
+            <List v-slot="{ classNames }" without-dots>
 
-            <li v-for="_ in 3" :class="classNames">
-              <RoomCard :video="item" />
-            </li>
+              <li v-for="room in item.rooms" :class="classNames">
+                <RoomCard :item="room" />
+              </li>
 
-          </List>
-        </template>
+            </List>
+
+          </div>
+        </li>
 
       </Accordion>
 

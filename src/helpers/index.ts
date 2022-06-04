@@ -4,14 +4,20 @@ import type { Validation } from '@vuelidate/core'
 import type { ParsedUser, User } from '@/contracts/user'
 import type { ErrorFromQuery } from '@/contracts/response'
 import type { UnparsedVideo, Video } from '@/contracts/video'
+import type { ParsedRoomMessage, RoomMessage } from '@/contracts/room'
 import type { VideoComment, ParsedVideoComment } from '@/contracts/video'
 // * Types
 
 import { URL } from '@/config/api'
 import { DateTime, Duration } from 'luxon'
 import { Messages } from '@/config/response'
+import { IMAGE_PLACEHOLDER } from '@/config/drive'
 
 export function parseVideo(item: UnparsedVideo): Video {
+  const poster: string = item.poster ?? IMAGE_PLACEHOLDER
+  const firstImage: string = item.firstImage ?? IMAGE_PLACEHOLDER
+  const secondImage: string = item.secondImage ?? IMAGE_PLACEHOLDER
+  const thirdImage: string = item.thirdImage ?? IMAGE_PLACEHOLDER
   const duration: string = Duration.fromISOTime(item.duration).toFormat("h 'hour' mm 'minutes'")
   const rating: string = item.rating.replace('.', ',')
   const ageLimit: string = `+${item.ageLimit}`
@@ -20,6 +26,10 @@ export function parseVideo(item: UnparsedVideo): Video {
 
   return {
     ...item,
+    poster,
+    firstImage,
+    secondImage,
+    thirdImage,
     duration,
     rating,
     ageLimit,
@@ -30,7 +40,7 @@ export function parseVideo(item: UnparsedVideo): Video {
 
 export function parseUser(item: User): ParsedUser {
   if (!item.avatar)
-    item.avatar = '/img/empty.jpg'
+    item.avatar = IMAGE_PLACEHOLDER
   else
     item.avatar = `${URL}/uploads/${item.avatar}`
 
@@ -41,6 +51,12 @@ export function parseUser(item: User): ParsedUser {
 }
 
 export function parseComment(item: VideoComment): ParsedVideoComment {
+  const time: string = DateTime.fromISO(item.createdAt).toLocaleString(DateTime.TIME_SIMPLE)
+
+  return { ...item, time }
+}
+
+export function parseRoomMessage(item: RoomMessage): ParsedRoomMessage {
   const time: string = DateTime.fromISO(item.createdAt).toLocaleString(DateTime.TIME_SIMPLE)
 
   return { ...item, time }

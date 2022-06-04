@@ -10,9 +10,9 @@ import { useUserData } from '@/store/userDataStore'
 import { VIDEO_COMMENTS_DESCRIPTION_MIN_LENGTH, VIDEO_COMMENTS_DESCRIPTION_MAX_LENGTH } from '@/config/video'
 
 // * Components
-import Button from './Button.vue'
 import Message from './Message.vue'
-import Textarea from './Textarea.vue'
+import Button from '@/components/Button.vue'
+import Textarea from '@/components/Textarea.vue'
 // * Components
 
 const userData = useUserData()

@@ -1,8 +1,12 @@
 <script lang="ts" setup>
 // * Types
 import type { PropType } from 'vue'
+import type { Room } from '@/contracts/room'
 import type { Video } from '@/contracts/video'
 // * Types
+
+import { parseVideo } from '@/helpers'
+import { RoutesNames } from '@/config/router'
 
 // * Components
 import List from './List.vue'
@@ -11,44 +15,50 @@ import Button from './Button.vue'
 // * Components
 
 const props = defineProps({
-  video: {
-    type: Object as PropType<Video>,
+  item: {
+    type: Object as PropType<Room>,
     required: true,
   },
 })
+
+const video: Video = parseVideo(props.item.video)
 </script>
 
 <template>
   <div class="RoomCard Box">
 
     <div class="RoomCard__img">
-      <img :src="props.video.poster" alt="">
+      <img :src="video.poster" alt="">
     </div>
 
     <div>
-      <h1 class="Font Font__title Font__bold">{{ props.video.name }}</h1>
+      <h1 class="Font Font__title Font__bold">{{ video.name }}</h1>
 
       <List v-slot="{ classNames, textClassName }" class="RoomCard__list">
       
         <li :class="classNames">
           <span :class="textClassName" class="Font Font__text Font__regular">
             Creator: 
-            <Link weight="regular" size="text">User name</Link>
+            <Link weight="regular" size="text">{{ props.item.user.nickname }}</Link>
           </span>
         </li>
 
-        <li :class="classNames">
+        <!-- <li :class="classNames">
           <span :class="textClassName" class="Font Font__text Font__regular">Users count: 3</span>
-        </li>
+        </li> -->
 
         <li :class="classNames">
-          <span :class="textClassName" class="Font Font__text Font__regular">Date of creation: 11.12.11</span>
+          <span :class="textClassName" class="Font Font__text Font__regular">Date of creation: {{ props.item.createdAtForUser }}</span>
         </li>
 
       </List>
     </div>
 
-    <Button type="anchor" class="RoomCard__join">Join</Button>
+    <Button 
+      :to="{ name: RoutesNames.ROOM, params: { slug: props.item.slug } }" 
+      type="anchor" 
+      class="RoomCard__join"
+    >Join</Button>
 
   </div>
 </template>
