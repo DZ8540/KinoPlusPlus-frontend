@@ -33,7 +33,7 @@ export default class GenreService extends BaseService {
       const err: ErrorResponse['response'] = _err
       Logger.error(err)
 
-      throw this.errorNotify(err.data.message)
+      throw this.errorNotify(err.data.message!)
     }
   }
 
@@ -54,7 +54,7 @@ export default class GenreService extends BaseService {
       const err: ErrorResponse['response'] = _err
       Logger.error(err)
 
-      throw this.errorNotify(err.data.message)
+      throw this.errorNotify(err.data.message!)
     }
   } 
 

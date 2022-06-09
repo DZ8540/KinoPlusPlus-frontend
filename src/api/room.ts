@@ -1,6 +1,7 @@
 // * Types
 import type { Response } from '@/contracts/response'
 import type { ApiDefaultPayload, Paginate } from '@/contracts/api'
+import type { ReturnJoinRoomEventPayload } from '@/contracts/webSocket'
 import type { Room, RoomMessage, RoomMessagePayload, RoomPayload } from '@/contracts/room'
 // * Types
 
@@ -19,10 +20,10 @@ export function createRoomApi(payload: RoomPayload): Promise<Response<Room['slug
   })
 }
 
-export function joinRoomApi(slug: Room['slug']): Promise<Response<Room>> {
+export function joinRoomApi(slug: Room['slug']): Promise<Response<ReturnJoinRoomEventPayload>> {
   return new Promise((resolve, reject) => {
 
-    socket.emit('room:join', slug, (response: Response<Room>) => {
+    socket.emit('room:join', slug, (response: Response<ReturnJoinRoomEventPayload>) => {
       if (response.status == 200)
         resolve(response)
 
@@ -32,10 +33,10 @@ export function joinRoomApi(slug: Room['slug']): Promise<Response<Room>> {
   })
 }
 
-export function updateRoomApi(slug: Room['slug'], payload: RoomPayload): Promise<Response<null>> {
+export function updateRoomApi(slug: Room['slug'], payload: RoomPayload): Promise<Response<Room['isOpen']>> {
   return new Promise((resolve, reject) => {
 
-    socket.emit('room:update', slug, payload, (response: Response<null>) => {
+    socket.emit('room:update', slug, payload, (response: Response<Room['isOpen']>) => {
       if (response.status == 200)
         resolve(response)
 

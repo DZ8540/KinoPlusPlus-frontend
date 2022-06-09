@@ -1,8 +1,12 @@
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+import { DateTime } from 'luxon'
+
+const year: number = DateTime.now().year
+</script>
 
 <template>
   <div class="Footer">
-    <span class="Font Font__text Font__regular">© 2021 «Кино++»</span>
+    <span class="Font Font__text Font__regular">© {{ year }} «Кино++»</span>
   </div>
 </template>
 

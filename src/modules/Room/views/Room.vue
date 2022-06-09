@@ -1,20 +1,24 @@
 <script lang="ts" setup>
 // * Types
-import type { Ref } from 'vue'
+import type { ComputedRef, Ref } from 'vue'
 import type { Video } from '@/contracts/video'
 import type { Paginate } from '@/contracts/api'
+import type { ReturnJoinRoomEventPayload } from '@/contracts/webSocket'
 import type { Room, RoomMessage, RoomMessagePayload, RoomPayload } from '@/contracts/room'
 // * Types
 
 import RoomService from '@/services/RoomService'
 import { socket } from '@/api/socket'
 import { parseVideo } from '@/helpers'
+import { useScroll } from '@vueuse/core'
 import { DEFAULT_ROOM } from '@/config/room'
+import { Messages } from '@/config/response'
 import { RoutesNames } from '@/config/router'
 import { DEFAULT_VIDEO } from '@/config/video'
 import { useRoute, useRouter } from 'vue-router'
 import { useUserData } from '@/store/userDataStore'
-import { computed, onMounted, onUnmounted, ref } from 'vue'
+import { useNotificationBus } from '@/store/notificationBusStore'
+import { computed, onMounted, onUnmounted, ref, nextTick } from 'vue'
 
 // * Components
 import Icon from '@/components/Icon.vue'
@@ -29,14 +33,18 @@ import Accordion from '@/components/Accordion.vue'
 const route = useRoute()
 const router = useRouter()
 const userData = useUserData()
+const notifications = useNotificationBus()
 
 let item: Ref<Room> = ref({ ...DEFAULT_ROOM })
 let video: Ref<Video> = ref({ ...DEFAULT_VIDEO })
+const usersCount: Ref<number> = ref(1)
 const slug: Room['slug'] = route.params.slug as string
 const messages: Ref<RoomMessage[]> = ref([])
 const currentMessage: Ref<string> = ref('')
+const messagesBoxElement: Ref<HTMLDivElement | null | undefined> = ref(null)
+const { arrivedState: messagesBoxElementArrivedState } = useScroll(messagesBoxElement)
 
-const textRoomStatus = computed(() => {
+const textRoomStatus: ComputedRef<'unlock' | 'lock'> = computed(() => {
   return item.value.isOpen ? 'unlock' : 'lock' 
 })
 
@@ -51,12 +59,12 @@ function updateRoom(isOpen: Room['isOpen']): void {
   item.value.isOpen = isOpen
 }
 
-function newMessage(msg: RoomMessage): void {
-  messages.value.push(msg)
-}
-
 function roomDeleted(): void {
   router.push({ name: RoutesNames.HOME })
+}
+
+function updateUsersCount(newUsersCount: number): void {
+  usersCount.value = newUsersCount
 }
 
 function setSocketEmits(): void {
@@ -64,9 +72,30 @@ function setSocketEmits(): void {
     socket.on('room:update', updateRoom)
     socket.on('room:newMessage', newMessage)
     socket.on('room:delete', roomDeleted)
+    socket.on('room:usersCountUpdate', updateUsersCount)
+    socket.on('disconnect', unJoinRoom)
   } catch (err) {
     console.log(err)
   }
+}
+
+async function stayBottom(isWithNewMessage: boolean): Promise<void> {
+  await nextTick()
+
+  if (isWithNewMessage && !messagesBoxElementArrivedState.bottom)
+    return
+
+  messagesBoxElement.value!.scroll({ top: messagesBoxElement.value!.scrollHeight })
+}
+
+async function newMessage(msg: RoomMessage): Promise<void> {
+  messages.value.push(msg)
+  
+  stayBottom(true)
+}
+
+async function unJoinRoom(): Promise<void> {
+  await RoomService.unJoin(item.value.slug)
 }
 
 async function update(): Promise<void> {
@@ -81,7 +110,8 @@ async function update(): Promise<void> {
     if (!result)
       throw null
 
-    await RoomService.update(slug, payload)
+    const isOpen: Room['isOpen'] = await RoomService.update(slug, payload)
+    item.value.isOpen = isOpen
   } catch (_err: any) {}
 }
 
@@ -94,7 +124,7 @@ async function sendMessage(): Promise<void> {
     }
 
     const msg: RoomMessage = await RoomService.sendMessage(item.value.slug, payload)
-    messages.value.push(msg)
+    await newMessage(msg)
 
     currentMessage.value = ''
   } catch (_err: any) {}
@@ -102,22 +132,32 @@ async function sendMessage(): Promise<void> {
 
 onMounted(async () => {
   try {
-    const room: Room = await RoomService.join(slug)
+    const response: ReturnJoinRoomEventPayload = await RoomService.join(slug)
     setSocketEmits()
 
-    item.value = room
-    video.value = parseVideo(room.video)
+    item.value = response.room
+    video.value = parseVideo(response.room.video)
+    updateUsersCount(response.usersCount)
     
     const oldMessages: Paginate<RoomMessage> = await RoomService.getMessages(item.value.slug, { 
       page: 1,
       limit: 200 
     })
     messages.value.push(...oldMessages.data)
-  } catch (_err: any) {}
+  
+    stayBottom(false)
+  } catch (_err: any) {
+    notifications.addNotification({
+      type: 'error',
+      msg: Messages.ROOM_NOT_FOUND,
+    })
+
+    router.back()
+  }
 })
 
 onUnmounted(async () => {
-  await RoomService.unJoin(item.value.slug)
+  await unJoinRoom()
 })
 </script>
 
@@ -162,7 +202,7 @@ onUnmounted(async () => {
                 </li>
 
                 <li :class="classNames">
-                  <span class="List__text Font Font__text Font__regular">Users: 2</span>
+                  <span class="List__text Font Font__text Font__regular">Users: {{ usersCount }}</span>
                 </li>
 
                 <li :class="classNames">
@@ -194,7 +234,7 @@ onUnmounted(async () => {
       </div>
 
       <div class="roomBox__contentFooter">
-        <div class="chat roomBox__chat">
+        <div ref="messagesBoxElement" class="chat roomBox__chat">
 
           <Message v-for="item of messages" :item="item" :key="item.id" />
 

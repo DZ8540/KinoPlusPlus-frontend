@@ -3,6 +3,7 @@ import type { Video } from '@/contracts/video'
 import type { ParsedUser } from '@/contracts/user'
 import type { Response } from '@/contracts/response'
 import type { ApiDefaultPayload, Paginate } from '@/contracts/api'
+import type { ReturnJoinRoomEventPayload } from '@/contracts/webSocket'
 import type { Room, RoomMessage, RoomMessagePayload, RoomPayload } from '@/contracts/room'
 // * Types
 
@@ -38,22 +39,22 @@ export default class RoomService extends BaseService {
       const err: Response = _err
       Logger.error(err)
 
-      throw this.errorNotify(err.msg)
+      throw this.errorNotify(err.msg!)
     }
   }
 
-  public static async join(slug: Room['slug']): Promise<Room> {
+  public static async join(slug: Room['slug']): Promise<ReturnJoinRoomEventPayload> {
     try {
       return (await joinRoomApi(slug)).body!
     } catch (_err: any) {
       const err: Response = _err
       Logger.error(err)
 
-      throw this.errorNotify(err.msg)
+      throw this.errorNotify(err.msg!)
     }
   }
 
-  public static async update(slug: Room['slug'], payload: RoomPayload): Promise<void> {
+  public static async update(slug: Room['slug'], payload: RoomPayload): Promise<Room['isOpen']> {
     let user: ParsedUser
 
     try {
@@ -68,12 +69,14 @@ export default class RoomService extends BaseService {
       throw this.errorNotify(Messages.ERR)
 
     try {
-      await updateRoomApi(slug, payload)
+      const response: Response<Room['isOpen']> = await updateRoomApi(slug, payload)
+
+      return response.body!
     } catch (_err: any) {
       const err: Response = _err
       Logger.error(err)
 
-      throw this.errorNotify(err.msg)
+      throw this.errorNotify(err.msg!)
     }
   }
 
@@ -111,7 +114,7 @@ export default class RoomService extends BaseService {
       const err: Response = _err
       Logger.error(err)
 
-      throw this.errorNotify(err.msg)
+      throw this.errorNotify(err.msg!)
     }
   }
 
@@ -124,7 +127,7 @@ export default class RoomService extends BaseService {
       const err: Response = _err
       Logger.error(err)
 
-      throw this.errorNotify(err.msg)
+      throw this.errorNotify(err.msg!)
     }
   }
 }

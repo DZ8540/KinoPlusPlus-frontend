@@ -16,7 +16,7 @@ import { useUserData } from '@/store/userDataStore'
 import { useNotificationBus } from '@/store/notificationBusStore'
 import { 
   castErrors, checkFormData, getFirstError, 
-  isEqual, displayExternalErrors,
+  isEqual, displayExternalErrors, 
 } from '@/helpers'
 import { 
   required, email, minLength, 
@@ -51,7 +51,7 @@ const sexValues: Value[] = [
 const tabs: MenuItem[] = [
   {
     text: 'Achieves',
-    to: { name: RoutesNames.PROFILE },
+    to: { name: RoutesNames.ACHIEVES },
   },
   {
     text: 'Wishlist',

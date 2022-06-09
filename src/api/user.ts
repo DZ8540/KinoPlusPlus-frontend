@@ -9,6 +9,16 @@ import type { ApiDefaultPayload, Paginate, UserPayload } from '@/contracts/api'
 import instance from './instance'
 import { API_ROUTES } from '@/config/api'
 
+export async function getUserApi(userId: User['id']): Promise<AxiosResponse<Response<User>>> {
+  try {
+    return await instance.post<Response<User>>(API_ROUTES.user.get(userId))
+  } catch (_err: any) {
+    const err: ErrorResponse = _err
+
+    throw err.response
+  }
+}
+
 export async function updateUserApi(userId: User['id'], payload: FormData | UserPayload): Promise<AxiosResponse<Response<User>>> {
   try {
     return await instance.patch<Response<User>>(API_ROUTES.user.update(userId), payload, { 

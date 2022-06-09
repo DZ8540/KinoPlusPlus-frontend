@@ -6,6 +6,7 @@ import type { RoomMessage, ParsedRoomMessage } from '@/contracts/room'
 // * Types
 
 import { reactive } from 'vue'
+import { RoutesNames } from '@/config/router'
 import { useUserData } from '@/store/userDataStore'
 import { parseUser, parseRoomMessage } from '@/helpers'
 
@@ -41,7 +42,7 @@ function isMineMessage(): boolean {
       </div>
 
       <div class="Message__user">
-        <Link class="Message__name">{{ user.nickname }}</Link>
+        <Link :to="{ name: RoutesNames.USER, params: { id: user.id } }" class="Message__name">{{ user.nickname }}</Link>
         <span class="Message__time Font Font__mini Font__regular">At {{ item.time }}</span>
       </div>
     </div>

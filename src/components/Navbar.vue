@@ -301,7 +301,7 @@ onMounted(() => {
         </li>
 
         <li class="Navbar__rightListLi uk-visible@l">
-          <router-link :to="{ name: RoutesNames.PROFILE }" class="Navbar__rightListLink">
+          <router-link :to="{ name: RoutesNames.ACHIEVES }" class="Navbar__rightListLink">
             <Icon type="USER" />
           </router-link>
         </li>

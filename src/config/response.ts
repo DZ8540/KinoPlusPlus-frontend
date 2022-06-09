@@ -44,4 +44,10 @@ export enum Messages {
 
   USER_UNDEFINED = 'Please log in your account!',
   USER_PROFILE_EDITED = 'Your profile successful updated!',
+
+  /**
+   * * Room
+   */
+
+  ROOM_NOT_FOUND = 'Error! Room not found!',
 }

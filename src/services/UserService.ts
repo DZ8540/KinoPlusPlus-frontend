@@ -11,12 +11,25 @@ import Logger from '@/assets/vendor/Logger'
 import { Messages } from '@/config/response'
 import { laterListApi, wishlistApi } from '@/api/Video/video'
 import { 
-  getUserHistoryListApi, getUserLaterListApi, 
-  getUserWishlistApi, updateUserApi,
+  getUserHistoryListApi, getUserLaterListApi, getUserWishlistApi, 
+  updateUserApi, getUserApi,
 } from '@/api/user'
 
 
 export default class UserService extends BaseService {
+  public static async get(userId: User['id']): Promise<User> {
+    try {
+      const response: AxiosResponse<Response<User>> = await getUserApi(userId)
+
+      return response.data.body!
+    } catch (_err: any) {
+      const err: ErrorResponse['response'] = _err
+      Logger.error(err)
+
+      throw this.errorNotify(err.data.message!)
+    }
+  }
+
   public static async updateProfile(data: UserPayload, avatar?: Blob | MediaSource): Promise<void> {
     const user: ParsedUser = this.getUser()
     const payload: FormData = new FormData()
@@ -38,7 +51,7 @@ export default class UserService extends BaseService {
       const err: ErrorResponse['response'] = _err
       Logger.error(err)
 
-      this.errorNotify(err.data.message)
+      this.errorNotify(err.data.msg!)
 
       if (err.data.errors?.length)
         throw err.data.errors
@@ -58,7 +71,7 @@ export default class UserService extends BaseService {
       const err: ErrorResponse['response'] = _err
       Logger.error(err)
 
-      throw this.errorNotify(err.data.message)
+      throw this.errorNotify(err.data.msg!)
     }
   }
 
@@ -77,14 +90,14 @@ export default class UserService extends BaseService {
       const err: ErrorResponse['response'] = _err
       Logger.error(err)
 
-      throw this.errorNotify(err.data.message)
+      throw this.errorNotify(err.data.msg!)
     }
   }
 
   public static async wishlistAction(videoId: Video['id'], action: ListsActions): Promise<void> {
     const user: ParsedUser = this.getUser()
     
-    const msg: Messages = action == 'add' ? Messages.VIDEO_WISHLIST_ADDED : Messages.VIDEO_WISHLIST_DELETED
+    const message: Messages = action == 'add' ? Messages.VIDEO_WISHLIST_ADDED : Messages.VIDEO_WISHLIST_DELETED
     const payload: WishlistPayload = {
       videoId,
       userId: user.id,
@@ -93,7 +106,7 @@ export default class UserService extends BaseService {
     try {
       await wishlistApi(payload, action)
 
-      this.successNotify(msg)
+      this.successNotify(message)
     } catch (_err: any) {
       Logger.error(_err)
       throw this.errorNotify(Messages.ERR)
@@ -115,14 +128,14 @@ export default class UserService extends BaseService {
       const err: ErrorResponse['response'] = _err
       Logger.error(err)
 
-      throw this.errorNotify(err.data.message)
+      throw this.errorNotify(err.data.msg!)
     }
   }
 
   public static async laterListAction(videoId: Video['id'], action: ListsActions): Promise<void> {
     const user: ParsedUser = this.getUser()
     
-    const msg: Messages = action == 'add' ? Messages.VIDEO_LATER_LIST_ADDED : Messages.VIDEO_LATER_LIST_DELETED
+    const message: Messages = action == 'add' ? Messages.VIDEO_LATER_LIST_ADDED : Messages.VIDEO_LATER_LIST_DELETED
     const payload: WishlistPayload = {
       videoId,
       userId: user.id,
@@ -131,7 +144,7 @@ export default class UserService extends BaseService {
     try {
       await laterListApi(payload, action)
 
-      this.successNotify(msg)
+      this.successNotify(message)
     } catch (_err: any) {
       Logger.error(_err)
       throw this.errorNotify(Messages.ERR)

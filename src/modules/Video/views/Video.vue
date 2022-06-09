@@ -308,7 +308,7 @@ onMounted(async () => {
         <video class="trailer__video" src="" controls></video>
       </div>
       
-      <Accordion v-if="isShowRooms()" class="mb">
+      <Accordion v-if="item.rooms?.length" class="mb">
 
         <li class="Box Accordion__item">
           <a class="uk-accordion-title Accordion__title Font Font__title Font__bold" href="#">

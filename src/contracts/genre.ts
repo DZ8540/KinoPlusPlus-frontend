@@ -7,3 +7,8 @@ export type Genre = {
   image?: string,
   moviesCount?: number,
 }
+
+export type ParsedGenre = Genre & {
+  image: string,
+  moviesCount: number,
+}

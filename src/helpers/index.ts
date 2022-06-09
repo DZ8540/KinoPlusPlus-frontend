@@ -3,6 +3,7 @@ import type { Ref } from 'vue'
 import type { Validation } from '@vuelidate/core'
 import type { ParsedUser, User } from '@/contracts/user'
 import type { ErrorFromQuery } from '@/contracts/response'
+import type { Genre, ParsedGenre } from '@/contracts/genre'
 import type { UnparsedVideo, Video } from '@/contracts/video'
 import type { ParsedRoomMessage, RoomMessage } from '@/contracts/room'
 import type { VideoComment, ParsedVideoComment } from '@/contracts/video'
@@ -48,6 +49,17 @@ export function parseUser(item: User): ParsedUser {
     item.phone = 'Not set'
 
   return item as ParsedUser
+}
+
+export function parseGenre(item: Genre): ParsedGenre {
+  if (!item.image)
+    item.image = IMAGE_PLACEHOLDER
+  else
+    item.image = `${URL}${item.image}`
+    
+  item.moviesCount = item.moviesCount ?? 0
+
+  return item as ParsedGenre
 }
 
 export function parseComment(item: VideoComment): ParsedVideoComment {

@@ -19,7 +19,9 @@ export enum RoutesNames {
    * * User
    */
 
+  USER = 'user',
   PROFILE = 'profile',
+  ACHIEVES = 'achievements',
   WISHLIST = 'wishlist',
   LATER_LIST = 'laterList',
   HISTORY_LIST = 'historyList',

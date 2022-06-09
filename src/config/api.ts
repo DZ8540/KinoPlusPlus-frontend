@@ -37,6 +37,7 @@ export const API_ROUTES = {
     activateUser: (token: string) => `/auth/emailVerify/${token}`,
   },
   user: {
+    get: (userId: User['id']) => `/user/${userId}`,
     update: (userId: User['id']) => `/user/${userId}`,
     wishlist: (userId: User['id']) => `/user/wishlist/${userId}`,
     laterList: (userId: User['id']) => `/user/laterList/${userId}`,

@@ -62,7 +62,7 @@ async function submitHandler(): Promise<void> {
     await AuthService.login(formData)
     resetForm()
     
-    router.push({ name: RoutesNames.PROFILE })
+    router.push({ name: RoutesNames.ACHIEVES })
   } catch (_err: any) {
     const err: ErrorResponse['response']['data']['errors'] | null = _err
 
@@ -117,6 +117,4 @@ async function submitHandler(): Promise<void> {
   </div>
 </template>
 
-<style lang="sass" scoped>
-
-</style>
+<style lang="sass" scoped></style>

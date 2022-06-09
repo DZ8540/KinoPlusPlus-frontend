@@ -36,7 +36,7 @@ export default class AuthService extends BaseService {
       const err: ErrorResponse['response'] = _err
       Logger.error(err)
 
-      this.errorNotify(err.data.message)
+      this.errorNotify(err.data.message!)
 
       if (err.data.errors?.length)
         throw err.data.errors
@@ -54,7 +54,7 @@ export default class AuthService extends BaseService {
       const err: ErrorResponse['response'] = _err
       Logger.error(err)
 
-      this.errorNotify(err.data.message)
+      this.errorNotify(err.data.message!)
     }
   }
 
@@ -67,7 +67,7 @@ export default class AuthService extends BaseService {
       const err: ErrorResponse['response'] = _err
       Logger.error(err)
 
-      this.errorNotify(err.data.message)
+      this.errorNotify(err.data.message!)
 
       if (err.data.errors?.length)
         throw err.data.errors

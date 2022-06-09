@@ -7,6 +7,7 @@ import type { Video } from '@/contracts/video'
 
 import { parseVideo } from '@/helpers'
 import { RoutesNames } from '@/config/router'
+import { useUserData } from '@/store/userDataStore'
 
 // * Components
 import List from './List.vue'
@@ -14,6 +15,7 @@ import Link from './Link.vue'
 import Button from './Button.vue'
 // * Components
 
+const userData = useUserData()
 const props = defineProps({
   item: {
     type: Object as PropType<Room>,
@@ -55,6 +57,7 @@ const video: Video = parseVideo(props.item.video)
     </div>
 
     <Button 
+      v-if="userData.user"
       :to="{ name: RoutesNames.ROOM, params: { slug: props.item.slug } }" 
       type="anchor" 
       class="RoomCard__join"

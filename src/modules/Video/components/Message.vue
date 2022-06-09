@@ -8,6 +8,7 @@ import type { VideoComment, ParsedVideoComment } from '@/contracts/video'
 
 import { ref } from 'vue'
 import { EventsNames } from '@/config/event'
+import { RoutesNames } from '@/config/router'
 import { parseComment, parseUser } from '@/helpers'
 import { useUserData } from '@/store/userDataStore'
 import { VIDEO_COMMENTS_DESCRIPTION_MAX_LENGTH, VIDEO_COMMENTS_DESCRIPTION_MIN_LENGTH } from '@/config/video'
@@ -98,7 +99,7 @@ async function updateComment(): Promise<void> {
       </div>
 
       <div class="Message__user">
-        <Link class="Message__name">{{ user.nickname }}</Link>
+        <Link :to="{ name: RoutesNames.USER, params: { id: user.id } }" class="Message__name">{{ user.nickname }}</Link>
         <span class="Message__time Font Font__mini Font__regular">At {{ item.time }}</span>
       </div>
     </div>
