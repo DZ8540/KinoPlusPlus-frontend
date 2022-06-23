@@ -1,4 +1,3 @@
-import tryLogin from '@/middleware/tryLogin'
 import { RoutesNames } from '@/config/router'
 import { createRouter, createWebHistory } from 'vue-router'
 
@@ -11,7 +10,5 @@ const router = createRouter({
     }
   ],
 })
-
-router.beforeEach(tryLogin)
 
 export default router

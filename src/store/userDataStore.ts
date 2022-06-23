@@ -23,8 +23,5 @@ export const useUserData = defineStore('userData', {
     setUser(user: User): void {
       this.user = parseUser(user)
     },
-    // resetUser(): void {
-    //   this.user = null
-    // }
   },
 })

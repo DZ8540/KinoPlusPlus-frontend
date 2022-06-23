@@ -1,16 +1,15 @@
 // * Types
 import type { Response } from '@/contracts/response'
 import type { ApiDefaultPayload, Paginate } from '@/contracts/api'
-import type { ReturnJoinRoomEventPayload } from '@/contracts/webSocket'
 import type { Room, RoomMessage, RoomMessagePayload, RoomPayload } from '@/contracts/room'
 // * Types
 
-import { socket } from './socket'
+import { socketInstance } from './socketInstance'
 
 export function createRoomApi(payload: RoomPayload): Promise<Response<Room['slug']>> {
   return new Promise((resolve, reject) => {
 
-    socket.emit('room:create', payload, (response: Response<Room['slug']>) => {
+    socketInstance.emit('room:create', payload, (response: Response<Room['slug']>) => {
       if (response.status == 200)
         resolve(response)
       
@@ -20,10 +19,10 @@ export function createRoomApi(payload: RoomPayload): Promise<Response<Room['slug
   })
 }
 
-export function joinRoomApi(slug: Room['slug']): Promise<Response<ReturnJoinRoomEventPayload>> {
+export function joinRoomApi(slug: Room['slug']): Promise<Response<Room>> {
   return new Promise((resolve, reject) => {
 
-    socket.emit('room:join', slug, (response: Response<ReturnJoinRoomEventPayload>) => {
+    socketInstance.emit('room:join', slug, (response: Response<Room>) => {
       if (response.status == 200)
         resolve(response)
 
@@ -36,7 +35,7 @@ export function joinRoomApi(slug: Room['slug']): Promise<Response<ReturnJoinRoom
 export function updateRoomApi(slug: Room['slug'], payload: RoomPayload): Promise<Response<Room['isOpen']>> {
   return new Promise((resolve, reject) => {
 
-    socket.emit('room:update', slug, payload, (response: Response<Room['isOpen']>) => {
+    socketInstance.emit('room:update', slug, payload, (response: Response<Room['isOpen']>) => {
       if (response.status == 200)
         resolve(response)
 
@@ -49,7 +48,7 @@ export function updateRoomApi(slug: Room['slug'], payload: RoomPayload): Promise
 export function unJoinRoomApi(slug: Room['slug']): Promise<Response<null>> {
   return new Promise((resolve, reject) => {
 
-    socket.emit('room:unJoin', slug, (response: Response<null>) => {
+    socketInstance.emit('room:unJoin', slug, (response: Response<null>) => {
       if (response.status == 200)
         resolve(response)
 
@@ -66,7 +65,7 @@ export function unJoinRoomApi(slug: Room['slug']): Promise<Response<null>> {
 export function sendMessageRoomApi(slug: Room['slug'], payload: RoomMessagePayload): Promise<Response<RoomMessage>> {
   return new Promise((resolve, reject) => {
 
-    socket.emit('room:sendMessage', slug, payload, (response: Response<RoomMessage>) => {
+    socketInstance.emit('room:sendMessage', slug, payload, (response: Response<RoomMessage>) => {
       if (response.status == 200)
         resolve(response)
 
@@ -79,7 +78,7 @@ export function sendMessageRoomApi(slug: Room['slug'], payload: RoomMessagePaylo
 export function getRoomMessagesApi(slug: Room['slug'], payload: ApiDefaultPayload): Promise<Response<Paginate<RoomMessage>>> {
   return new Promise((resolve, reject) => {
 
-    socket.emit('room:getMessages', slug, payload, (response: Response<Paginate<RoomMessage>>) => {
+    socketInstance.emit('room:getMessages', slug, payload, (response: Response<Paginate<RoomMessage>>) => {
       if (response.status == 200)
         resolve(response)
 

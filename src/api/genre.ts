@@ -7,12 +7,12 @@ import type { ApiDefaultPayload, Paginate } from '@/contracts/api'
 import type { ErrorResponse, Response } from '@/contracts/response'
 // * Types
 
-import instance from './instance'
+import axiosInstance from './axiosInstance'
 import { API_ROUTES } from '@/config/api'
 
 export async function allGenresApi(): Promise<AxiosResponse<Response<Genre[]>>> {
   try {
-    return await instance.post<Response<Genre[]>>(API_ROUTES.genre.all)
+    return await axiosInstance.post<Response<Genre[]>>(API_ROUTES.genre.all)
   } catch (_err: any) {
     const err: ErrorResponse = _err
 
@@ -22,7 +22,7 @@ export async function allGenresApi(): Promise<AxiosResponse<Response<Genre[]>>> 
 
 export async function getGenreApi(slug: Genre['slug']): Promise<AxiosResponse<Response<Genre>>> {
   try {
-    return await instance.post<Response<Genre>>(API_ROUTES.genre.item(slug))
+    return await axiosInstance.post<Response<Genre>>(API_ROUTES.genre.item(slug))
   } catch (_err: any) {
     const err: ErrorResponse = _err
 
@@ -32,7 +32,7 @@ export async function getGenreApi(slug: Genre['slug']): Promise<AxiosResponse<Re
 
 export async function showOnMainPageApi(): Promise<AxiosResponse<Response<Genre[]>>> {
   try {
-    return await instance.post<Response<Genre[]>>(API_ROUTES.genre.showOnMainPage)
+    return await axiosInstance.post<Response<Genre[]>>(API_ROUTES.genre.showOnMainPage)
   } catch (_err: any) {
     const err: ErrorResponse = _err
 
@@ -42,7 +42,7 @@ export async function showOnMainPageApi(): Promise<AxiosResponse<Response<Genre[
 
 export async function getGenreVideosApi(payload: ApiDefaultPayload, slug: Genre['slug'], currentUserId?: User['id']): Promise<AxiosResponse<Response<Paginate<UnparsedVideo>>>> {
   try {
-    return await instance.post<Response<Paginate<UnparsedVideo>>>(API_ROUTES.genre.genreMovies(slug, currentUserId), payload)
+    return await axiosInstance.post<Response<Paginate<UnparsedVideo>>>(API_ROUTES.genre.genreMovies(slug, currentUserId), payload)
   } catch (_err: any) {
     const err: ErrorResponse = _err
 

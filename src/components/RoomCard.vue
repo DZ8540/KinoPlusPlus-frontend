@@ -2,6 +2,7 @@
 // * Types
 import type { PropType } from 'vue'
 import type { Room } from '@/contracts/room'
+import type { User } from '@/contracts/user'
 import type { Video } from '@/contracts/video'
 // * Types
 
@@ -24,6 +25,7 @@ const props = defineProps({
 })
 
 const video: Video = parseVideo(props.item.video)
+const user: User = props.item.creator[0]
 </script>
 
 <template>
@@ -41,13 +43,13 @@ const video: Video = parseVideo(props.item.video)
         <li :class="classNames">
           <span :class="textClassName" class="Font Font__text Font__regular">
             Creator: 
-            <Link weight="regular" size="text">{{ props.item.user.nickname }}</Link>
+            <Link weight="regular" size="text" :to="{ name: RoutesNames.USER, params: { id: user.id } }">{{ user.nickname }}</Link>
           </span>
         </li>
 
-        <!-- <li :class="classNames">
-          <span :class="textClassName" class="Font Font__text Font__regular">Users count: 3</span>
-        </li> -->
+        <li :class="classNames">
+          <span :class="textClassName" class="Font Font__text Font__regular">Users count: {{ props.item.usersCount }}</span>
+        </li>
 
         <li :class="classNames">
           <span :class="textClassName" class="Font Font__text Font__regular">Date of creation: {{ props.item.createdAtForUser }}</span>

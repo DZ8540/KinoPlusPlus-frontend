@@ -5,6 +5,7 @@ import './registerModules'
 
 import App from './App.vue'
 import router from './router'
+import BaseService from './services/BaseService'
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 
@@ -21,3 +22,4 @@ app.use(router)
 // app.component('Link', Link)
 
 app.mount('#app')
+BaseService.initApp()

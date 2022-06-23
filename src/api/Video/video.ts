@@ -6,13 +6,13 @@ import type { LaterListPayload, Paginate, WishlistPayload } from '@/contracts/ap
 import type { ApiSearchData, UnparsedVideo, Video, ListsActions } from '@/contracts/video'
 // * Types
 
-import instance from '../instance'
 import Logger from '@/assets/vendor/Logger'
+import axiosInstance from '../axiosInstance'
 import { API_ROUTES } from '@/config/api'
 
 export async function getVideoApi(slug: Video['slug'], currentUserId?: User['id']): Promise<AxiosResponse<Response<UnparsedVideo>>> {
   try {
-    return await instance.post<Response<UnparsedVideo>>(API_ROUTES.video.item(slug, currentUserId))
+    return await axiosInstance.post<Response<UnparsedVideo>>(API_ROUTES.video.item(slug, currentUserId))
   } catch (_err: any) {
     const err: ErrorResponse = _err
 
@@ -22,7 +22,7 @@ export async function getVideoApi(slug: Video['slug'], currentUserId?: User['id'
 
 export async function newestApi(currentUserId?: User['id']): Promise<AxiosResponse<Response<UnparsedVideo[]>>> {
   try {
-    return await instance.post<Response<UnparsedVideo[]>>(API_ROUTES.video.newest(currentUserId))
+    return await axiosInstance.post<Response<UnparsedVideo[]>>(API_ROUTES.video.newest(currentUserId))
   } catch (_err: any) {
     const err: ErrorResponse = _err
 
@@ -32,7 +32,7 @@ export async function newestApi(currentUserId?: User['id']): Promise<AxiosRespon
 
 export async function popularApi(currentUserId?: User['id']): Promise<AxiosResponse<Response<UnparsedVideo[]>>> {
   try {
-    return await instance.post<Response<UnparsedVideo[]>>(API_ROUTES.video.popular(currentUserId))
+    return await axiosInstance.post<Response<UnparsedVideo[]>>(API_ROUTES.video.popular(currentUserId))
   } catch (_err: any) {
     const err: ErrorResponse = _err
 
@@ -42,7 +42,7 @@ export async function popularApi(currentUserId?: User['id']): Promise<AxiosRespo
 
 export async function searchVideoApi(payload: ApiSearchData, currentUserId?: User['id']): Promise<AxiosResponse<Response<Paginate<UnparsedVideo>>>> {
   try {
-    return await instance.post<Response<Paginate<UnparsedVideo>>>(API_ROUTES.video.search(currentUserId), payload)
+    return await axiosInstance.post<Response<Paginate<UnparsedVideo>>>(API_ROUTES.video.search(currentUserId), payload)
   } catch (err: ErrorResponse | any) {
     Logger.error(err)
 
@@ -53,9 +53,9 @@ export async function searchVideoApi(payload: ApiSearchData, currentUserId?: Use
 export async function wishlistApi(payload: WishlistPayload, action: ListsActions): Promise<AxiosResponse<Response<null>>> {
   try {
     if (action == 'add')
-      return await instance.post<Response<null>>(API_ROUTES.video.wishlist(), payload)
+      return await axiosInstance.post<Response<null>>(API_ROUTES.video.wishlist(), payload)
 
-    return await instance.delete<Response<null>>(API_ROUTES.video.wishlist(), { data: payload })
+    return await axiosInstance.delete<Response<null>>(API_ROUTES.video.wishlist(), { data: payload })
   } catch (_err: any) {
     const err: ErrorResponse = _err
 
@@ -66,9 +66,9 @@ export async function wishlistApi(payload: WishlistPayload, action: ListsActions
 export async function laterListApi(payload: LaterListPayload, action: ListsActions): Promise<AxiosResponse<Response<null>>> {
   try {
     if (action == 'add')
-      return await instance.post<Response<null>>(API_ROUTES.video.laterList(), payload)
+      return await axiosInstance.post<Response<null>>(API_ROUTES.video.laterList(), payload)
 
-    return await instance.delete<Response<null>>(API_ROUTES.video.laterList(), { data: payload })
+    return await axiosInstance.delete<Response<null>>(API_ROUTES.video.laterList(), { data: payload })
   } catch (_err: any) {
     const err: ErrorResponse = _err
 

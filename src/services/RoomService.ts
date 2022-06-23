@@ -3,7 +3,6 @@ import type { Video } from '@/contracts/video'
 import type { ParsedUser } from '@/contracts/user'
 import type { Response } from '@/contracts/response'
 import type { ApiDefaultPayload, Paginate } from '@/contracts/api'
-import type { ReturnJoinRoomEventPayload } from '@/contracts/webSocket'
 import type { Room, RoomMessage, RoomMessagePayload, RoomPayload } from '@/contracts/room'
 // * Types
 
@@ -17,20 +16,9 @@ import {
 
 export default class RoomService extends BaseService {
   public static async create(videoId: Video['id']): Promise<Room['slug']> {
-    let user: ParsedUser
-
-    try {
-      user = this.getUser()
-    } catch (_err: any) {
-      const err: Messages = _err
-
-      throw this.errorNotify(err)
-    }
-
     try {
       const payload: RoomPayload = {
         isOpen: true,
-        userId: user.id,
         videoId: videoId,
       }
 
@@ -43,7 +31,7 @@ export default class RoomService extends BaseService {
     }
   }
 
-  public static async join(slug: Room['slug']): Promise<ReturnJoinRoomEventPayload> {
+  public static async join(slug: Room['slug']): Promise<Room> {
     try {
       return (await joinRoomApi(slug)).body!
     } catch (_err: any) {
@@ -55,19 +43,6 @@ export default class RoomService extends BaseService {
   }
 
   public static async update(slug: Room['slug'], payload: RoomPayload): Promise<Room['isOpen']> {
-    let user: ParsedUser
-
-    try {
-      user = this.getUser()
-    } catch (_err: any) {
-      const err: Messages = _err
-
-      throw this.errorNotify(err)
-    }
-
-    if (user.id != payload.userId)
-      throw this.errorNotify(Messages.ERR)
-
     try {
       const response: Response<Room['isOpen']> = await updateRoomApi(slug, payload)
 

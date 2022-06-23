@@ -7,14 +7,15 @@ export type Room = {
   id: number,
   isOpen: boolean,
   slug: string,
-  userId: User['id'],
   videoId: Video['id'],
   createdAt: string,
   updatedAt: string,
   createdAtForUser: string,
-  user: User,
+  creator: User[],
   video: UnparsedVideo,
+  usersCount: number,
   messages?: RoomMessage[],
+  users?: User[],
 }
 
 export type RoomMessage = {
@@ -31,7 +32,7 @@ export type ParsedRoomMessage = RoomMessage & {
   time: string,
 }
 
-export type RoomPayload = Pick<Room, 'isOpen' | 'userId' | 'videoId'>
+export type RoomPayload = Pick<Room, 'isOpen' | 'videoId'>
 
 export type RoomMessagePayload = {
   message: RoomMessage['message'],

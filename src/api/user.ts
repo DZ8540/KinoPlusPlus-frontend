@@ -6,12 +6,12 @@ import type { ErrorResponse, Response } from '@/contracts/response'
 import type { ApiDefaultPayload, Paginate, UserPayload } from '@/contracts/api'
 // * Types
 
-import instance from './instance'
+import axiosInstance from './axiosInstance'
 import { API_ROUTES } from '@/config/api'
 
 export async function getUserApi(userId: User['id']): Promise<AxiosResponse<Response<User>>> {
   try {
-    return await instance.post<Response<User>>(API_ROUTES.user.get(userId))
+    return await axiosInstance.post<Response<User>>(API_ROUTES.user.get(userId))
   } catch (_err: any) {
     const err: ErrorResponse = _err
 
@@ -21,7 +21,7 @@ export async function getUserApi(userId: User['id']): Promise<AxiosResponse<Resp
 
 export async function updateUserApi(userId: User['id'], payload: FormData | UserPayload): Promise<AxiosResponse<Response<User>>> {
   try {
-    return await instance.patch<Response<User>>(API_ROUTES.user.update(userId), payload, { 
+    return await axiosInstance.patch<Response<User>>(API_ROUTES.user.update(userId), payload, { 
       headers: {
         'Content-Type': 'multipart/form-data',
       },
@@ -35,7 +35,7 @@ export async function updateUserApi(userId: User['id'], payload: FormData | User
 
 export async function getUserWishlistApi(userId: User['id'], payload: ApiDefaultPayload): Promise<AxiosResponse<Response<Paginate<UnparsedVideo>>>> {
   try {
-    return await instance.post<Response<Paginate<UnparsedVideo>>>(API_ROUTES.user.wishlist(userId), payload)
+    return await axiosInstance.post<Response<Paginate<UnparsedVideo>>>(API_ROUTES.user.wishlist(userId), payload)
   } catch (_err: any) {
     const err: ErrorResponse = _err
 
@@ -45,7 +45,7 @@ export async function getUserWishlistApi(userId: User['id'], payload: ApiDefault
 
 export async function getUserLaterListApi(userId: User['id'], payload: ApiDefaultPayload): Promise<AxiosResponse<Response<Paginate<UnparsedVideo>>>> {
   try {
-    return await instance.post<Response<Paginate<UnparsedVideo>>>(API_ROUTES.user.laterList(userId), payload)
+    return await axiosInstance.post<Response<Paginate<UnparsedVideo>>>(API_ROUTES.user.laterList(userId), payload)
   } catch (_err: any) {
     const err: ErrorResponse = _err
 
@@ -55,7 +55,7 @@ export async function getUserLaterListApi(userId: User['id'], payload: ApiDefaul
 
 export async function getUserHistoryListApi(userId: User['id'], payload: ApiDefaultPayload): Promise<AxiosResponse<Response<Paginate<UnparsedVideo>>>> {
   try {
-    return await instance.post<Response<Paginate<UnparsedVideo>>>(API_ROUTES.user.historyList(userId), payload)
+    return await axiosInstance.post<Response<Paginate<UnparsedVideo>>>(API_ROUTES.user.historyList(userId), payload)
   } catch (_err: any) {
     const err: ErrorResponse = _err
 

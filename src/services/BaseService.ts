@@ -2,13 +2,26 @@
 import type { ParsedUser } from '@/contracts/user'
 // * Types
 
+import AuthService from './AuthService'
 import { Messages } from '@/config/response'
+import { bootSocket } from '@/api/socketInstance'
 import { useUserData } from '@/store/userDataStore'
 import { useNotificationBus } from '@/store/notificationBusStore'
 
 export default class BaseService {
   protected static userData = () => useUserData()
   private static notifications = () => useNotificationBus()
+
+  public static async initApp(): Promise<void> {
+    await AuthService.refresh()
+
+    try {
+      const user: ParsedUser = this.getUser()
+      bootSocket(user.id)
+    } catch (err: Messages | any) {
+      this.errorNotify(Messages.SOCKET_ERROR)
+    }
+  }
 
   protected static getUser(): ParsedUser {
     const user: ParsedUser | null = this.userData().user

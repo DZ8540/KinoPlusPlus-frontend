@@ -1,6 +1,6 @@
 // * Types
-import type { AxiosRequestConfig, AxiosResponse } from 'axios'
 import type { ErrorResponse } from '@/contracts/response'
+import type { AxiosRequestConfig, AxiosResponse } from 'axios'
 // * Types
 
 import ms from 'ms'
@@ -9,7 +9,7 @@ import AuthService from '@/services/AuthService'
 import { TIMEOUT, URL } from '@/config/api'
 import { useUserData } from '@/store/userDataStore'
 
-const instance = axios.create({
+const axiosInstance = axios.create({
   baseURL: `${URL}/api`,
   timeout: ms(TIMEOUT),
   withCredentials: true,
@@ -21,7 +21,7 @@ const instance = axios.create({
   },
 })
 
-instance.interceptors.request.use(
+axiosInstance.interceptors.request.use(
   (config: AxiosRequestConfig) => {
     // Logger.info('Request', config)
 
@@ -39,7 +39,7 @@ instance.interceptors.request.use(
   }
 )
 
-instance.interceptors.response.use(
+axiosInstance.interceptors.response.use(
   (response: AxiosResponse<any>) => {
     // Logger.info('Response', response)
 
@@ -54,11 +54,11 @@ instance.interceptors.response.use(
       originalConfig._retry = true
 
       await AuthService.refresh()
-      return instance(originalConfig)
+      return axiosInstance(originalConfig)
     }
 
     return Promise.reject(err)
   }
 )
 
-export default instance
+export default axiosInstance

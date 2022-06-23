@@ -3,20 +3,21 @@
 import type { ComputedRef, Ref } from 'vue'
 import type { Video } from '@/contracts/video'
 import type { Paginate } from '@/contracts/api'
-import type { ReturnJoinRoomEventPayload } from '@/contracts/webSocket'
+import type { ParsedUser, User } from '@/contracts/user'
 import type { Room, RoomMessage, RoomMessagePayload, RoomPayload } from '@/contracts/room'
 // * Types
 
 import RoomService from '@/services/RoomService'
-import { socket } from '@/api/socket'
-import { parseVideo } from '@/helpers'
 import { useScroll } from '@vueuse/core'
 import { DEFAULT_ROOM } from '@/config/room'
 import { Messages } from '@/config/response'
+import { DEFAULT_USER } from '@/config/user'
 import { RoutesNames } from '@/config/router'
 import { DEFAULT_VIDEO } from '@/config/video'
 import { useRoute, useRouter } from 'vue-router'
+import { parseUser, parseVideo } from '@/helpers'
 import { useUserData } from '@/store/userDataStore'
+import { socketInstance } from '@/api/socketInstance'
 import { useNotificationBus } from '@/store/notificationBusStore'
 import { computed, onMounted, onUnmounted, ref, nextTick } from 'vue'
 
@@ -37,6 +38,8 @@ const notifications = useNotificationBus()
 
 let item: Ref<Room> = ref({ ...DEFAULT_ROOM })
 let video: Ref<Video> = ref({ ...DEFAULT_VIDEO })
+const user: ParsedUser = userData.user!
+const creator: Ref<User> = ref({ ...DEFAULT_USER })
 const usersCount: Ref<number> = ref(1)
 const slug: Room['slug'] = route.params.slug as string
 const messages: Ref<RoomMessage[]> = ref([])
@@ -49,7 +52,7 @@ const textRoomStatus: ComputedRef<'unlock' | 'lock'> = computed(() => {
 })
 
 function checkCurrentUser(): boolean {
-  if (userData.user!.id == item.value.userId)
+  if (user.id == creator.value.id)
     return true
 
   return false
@@ -69,11 +72,11 @@ function updateUsersCount(newUsersCount: number): void {
 
 function setSocketEmits(): void {
   try {
-    socket.on('room:update', updateRoom)
-    socket.on('room:newMessage', newMessage)
-    socket.on('room:delete', roomDeleted)
-    socket.on('room:usersCountUpdate', updateUsersCount)
-    socket.on('disconnect', unJoinRoom)
+    socketInstance.on('room:update', updateRoom)
+    socketInstance.on('room:newMessage', newMessage)
+    socketInstance.on('room:delete', roomDeleted)
+    socketInstance.on('room:usersCountUpdate', updateUsersCount)
+    socketInstance.on('disconnect', unJoinRoom)
   } catch (err) {
     console.log(err)
   }
@@ -82,8 +85,10 @@ function setSocketEmits(): void {
 async function stayBottom(isWithNewMessage: boolean): Promise<void> {
   await nextTick()
 
-  if (isWithNewMessage && !messagesBoxElementArrivedState.bottom)
-    return
+  if (
+    isWithNewMessage && 
+    !messagesBoxElementArrivedState.bottom
+  ) return
 
   messagesBoxElement.value!.scroll({ top: messagesBoxElement.value!.scrollHeight })
 }
@@ -103,7 +108,6 @@ async function update(): Promise<void> {
     const result: boolean = checkCurrentUser()
     const payload: RoomPayload = {
       isOpen: !item.value.isOpen,
-      userId: item.value.userId,
       videoId: item.value.videoId,
     }
 
@@ -119,7 +123,7 @@ async function sendMessage(): Promise<void> {
   try {
     const payload: RoomMessagePayload = {
       message: currentMessage.value,
-      userId: userData.user!.id,
+      userId: user!.id,
       roomId: item.value.id,
     }
 
@@ -131,13 +135,14 @@ async function sendMessage(): Promise<void> {
 }
 
 onMounted(async () => {
-  try {
-    const response: ReturnJoinRoomEventPayload = await RoomService.join(slug)
-    setSocketEmits()
+  setSocketEmits()
 
-    item.value = response.room
-    video.value = parseVideo(response.room.video)
-    updateUsersCount(response.usersCount)
+  try {
+    const room: Room = await RoomService.join(slug)
+
+    item.value = room
+    video.value = parseVideo(room.video)
+    creator.value = parseUser(room.creator[0])
     
     const oldMessages: Paginate<RoomMessage> = await RoomService.getMessages(item.value.slug, { 
       page: 1,
@@ -146,6 +151,7 @@ onMounted(async () => {
     messages.value.push(...oldMessages.data)
   
     stayBottom(false)
+    updateUsersCount(item.value.usersCount)
   } catch (_err: any) {
     notifications.addNotification({
       type: 'error',
@@ -181,7 +187,7 @@ onUnmounted(async () => {
         <div class="roomBox__suptitle">
           <span class="roomBox__owner Font Font__text Font__regular">
             Owner: 
-            <Link>{{ item.user.nickname }}</Link>
+            <Link :to="{ name: RoutesNames.USER, params: { id: creator.id } }">{{ creator.nickname }}</Link>
           </span>
           <!-- <button class="Button Font Font__bold Font__text transition">Sync</button> -->
         </div>
@@ -242,7 +248,7 @@ onUnmounted(async () => {
 
         <div class="roomBox__input">
           <Input v-slot="{ inputClassNames }">
-            <input v-model="currentMessage" :class="inputClassNames" type="text" placeholder="Message">
+            <input @keyup.enter="sendMessage" v-model="currentMessage" :class="inputClassNames" type="text" placeholder="Message">
           </Input>
 
           <Button @click="sendMessage" type="button" class="roomBox__send">Send</Button>

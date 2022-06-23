@@ -27,6 +27,7 @@ export enum Messages {
   TOKEN_ERR = 'Token expired or undefined!',
   ERR = 'Something went wrong! Please try again!',
   VALIDATION_ERR = 'Please, fill all fields correctly!',
+  SOCKET_ERROR = 'Socket connection error! Some features may not work!',
 
   /**
    * * Video
