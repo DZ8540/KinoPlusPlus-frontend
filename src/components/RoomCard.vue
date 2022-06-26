@@ -43,7 +43,7 @@ const user: User = props.item.creator[0]
         <li :class="classNames">
           <span :class="textClassName" class="Font Font__text Font__regular">
             Creator: 
-            <Link weight="regular" size="text" :to="{ name: RoutesNames.USER, params: { id: user.id } }">{{ user.nickname }}</Link>
+            <Link :to="{ name: RoutesNames.USER, params: { id: user.id } }" weight="regular" size="text">{{ user.nickname }}</Link>
           </span>
         </li>
 

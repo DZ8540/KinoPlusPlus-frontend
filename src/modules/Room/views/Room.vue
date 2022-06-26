@@ -17,9 +17,12 @@ import { DEFAULT_VIDEO } from '@/config/video'
 import { useRoute, useRouter } from 'vue-router'
 import { parseUser, parseVideo } from '@/helpers'
 import { useUserData } from '@/store/userDataStore'
-import { socketInstance } from '@/api/socketInstance'
+import { socketInstance } from '@/api/Instances/socketInstance'
 import { useNotificationBus } from '@/store/notificationBusStore'
-import { computed, onMounted, onUnmounted, ref, nextTick } from 'vue'
+import { 
+  computed, onMounted, onUnmounted, 
+  ref, nextTick, reactive 
+} from 'vue'
 
 // * Components
 import Icon from '@/components/Icon.vue'
@@ -36,14 +39,16 @@ const router = useRouter()
 const userData = useUserData()
 const notifications = useNotificationBus()
 
-let item: Ref<Room> = ref({ ...DEFAULT_ROOM })
-let video: Ref<Video> = ref({ ...DEFAULT_VIDEO })
-const user: ParsedUser = userData.user!
-const creator: Ref<User> = ref({ ...DEFAULT_USER })
-const usersCount: Ref<number> = ref(1)
+const currentUser: ParsedUser = userData.user!
 const slug: Room['slug'] = route.params.slug as string
-const messages: Ref<RoomMessage[]> = ref([])
+
+const usersInRoom: ParsedUser[] = reactive([])
+const item: Ref<Room> = ref({ ...DEFAULT_ROOM })
+const video: Ref<Video> = ref({ ...DEFAULT_VIDEO })
+const creator: Ref<User> = ref({ ...DEFAULT_USER })
+
 const currentMessage: Ref<string> = ref('')
+const messages: Ref<RoomMessage[]> = ref([])
 const messagesBoxElement: Ref<HTMLDivElement | null | undefined> = ref(null)
 const { arrivedState: messagesBoxElementArrivedState } = useScroll(messagesBoxElement)
 
@@ -52,31 +57,36 @@ const textRoomStatus: ComputedRef<'unlock' | 'lock'> = computed(() => {
 })
 
 function checkCurrentUser(): boolean {
-  if (user.id == creator.value.id)
-    return true
-
-  return false
+  return currentUser.id == creator.value.id ? true : false
 }
 
-function updateRoom(isOpen: Room['isOpen']): void {
-  item.value.isOpen = isOpen
+function leaveFromRoom(): void {
+  router.replace({ name: RoutesNames.HOME })
 }
 
-function roomDeleted(): void {
-  router.push({ name: RoutesNames.HOME })
+function updateUsersCount(users: Room['users']): void {
+  usersInRoom.splice(0, usersInRoom.length)
+
+  for (const item of users) {
+    usersInRoom.push(parseUser(item)) 
+  }
 }
 
-function updateUsersCount(newUsersCount: number): void {
-  usersCount.value = newUsersCount
-}
-
-function setSocketEmits(): void {
+function setSocketHandlers(): void {
   try {
-    socketInstance.on('room:update', updateRoom)
-    socketInstance.on('room:newMessage', newMessage)
-    socketInstance.on('room:delete', roomDeleted)
-    socketInstance.on('room:usersCountUpdate', updateUsersCount)
     socketInstance.on('disconnect', unJoinRoom)
+    socketInstance.on('room:delete', leaveFromRoom)
+    socketInstance.on('room:newMessage', newMessage)
+    socketInstance.on('room:updateUsersCount', updateUsersCount)
+
+    socketInstance.on('room:kickUser', (userId: User['id']) => {
+      if (currentUser.id == userId)
+        leaveFromRoom()
+    })
+
+    socketInstance.on('room:update', (isOpen: Room['isOpen']) => {
+      item.value.isOpen = isOpen
+    })
   } catch (err) {
     console.log(err)
   }
@@ -96,35 +106,41 @@ async function stayBottom(isWithNewMessage: boolean): Promise<void> {
 async function newMessage(msg: RoomMessage): Promise<void> {
   messages.value.push(msg)
   
-  stayBottom(true)
+  await stayBottom(true)
 }
 
 async function unJoinRoom(): Promise<void> {
-  await RoomService.unJoin(item.value.slug)
+  await RoomService.unJoin(item.value.slug)  
+}
+
+async function kickUser(userId: User['id']): Promise<void> {
+  if (!checkCurrentUser()) return
+
+  const kickedUserId: User['id'] = await RoomService.kickUser(item.value.slug, userId)
+
+  if (kickedUserId == currentUser.id)
+    leaveFromRoom()
 }
 
 async function update(): Promise<void> {
+  if (!checkCurrentUser()) return
+
   try {
-    const result: boolean = checkCurrentUser()
     const payload: RoomPayload = {
       isOpen: !item.value.isOpen,
       videoId: item.value.videoId,
     }
-
-    if (!result)
-      throw null
-
-    const isOpen: Room['isOpen'] = await RoomService.update(slug, payload)
-    item.value.isOpen = isOpen
+    
+    item.value.isOpen = await RoomService.update(slug, payload)
   } catch (_err: any) {}
 }
 
 async function sendMessage(): Promise<void> {
   try {
     const payload: RoomMessagePayload = {
-      message: currentMessage.value,
-      userId: user!.id,
       roomId: item.value.id,
+      userId: currentUser.id,
+      message: currentMessage.value,
     }
 
     const msg: RoomMessage = await RoomService.sendMessage(item.value.slug, payload)
@@ -135,7 +151,7 @@ async function sendMessage(): Promise<void> {
 }
 
 onMounted(async () => {
-  setSocketEmits()
+  setSocketHandlers()
 
   try {
     const room: Room = await RoomService.join(slug)
@@ -143,6 +159,8 @@ onMounted(async () => {
     item.value = room
     video.value = parseVideo(room.video)
     creator.value = parseUser(room.creator[0])
+
+    updateUsersCount(item.value.users)
     
     const oldMessages: Paginate<RoomMessage> = await RoomService.getMessages(item.value.slug, { 
       page: 1,
@@ -151,7 +169,6 @@ onMounted(async () => {
     messages.value.push(...oldMessages.data)
   
     stayBottom(false)
-    updateUsersCount(item.value.usersCount)
   } catch (_err: any) {
     notifications.addNotification({
       type: 'error',
@@ -189,6 +206,7 @@ onUnmounted(async () => {
             Owner: 
             <Link :to="{ name: RoutesNames.USER, params: { id: creator.id } }">{{ creator.nickname }}</Link>
           </span>
+          
           <!-- <button class="Button Font Font__bold Font__text transition">Sync</button> -->
         </div>
 
@@ -199,6 +217,7 @@ onUnmounted(async () => {
               Details
               <Icon type="ARROW" class="Accordion__icon" />
             </a>
+
             <div class="uk-accordion-content">
 
               <List v-slot="{ classNames }">
@@ -208,7 +227,7 @@ onUnmounted(async () => {
                 </li>
 
                 <li :class="classNames">
-                  <span class="List__text Font Font__text Font__regular">Users: {{ usersCount }}</span>
+                  <span class="List__text Font Font__text Font__regular">Users: {{ usersInRoom.length }}</span>
                 </li>
 
                 <li :class="classNames">
@@ -229,9 +248,18 @@ onUnmounted(async () => {
               Users
               <Icon type="ARROW" class="Accordion__icon" />
             </a>
+
             <div class="uk-accordion-content">
 
-              <List />
+              <div v-for="item in usersInRoom" class="roomUser roomUser__mb">
+                <Link :to="{ name: RoutesNames.USER, params: { id: item.id } }" class="roomUser__avatar">
+                  <img :src="item.avatar" alt="">
+                </Link>
+
+                <Link :to="{ name: RoutesNames.USER, params: { id: item.id } }" weight="regular" size="text" class="roomUser__name">{{ item.nickname }}</Link>
+
+                <Button v-if="checkCurrentUser()" @click="kickUser(item.id)" type="button" class="roomUser__button">Kick</Button>
+              </div>
 
             </div>
           </li>
@@ -259,4 +287,4 @@ onUnmounted(async () => {
   </div>
 </template>
 
-<style lang="sass" scoped></style>
+<style lang="sass"></style>

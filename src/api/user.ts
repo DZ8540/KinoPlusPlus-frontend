@@ -6,7 +6,7 @@ import type { ErrorResponse, Response } from '@/contracts/response'
 import type { ApiDefaultPayload, Paginate, UserPayload } from '@/contracts/api'
 // * Types
 
-import axiosInstance from './axiosInstance'
+import axiosInstance from './Instances/axiosInstance'
 import { API_ROUTES } from '@/config/api'
 
 export async function getUserApi(userId: User['id']): Promise<AxiosResponse<Response<User>>> {

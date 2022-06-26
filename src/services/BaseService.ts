@@ -4,8 +4,8 @@ import type { ParsedUser } from '@/contracts/user'
 
 import AuthService from './AuthService'
 import { Messages } from '@/config/response'
-import { bootSocket } from '@/api/socketInstance'
 import { useUserData } from '@/store/userDataStore'
+import { bootSocket } from '@/api/Instances/socketInstance'
 import { useNotificationBus } from '@/store/notificationBusStore'
 
 export default class BaseService {

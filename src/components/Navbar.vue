@@ -279,7 +279,7 @@ onMounted(() => {
         </li>
 
         <li class="Navbar__navLi">
-          <Link to="#">Rooms</Link>
+          <Link :to="{ name: RoutesNames.ROOM_SEARCH }">Rooms</Link>
         </li>
 
       </ul>

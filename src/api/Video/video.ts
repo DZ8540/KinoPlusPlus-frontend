@@ -3,11 +3,11 @@ import type { AxiosResponse } from 'axios'
 import type { User } from '@/contracts/user'
 import type { ErrorResponse, Response } from '@/contracts/response'
 import type { LaterListPayload, Paginate, WishlistPayload } from '@/contracts/api'
-import type { ApiSearchData, UnparsedVideo, Video, ListsActions } from '@/contracts/video'
+import type { VideoSearchPayload, UnparsedVideo, Video, ListsActions } from '@/contracts/video'
 // * Types
 
 import Logger from '@/assets/vendor/Logger'
-import axiosInstance from '../axiosInstance'
+import axiosInstance from '../Instances/axiosInstance'
 import { API_ROUTES } from '@/config/api'
 
 export async function getVideoApi(slug: Video['slug'], currentUserId?: User['id']): Promise<AxiosResponse<Response<UnparsedVideo>>> {
@@ -40,7 +40,7 @@ export async function popularApi(currentUserId?: User['id']): Promise<AxiosRespo
   }
 }
 
-export async function searchVideoApi(payload: ApiSearchData, currentUserId?: User['id']): Promise<AxiosResponse<Response<Paginate<UnparsedVideo>>>> {
+export async function searchVideoApi(payload: VideoSearchPayload, currentUserId?: User['id']): Promise<AxiosResponse<Response<Paginate<UnparsedVideo>>>> {
   try {
     return await axiosInstance.post<Response<Paginate<UnparsedVideo>>>(API_ROUTES.video.search(currentUserId), payload)
   } catch (err: ErrorResponse | any) {

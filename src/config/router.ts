@@ -36,5 +36,6 @@ export enum RoutesNames {
    * * Room
    */
 
-  ROOM = 'room'
+  ROOM = 'room',
+  ROOM_SEARCH = 'roomSearch',
 }

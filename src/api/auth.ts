@@ -5,7 +5,7 @@ import type { ErrorResponse, Response } from '@/contracts/response'
 import type { LoginPayload, RegistrationPayload } from '@/contracts/api'
 // * Types
 
-import axiosInstance from './axiosInstance'
+import axiosInstance from './Instances/axiosInstance'
 import { API_ROUTES } from '@/config/api'
 
 export async function registerApi(payload: RegistrationPayload): Promise<void> {

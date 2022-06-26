@@ -8,7 +8,7 @@ import type { LoginPayload, RegistrationPayload } from '@/contracts/api'
 import BaseService from './BaseService'
 import Logger from '@/assets/vendor/Logger'
 import { Messages } from '@/config/response'
-import { bootSocket, socketInstance } from '@/api/socketInstance'
+import { bootSocket, socketInstance } from '@/api/Instances/socketInstance'
 import { 
   activateUserApi, loginApi, logoutApi, 
   refreshApi, registerApi,

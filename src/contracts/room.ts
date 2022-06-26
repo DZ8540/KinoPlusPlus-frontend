@@ -14,8 +14,8 @@ export type Room = {
   creator: User[],
   video: UnparsedVideo,
   usersCount: number,
+  users: User[],
   messages?: RoomMessage[],
-  users?: User[],
 }
 
 export type RoomMessage = {

@@ -42,8 +42,9 @@ export type Video = Omit<UnparsedVideo, 'ageLimit'> & {
   laterListStatus: boolean,
 }
 
-export type ApiSearchData = ApiDefaultPayload & {
+export type VideoSearchPayload = ApiDefaultPayload & {
   genres?: Genre['id'][],
+  videoName?: Video['name'],
 }
 
 export type MainPageGenre = {

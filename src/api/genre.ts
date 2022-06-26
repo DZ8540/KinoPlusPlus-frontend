@@ -7,7 +7,7 @@ import type { ApiDefaultPayload, Paginate } from '@/contracts/api'
 import type { ErrorResponse, Response } from '@/contracts/response'
 // * Types
 
-import axiosInstance from './axiosInstance'
+import axiosInstance from './Instances/axiosInstance'
 import { API_ROUTES } from '@/config/api'
 
 export async function allGenresApi(): Promise<AxiosResponse<Response<Genre[]>>> {

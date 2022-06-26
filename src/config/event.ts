@@ -5,4 +5,6 @@ export enum EventsNames {
   SEND_COMMENT = 'sendComment',
   UPDATE_COMMENT = 'updateComment',
   DELETE_COMMENT = 'deleteComment',
+
+  SEARCH = 'search',
 }

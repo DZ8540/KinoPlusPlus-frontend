@@ -42,7 +42,10 @@ export const API_ROUTES = {
     wishlist: (userId: User['id']) => `/user/wishlist/${userId}`,
     laterList: (userId: User['id']) => `/user/laterList/${userId}`,
     historyList: (userId: User['id']) => `/user/historyList/${userId}`,
-  }
+  },
+  room: {
+    search: '/rooms/search',
+  },
 } as const
 
 export const URL: string = import.meta.env.VITE_API_URL

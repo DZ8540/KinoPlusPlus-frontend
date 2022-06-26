@@ -6,7 +6,7 @@ import type { ErrorResponse, Response } from '@/contracts/response'
 import type { ApiDefaultPayload, Paginate, VideoCommentPayload } from '@/contracts/api'
 // * Types
 
-import axiosInstance from '../axiosInstance'
+import axiosInstance from '../Instances/axiosInstance'
 import { API_ROUTES } from '@/config/api'
 
 export async function getVideoCommentsApi(id: Video['id'], payload: ApiDefaultPayload): Promise<AxiosResponse<Response<Paginate<VideoComment>>>> {

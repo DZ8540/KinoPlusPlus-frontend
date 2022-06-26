@@ -1,8 +1,9 @@
 // * Types
-import type { Video } from '@/contracts/video'
-import type { ParsedUser } from '@/contracts/user'
-import type { Response } from '@/contracts/response'
+import type { AxiosResponse } from 'axios'
+import type { ParsedUser, User } from '@/contracts/user'
+import type { Video, VideoSearchPayload } from '@/contracts/video'
 import type { ApiDefaultPayload, Paginate } from '@/contracts/api'
+import type { ErrorResponse, Response } from '@/contracts/response'
 import type { Room, RoomMessage, RoomMessagePayload, RoomPayload } from '@/contracts/room'
 // * Types
 
@@ -11,10 +12,24 @@ import Logger from '@/assets/vendor/Logger'
 import { Messages } from '@/config/response'
 import { 
   createRoomApi, getRoomMessagesApi, joinRoomApi, 
-  sendMessageRoomApi, unJoinRoomApi, updateRoomApi 
+  kickUserRoomApi, searchRoomApi, sendMessageRoomApi, 
+  unJoinRoomApi, updateRoomApi ,
 } from '@/api/room'
 
 export default class RoomService extends BaseService {
+  public static async search(payload: VideoSearchPayload): Promise<Paginate<Room>> {
+    try {
+      const response: AxiosResponse<Response<Paginate<Room>>> = await searchRoomApi(payload)
+
+      return response.data.body!
+    } catch (_err: any) {
+      const err: ErrorResponse['response'] = _err
+      Logger.error(err)
+
+      throw this.errorNotify(err.data.message!)
+    }
+  }
+
   public static async create(videoId: Video['id']): Promise<Room['slug']> {
     try {
       const payload: RoomPayload = {
@@ -59,7 +74,17 @@ export default class RoomService extends BaseService {
     try {
       await unJoinRoomApi(slug)
     } catch (_err: any) {
-      Logger.error(_err)
+      throw Logger.error(_err)
+    }
+  }
+
+  public static async kickUser(roomSlug: Room['slug'], userId: User['id']): Promise<User['id']> {
+    try {
+      const response: Response<User['id']> = await kickUserRoomApi(roomSlug, userId)
+
+      return response.body!
+    } catch (_err: any) {
+      throw Logger.error(_err)
     }
   }
 
